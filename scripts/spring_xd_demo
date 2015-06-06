@@ -1,0 +1,134 @@
+Dev.Twitter.com
+https://dev.twitter.com/streaming/overview
+https://dev.twitter.com/overview/api/twitter-libraries
+
+stream create --name twittersearchjava --definition "twittersearch --consumerKey=toLroxf9t7WzsdQvVSFVQr23y --consumerSecret=WKYo5wjI2yGDqr0SmJyI5kUPGh5oIA4die6gmRYw4BZWIpFh2f --query='java' | file" --deploy
+
+
+
+use spring xd to strart to stream tweets
+
+introduce spring xd
+http://docs.spring.io/spring-xd/docs/current-SNAPSHOT/reference/html/#introduction
+it provides a streaming runtime for us
+we have all these separate technologies and spring xd lets us manage them at runtime with a simple approach – it is set up with some fundamental components
+
+
+https://apps.twitter.com/app/8258889/keys to get my oath credentials
+
+xd:> stream create --name twittersearchjava --definition "twittersearch --consumerKey=toLroxf9t7WzsdQvVSFVQr23y --consumerSecret=WKYo5wjI2yGDqr0SmJyI5kUPGh5oIA4die6gmRYw4BZWIpFh2f --query='java' | file" –deploy
+
+cd ~/xd.out
+tail -f twittersearchjava.out
+
+
+let's create our own stream using JMS and ActiveMQ
+this is relevant to our discussion as we already have a streaming source set up in the current solution based on IBM MQSeries – we would need to make a couple of adjustments though in order to move away from the p2p and into pub/sub – but for now let's stick with p2p queues – as we know only allow for a single message consumer where pub/sub allows for M2N.
+
+So lets start ActiveMQ
+and then create a message producer
+
+gedit /home/peter.doyle/svn/cleverfish/estreaming-poc/estreaming-poc/spring-xd-jms-sender/src/main/java/com/cleverfishsoftware/spring/xd/jms/sender/Broker.java &
+
+let's capture that stream using spring xd
+xd provides an integration into JMS
+
+so let's send some JMS messages
+[peter.doyle@centurion ~]$ runjmssender
+
+and let's create a simple stream that picks up the jms messages and writes them to file
+xd:>stream create --name jmstest --definition "jms --destination=airshop |file" --deploy
+
+and we will just tail them from the default output location
+[peter.doyle@centurion xd.out]$ tail -f jmstest.out
+
+
+so notice that the output is csv like what we are now pushing out of the estreaming application.
+What if a client wants to use another format? Lets convert that to JSON using a Spring XD transformer directive and some simple groovy – but lets do something simple first
+
+xd:>stream create --name groovytransformtest1 --definition "http --port=9004 | transform --script=airshop_csv_to_json_transform.groovy | file" –deploy
+
+this starts up a local http server and then puts a transform directive in between the server and any potential clients – by default we will manipulate the body of the http response
+
+so let's take a look at the groovy code that will act as a transformer
+[peter.doyle@centurion ~]$ gedit xd.scripts/airshop_csv_to_json_transform.groovy &
+
+
+lets look at something else for minute with our jms stream – take a look at the –definition for the stream we created, it is just like a UNIX command
+
+so lets create a stream then that still reads from the jms source but then transforms it to JSON before writing out to file
+
+so let's send some JMS messages again
+[peter.doyle@centurion ~]$ runjmssender
+
+and recreate our jmstest stream but now include the transformer
+xd:>stream create --name jmstest --definition "jms | transform --script=airshop_csv_to_json_transform.groovy | file" –deploy
+
+and check the logs
+[peter.doyle@centurion xd.out]$ tail -f jmstest.out
+
+
+Okay now lets introduce MongoDb to the mix. MongoDb stores JSON and as I explained early can be used as both a streaming source and sink Mongo communicates using HTTP so let's see how that works in a simple stream.
+
+The Mongo sink writes into a Mongo collection. Here is a simple example
+
+xd:>stream create --name mongotest --definition "http | mongodb --databaseName=test --collectionName=names" --deploy
+
+and now we will post some date to mongo
+xd:>http post --data {"message":{"airline":"TYF","from":"BMI","to":"ESK","price":"234"}}
+
+
+
+In the mongo console you will see the document stored
+
+> use test
+switched to db test
+> show collections
+names
+system.indexes
+> db.names.find()
+
+
+okay so that works. So let's tie it all together and get our original csv flight search data pushed into monogo.
+
+
+so let's send some JMS messages again
+[peter.doyle@centurion ~]$ runjmssender
+
+and create the new stream
+xd:>stream create --name jmstest --definition "jms | transform --script=airshop_csv_to_json_transform.groovy | mongodb --databaseName=test --collectionName=names" --deploy
+
+okay good now we have data being pushed into mongo
+... so lets look at the features we need in mongo 
+- capped collection 
+- tailable cursor
+
+so let's stream data using Node.js that is being pushed into mongo - MEAN stack 
+here is our capped collection 
+db.createCollection( "stream", { capped: true, size: 500 } )
+and here is our node code (open up intellij)
+
+// create the airshop stream which puts our jms source into a stream, runs the transform on the format and stores it in the mongo database in a capped collection
+
+xd:>stream create --name airshop_stream --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | mongodb --databaseName=airshop --collectionName=results" --deploy
+
+// introduce the taps 
+// add one to just log the untransformed jms source to file (again)
+xd:>stream create --name tap_airshop_stream_to_file --definition "tap:stream:airshop_stream > file" --deploy
+
+// now lets start kafka and start pushing data into a topic there
+[peter.doyle@centurion ~]$kafkastartzookeeper
+[peter.doyle@centurion ~]$kafkastart
+
+// and get a kafka consumer running that will read messages
+[peter.doyle@centurion ~]$~/apps/kafka/default/bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic airshopTopic --from-beginning
+
+// now we need a stream that creates a tap off of our main airshop_stream and pushes data int kafka
+xd:>stream create --name tap_airshop_stream_to_kafka --definition "tap:stream:airshop_stream.transform > kafka --topic=airshopTopic" --deploy
+
+// and for some built in analytics - show the page
+xd:>stream create --name analytics_airshop_price --definition "tap:stream:airshop_stream.transform > transform --expression=#jsonPath(payload,'$.message.price') | rich-gauge" --deploy
+
+xd:>rich-gauge display analytics_airshop_price
+
+

@@ -1,0 +1,11 @@
+stream create airshop_stream_flight_price_tap  --definition "tap:stream:airshop_stream.transform > field-value-counter --fieldName=flight.fltType --name='Flight Type'" --deploy
+
+stream create airshop_stream_flight_count_tap --definition "tap:stream:airshop_stream.transform > aggregate-counter --name='Flight Data'" --deploy
+
+stream create airshop_stream_flight_destination_city_count_tap --definition "tap:stream:airshop_stream.transform > field-value-counter --fieldName=flight.airportCityArr --name='Destination City'" --deploy
+
+
+
+here is how far it can go...
+
+http://www.tnooz.com/article/a-fresh-way-of-visualizing-flight-search-aims-to-trump-ita-software-matrix-time-bars/

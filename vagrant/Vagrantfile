@@ -1,0 +1,132 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+  config.vm.box = "centos7-estreaming"
+
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
+  config.vm.network "forwarded_port", guest: 9393, host: 9393
+  config.vm.network "forwarded_port", guest: 9889, host: 9889
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  # config.vm.synced_folder "../data", "/vagrant_data"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  # config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+  #   vb.gui = true
+  #
+  #   # Customize the amount of memory on the VM:
+  #   vb.memory = "1024"
+  # end
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--cpuexecutioncap", "80"]
+    vb.cpus=2 #recommended=4
+    vb.memory = "2048" #recommended=3072, +1024 if available
+  end
+  #
+  # View the documentation for the provider you are using for more
+  # information on available options.
+
+  # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
+  # such as FTP and Heroku are also available. See the documentation at
+  # https://docs.vagrantup.com/v2/push/atlas.html for more information.
+  # config.push.define "atlas" do |push|
+  #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
+  # end
+
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+  # config.vm.provision "shell", inline: <<-SHELL
+  #   sudo apt-get update
+  #   sudo apt-get install -y apache2
+  # SHELL
+  config.vm.provision "shell", inline: <<-SHELL
+
+  #make sure the distro is up to date
+  sudo yum update -y
+
+  #install oracle jdk 7
+  wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/c60903823a21847ee5c6/raw/4ceaeb79075964ea0f668e2a0d5b4b89bd049804/equip_centos7_java764.sh && bash equip_centos7_java7_64.sh
+
+  #install maven
+  wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/42a988fbb07ad0e7ca99/raw/0e06ef9ade4dd3520ab5afe1dd3e4beca053a7df/equip_centos7_maven3_64.sh && bash equip_centos7_maven3_64.sh
+
+  #install spring xd
+  sudo rpm -Uvh https://repo.spring.io/libs-release-local/org/springframework/xd/spring-xd/1.1.2.RELEASE/spring-xd-1.1.2.RELEASE-1.noarch.rpm
+  sudo alternatives --install /usr/bin/xd-admin xd-admin /opt/pivotal/spring-xd/xd/bin/xd-admin 99999
+  sudo alternatives --install /usr/bin/xd-container xd-container /opt/pivotal/spring-xd/xd/bin/xd-container 99999
+  sudo alternatives --install /usr/bin/xd-singlenode xd-singlenode /opt/pivotal/spring-xd/xd/bin/xd-singlenode 99999
+
+  #install mongodb and start it and enable it at startup
+  wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/7451a7f694b20df709cc/raw/42abf68f0782b47d48ff70e5f0722bdce98d870f/mongodb.repo
+  sudo mv mongodb.repo /etc/yum.repos.d/
+  sudo yum -y install mongodb-org mongodb-org-server
+  sudo systemctl start mongod
+  sudo chkconfig mongod on
+  sudo systemctl status mongod
+  #TODO define the capped collection
+  mongo version
+
+  #install node.js and npm
+  sudo yum -y install epel-release gcc gcc-c++
+  sudo yum -y install nodejs npm
+  #install express.js
+  sudo npm install express -g
+  sudo npm install express-generator -g
+  express -V
+
+  #install storm
+  #TODO
+
+  #install kafka
+  #TODO
+
+  #install X and xfce desktop Optional
+  sudo yum -y groupinstall "X Window System"
+  sudo yum -y groupinstall xfce
+  sudo yum -y install x2goserver-xsession
+  sudo startx
+
+  #install some helpful extras
+  sudo yum -y install firefox
+  sudo yum -y install xfce4-terminal
+  sudo yum -y install htop
+
+  SHELL
+end

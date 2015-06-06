@@ -1,0 +1,83 @@
+
+walk through the demo to walk thru the cmap
+
+
+introduce the stack
+introduce the topology
+
+start building...
+
+introduce Spring XD single_node and xd-shell
+
+introduce the notion of a stream with source and sink concept
+
+need a source - JMS
+-start up ActiveMQ broker
+-start up jmsSender 
+
+basic jmstest to file
+stream create --name jmstest --definition "jms --destination=airshop |file" --deploy
+- tail -f out xd.out/jmstest.out
+
+jms with transform to file
+stream create --name jmstest_with_transform --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | file" --deploy
+- tail -f out xd.out/jmstest_with_transform.out
+
+
+jms with transform into mongo
+- open up mongo console
+  - explain the capped collection
+db.createCollection("log", { capped : true, size : 5242880, max : 5000 } )
+  - explain the tail cursor
+allows a query to be run against mongo and keep the cursor open until connection is broken
+- show a couple of queries
+
+create the stream to push the jms records into mongo
+stream create --name airshop_stream --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | mongodb --databaseName=airshop --collectionName=results"
+
+
+- open up node app and run the tailing mongo client
+  - show output to console
+
+- open up the node server app ****PROBLEM RIGHT NOW
+  - show output to console using curl and to web browser
+
+
+introduce the tap concept
+run a tap with with a transform that prepends [INF0] to payload
+  - tail -f that log file
+
+introduce kafka
+
+fire up kafka zK
+fire up kafka server
+fire up kafka consumer to print to console
+
+run a tap off the airshop_stream into kafka
+  start the kafka consumer
+stream create --name tap_airshop_stream_to_kafka --definition "tap:stream:airshop_stream.transform > kafka --topic=airshopTopic" --deploy
+
+
+intoduce storm spout and bolt concepts
+  leave that for another demo
+  3 use-cases
+	analytics realtime visualization and notification
+	aggregate collection
+	 - aggregated feeds into HDFS jms2mongo2kafka2Hadoop
+         - aggregated streaming - jms2mongo2kafka2storm2d3
+	 - aggregated aggregated visualization
+	 - plus much more... 
+      
+  
+basic analyitics using Spring XD
+  - create the three taps
+  - explain spring boot
+	start spring boot
+  - open up the browser
+
+done !
+
+
+
+
+

@@ -1,0 +1,19 @@
+Airport database
+
+Airport, airline and route data
+Navigation: Airport | Airline | Route | Schedule | Other | License
+Airport database
+
+As of January 2012, the OpenFlights Airports Database contains 6977 airports spanning the globe, as shown in the map above. Each entry contains the following information:
+ 0 Airport ID 	Unique OpenFlights identifier for this airport.
+ 1 Name 	Name of airport. May or may not contain the City name.
+ 2 City 	Main city served by airport. May be spelled differently from Name.
+ 3 Country 	Country or territory where airport is located.
+ 4 IATA/FAA 	3-letter FAA code, for airports located in Country "United States of America" OR 3-letter IATA code, for all other airports OR Blank if not assigned.
+ 7 ICAO 	4-letter ICAO code OR Blank if not assigned.
+ 9 Latitude 	Decimal degrees, usually to six significant digits. Negative is South, positive is North.
+10  Longitude 	Decimal degrees, usually to six significant digits. Negative is West, positive is East.
+11 Altitude 	In feet.
+12 Timezone 	Hours offset from UTC. Fractional hours are expressed as decimals, eg. India is 5.5.
+13 DST 	Daylight savings time. One of E (Europe), A (US/Canada), S (South America), O (Australia), Z (New Zealand), N (None) or U (Unknown). See also: Help: Time
+14 Tz database time zone 	Timezone in "tz" (Olson) format, eg. "America/Los_Angeles". 

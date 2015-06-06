@@ -1,0 +1,13 @@
+Airline database
+
+As of January 2012, the OpenFlights Airlines Database contains 5888 airlines. Each entry contains the following information:
+0 Airline ID 	Unique OpenFlights identifier for this airline.
+1 Name 	Name of the airline.
+2 Alias 	Alias of the airline. For example, All Nippon Airways is commonly known as "ANA".
+3 IATA 	2-letter IATA code, if available.
+4 ICAO 	3-letter ICAO code, if available.
+5 Callsign 	Airline callsign.
+6 Country 	Country or territory where airline is incorporated.
+7 Active 	"Y" if the airline is or has until recently been operational, "N" if it is defunct. This field is not reliable: in particular, major airlines that stopped flying long ago, but have not had their IATA code reassigned (eg. Ansett/AN), will incorrectly show as "Y".
+
+The data is ISO 8859-1 (Latin-1) encoded. The special value \N is used for "NULL" to indicate that no value is available, and is understood automatically by MySQL if imported.

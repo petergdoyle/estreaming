@@ -35,7 +35,7 @@ http://stackoverflow.com/questions/783811/getting-git-to-work-with-a-proxy-serve
 Get the Code
 Pull the code and scripts from Git (you are already there if you are reading this README)
 change to an appropriate directory location (likely off your home directory) and in a shell or git bash type
-git clone --depth 1  https://github.com/petergdoyle/estreaming.git
+```git clone --depth 1  https://github.com/petergdoyle/estreaming.git```
 this will copy clone the git repo.
 
 

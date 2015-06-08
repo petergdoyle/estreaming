@@ -1,7 +1,7 @@
 # estreaming
-create a twitter-like streaming app with spring-xd, mongodb, and node.js
+Create a twitter-like streaming server with spring-xd, mongodb, express, and node.js.
 
-
+## Installation
 Install Pre-requisites:
 virtualbox
 vagrant
@@ -28,6 +28,9 @@ https://msysgit.github.io/
 if you are on linux or mac, follow instructions here
 https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
+If you are behind a firewall, follow these instructions:
+http://stackoverflow.com/questions/783811/getting-git-to-work-with-a-proxy-server
+
 
 Get the Code
 Pull the code and scripts from Git (you are already there if you are reading this README)
@@ -36,6 +39,7 @@ git clone --depth 1  https://github.com/petergdoyle/estreaming.git
 this will copy clone the git repo.
 
 
+## Usage
 Create a VirtualBox VM
 
 whereever you cloned your git repo, move to that directory and then get into the following location:
@@ -61,3 +65,16 @@ locate the private key
 vagrant ssh-config | grep IdentityFile  | awk '{print $2}'
 
 ssh -XC -c blowfish-cbc,arcfour -i /home/peter/vagrant/estreaming/.vagrant/machines/default/virtualbox/private_key -l vagrant -p 2222 127.0.0.1
+
+
+## History
+
+TODO: Write history
+
+## Credits
+
+TODO: Write credits
+
+## License
+
+TODO: Write license

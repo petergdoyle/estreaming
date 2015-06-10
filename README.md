@@ -52,7 +52,7 @@ Whereever you cloned your git repo, move to that directory and then get into the
 
 You should see a file there called Vagrantfile. That has the details of how the new virtualbox box will be provisioned. **Please note** that the default machine spec is set to 2 vcpus and 2048 Mb memory allocation. This is the minimum acceptable vitural machine spec require to run the demo, so that may or may not work depending on the capabilities of the hardware of the host machine.
 
-Pull a "base" box with this command. ```vagrant box add https://github.com/holms/vagrant-centos7-box/releases/download/7.1.1503.001/CentOS-7.1.1503-x86_64-netboot.box```
+Pull a "base" box with this command. ```vagrant box add https://github.com/holms/vagrant-centos7-box/releases/download/7.1.1503.001/CentOS-7.1.1503-x86_64-netboot.box -- name  CentOS-7.1.1503-x86_64```
 Install the CentOS7 fix
 ```vagrant plugin install vagrant-centos7_fix```
 

@@ -1,0 +1,7 @@
+
+The goal of this exercise is to build a server that can stream data over an HTTP connection.
+
+
+So in order to do that we need a data source that will emit data continuously.
+
+Go to the directory that 

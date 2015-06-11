@@ -12,6 +12,11 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
+
+  #
+  # YOU NEED TO ADD A BOX THAT WILL BE NAMED AND REFERENCED BELOW !!!
+  # vagrant box add https://github.com/holms/vagrant-centos7-box/releases/download/7.1.1503.001/CentOS-7.1.1503-x86_64-netboot.box --name CentOS-7.1.1503-x86_64
+  #
   config.vm.box = "CentOS-7.1.1503-x86_64"
 
   # Disable automatic box update checking. If you disable this, then
@@ -87,88 +92,92 @@ Vagrant.configure(2) do |config|
   #sudo echo "proxy=$http_proxy" >> /etc/yum.conf
 
   #make sure the distro is up to date
-  sudo yum update -y
+  yum update -y
+  yum -y install vim
 
   #make sure virtualbox guest-additions are up to date
-  sudo service vboxdrv setup
+  service vboxdrv setup
 
   #install oracle jdk 7
   wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/c60903823a21847ee5c6/raw/6b1fffe26cc6efc8f1f718b190292ca578e8f0f2/equip_centos7_java7_64.sh && bash equip_centos7_java7_64.sh
-v
+
   #install maven
   wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/42a988fbb07ad0e7ca99/raw/b39ed2274650bdc8f7158d5545a230e658c58929/equip_centos7_maven3_64.sh && bash equip_centos7_maven3_64.sh
 
   #install spring xd
-  sudo rpm -Uvh https://repo.spring.io/libs-release-local/org/springframework/xd/spring-xd/1.1.2.RELEASE/spring-xd-1.1.2.RELEASE-1.noarch.rpm
-  sudo alternatives --install /usr/bin/xd-admin xd-admin /opt/pivotal/spring-xd/xd/bin/xd-admin 99999
-  sudo alternatives --install /usr/bin/xd-container xd-container /opt/pivotal/spring-xd/xd/bin/xd-container 99999
-  sudo alternatives --install /usr/bin/xd-singlenode xd-singlenode /opt/pivotal/spring-xd/xd/bin/xd-singlenode 99999
+  #wget -q -O - packages.pivotal.io | sh  #http://blog.pivotal.io/pivotal/products/easy-pivotal-app-installs-rpm-deb-msi-brew-chef-puppet-and-more
+  #yum install spring-xd
+  rpm -Uvh https://repo.spring.io/libs-release-local/org/springframework/xd/spring-xd/1.1.2.RELEASE/spring-xd-1.1.2.RELEASE-1.noarch.rpm
+  alternatives --install /usr/bin/xd-admin xd-admin /opt/pivotal/spring-xd/xd/bin/xd-admin 99999
+  alternatives --install /usr/bin/xd-container xd-container /opt/pivotal/spring-xd/xd/bin/xd-container 99999
+  alternatives --install /usr/bin/xd-singlenode xd-singlenode /opt/pivotal/spring-xd/xd/bin/xd-singlenode 99999
+  wget https://raw.githubusercontent.com/petergdoyle/estreaming/master/groovy/airshop_csv_to_json_transform.groovy
+  mv airshop_csv_to_json_transform.groovy /opt/pivotal/spring-xd/xd/modules/processor/scripts/
 
   #install spring boot
   #install gvm first
-  sudo yum -y install unzip
-  curl -s get.gvmtool.net | bash
-  source "/home/vagrant/.gvm/bin/gvm-init.sh"
-  gvm version
-  printf "gvm_auto_answer=true\ngvm_auto_selfupdate=true\n" > .gvm/etc/config
-  gvm install springboot
-  gvm install groovy
-  gvm install grails
-  spring --version
+  yum -y install unzip
+  sudo su - vagrant -c 'curl -s get.gvmtool.net | bash'
+  sudo su - vagrant -c 'source "/home/vagrant/.gvm/bin/gvm-init.sh"'
+  printf "gvm_auto_answer=true\ngvm_auto_selfupdate=true\n" > /home/vagrant/.gvm/etc/config
+  sudo su - vagrant -c 'gvm install springboot'
+  #su - vagrant -c 'gvm install groovy'     #optional
+  #su - vagrant -c 'gvm install grails'     #optional
+  sudo su - vagrant -c 'spring --version'
 
   #install mongodb and start it and enable it at startup
   wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/7451a7f694b20df709cc/raw/42abf68f0782b47d48ff70e5f0722bdce98d870f/mongodb.repo
-  sudo mv mongodb.repo /etc/yum.repos.d/
-  sudo yum -y install mongodb-org mongodb-org-server
-  sudo systemctl start mongod
-  sudo chkconfig mongod on
-  sudo systemctl status mongod
+  mv mongodb.repo /etc/yum.repos.d/
+  yum -y install mongodb-org mongodb-org-server
+  systemctl start mongod
+  chkconfig mongod on
+  systemctl status mongod
   #TODO define the capped collection
   mongo version
 
   #install node.js and npm
-  sudo yum -y install epel-release gcc gcc-c++
-  sudo yum -y install nodejs npm
+  yum -y install epel-release gcc gcc-c++
+  yum -y install nodejs npm
   #install express.js
   # npm proxy settings
   #npm config set proxy $http_proxy
   #npm config set https-proxy $http_proxy
-  sudo npm install express -g
-  sudo npm install express-generator -g
+  npm install express -g
+  npm install express-generator -g
   express -V
 
   #install storm
   wget http://mirror.nexcess.net/apache/storm/apache-storm-0.9.5/apache-storm-0.9.5.tar.gz
-  sudo tar -xvf apache-storm-0.9.5.tar.gz
-  sudo mkdir -p /usr/storm
-  sudo mv apache-storm-0.9.5 /usr/storm
-  sudo ln -s /usr/storm/apache-storm-0.9.5 /usr/storm/default
-  sudo chown -R root:root /usr/storm
-  sudo rm -f apache-storm-0.9.5.tar.gz
+  tar -xvf apache-storm-0.9.5.tar.gz
+  mkdir -p /usr/storm
+  mv apache-storm-0.9.5 /usr/storm
+  ln -s /usr/storm/apache-storm-0.9.5 /usr/storm/default
+  chown -R root:root /usr/storm
+  rm -f apache-storm-0.9.5.tar.gz
 
   #install kafka
   wget --no-check-certificate http://apache.claz.org/kafka/0.8.2.1/kafka_2.9.1-0.8.2.1.tgz
-  sudo tar -xvf kafka_2.9.1-0.8.2.1.tgz
-  sudo mkdir -p /usr/kafka
-  sudo mv kafka_2.9.1-0.8.2.1 /usr/kafka
-  sudo ln -s /usr/kafka/kafka_2.9.1-0.8.2.1 /usr/kafka/default
-  sudo chown -R root:root /usr/kafka
-  sudo rm -f kafka_2.9.1-0.8.2.1.tgz
+  tar -xvf kafka_2.9.1-0.8.2.1.tgz
+  mkdir -p /usr/kafka
+  mv kafka_2.9.1-0.8.2.1 /usr/kafka
+  ln -s /usr/kafka/kafka_2.9.1-0.8.2.1 /usr/kafka/default
+  chown -R root:root /usr/kafka
+  rm -f kafka_2.9.1-0.8.2.1.tgz
 
   #install X and xfce desktop Optional
-  sudo yum -y groupinstall "X Window System"
-  sudo yum -y groupinstall xfce
-  sudo yum -y install x2goserver-xsession
-  sudo startx
+  yum -y groupinstall "X Window System"
+  yum -y groupinstall xfce
+  yum -y install x2goserver-xsession
+  startx
 
   #install some helpful extras
-  sudo yum -y install firefox
-  sudo yum -y install xfce4-terminal
-  sudo yum -y install htop
+  yum -y install firefox
+  yum -y install xfce4-terminal
+  yum -y install htop
 
   #add aliases
-  wget https://raw.githubusercontent.com/petergdoyle/estreaming/master/aliases
-  sed '/# User specific aliases and functions/a source aliases' .bashrc
+  sudo su - vagrant -c 'wget https://raw.githubusercontent.com/petergdoyle/estreaming/master/aliases'
+  sed -i '/# User specific aliases and functions/a source aliases' /home/vagrant/.bashrc
 
   SHELL
 end

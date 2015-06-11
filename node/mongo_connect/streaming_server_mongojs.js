@@ -17,7 +17,7 @@ db.on('ready',function() {
 
 // tail to http response stream
 var server = http.createServer(function (req, res) {
-    res.setHeader('content-type', 'text/javascript');
+    res.setHeader('content-type', 'application/json');
     res.connection.setTimeout(0);
     db.results
         .find({}, {}, {tailable:true, timeout:false})

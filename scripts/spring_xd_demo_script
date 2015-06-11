@@ -13,7 +13,7 @@ introduce the notion of a stream with source and sink concept
 
 need a source - JMS
 -start up ActiveMQ broker
--start up jmsSender 
+-start up jmsSender
 
 basic jmstest to file
 stream create --name jmstest --definition "jms --destination=airshop |file" --deploy
@@ -27,7 +27,7 @@ stream create --name jmstest_with_transform --definition "jms --destination=airs
 jms with transform into mongo
 - open up mongo console
   - explain the capped collection
-db.createCollection("log", { capped : true, size : 5242880, max : 5000 } )
+db.createCollection("results", { capped : true, size : 5242880, max : 5000 } )
   - explain the tail cursor
 allows a query to be run against mongo and keep the cursor open until connection is broken
 - show a couple of queries
@@ -66,9 +66,9 @@ intoduce storm spout and bolt concepts
 	 - aggregated feeds into HDFS jms2mongo2kafka2Hadoop
          - aggregated streaming - jms2mongo2kafka2storm2d3
 	 - aggregated aggregated visualization
-	 - plus much more... 
-      
-  
+	 - plus much more...
+
+
 basic analyitics using Spring XD
   - create the three taps
   - explain spring boot
@@ -76,8 +76,3 @@ basic analyitics using Spring XD
   - open up the browser
 
 done !
-
-
-
-
-

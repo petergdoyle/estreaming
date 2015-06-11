@@ -1,10 +1,13 @@
 {
   "name": "mongo_connect",
   "version": "0.0.0",
-  "private": true,
+  "description": "a test to stream mongo tail cursor through node.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node ./bin/www"
+    "test": "echo \"s\""
   },
+  "author": "",
+  "license": "BSD"
   "dependencies": {
     "mongodb": "*",
     "mongoose": "*",

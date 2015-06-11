@@ -149,19 +149,19 @@ Vagrant.configure(2) do |config|
   #install storm
   wget http://mirror.nexcess.net/apache/storm/apache-storm-0.9.5/apache-storm-0.9.5.tar.gz
   tar -xvf apache-storm-0.9.5.tar.gz
-  mkdir -p /usr/storm
-  mv apache-storm-0.9.5 /usr/storm
-  ln -s /usr/storm/apache-storm-0.9.5 /usr/storm/default
-  chown -R root:root /usr/storm
+  mkdir -p /home/vagrant/storm
+  mv apache-storm-0.9.5 /home/vagrant/storm
+  ln -s /home/vagrant/storm/apache-storm-0.9.5 /home/vagrant/storm/default
+  chown -R root:root /home/vagrant/storm
   rm -f apache-storm-0.9.5.tar.gz
 
   #install kafka
   wget --no-check-certificate http://apache.claz.org/kafka/0.8.2.1/kafka_2.9.1-0.8.2.1.tgz
   tar -xvf kafka_2.9.1-0.8.2.1.tgz
-  mkdir -p /usr/kafka
-  mv kafka_2.9.1-0.8.2.1 /usr/kafka
-  ln -s /usr/kafka/kafka_2.9.1-0.8.2.1 /usr/kafka/default
-  chown -R root:root /usr/kafka
+  mkdir -p /home/vagrant/kafka
+  mv kafka_2.9.1-0.8.2.1 /home/vagrant/kafka
+  ln -s /home/vagrant/kafka/kafka_2.9.1-0.8.2.1 /home/vagrant/kafka/default
+  chown -R vagrant:vagrant /home/vagrant/kafka
   rm -f kafka_2.9.1-0.8.2.1.tgz
 
   #install X and xfce desktop Optional
@@ -176,8 +176,18 @@ Vagrant.configure(2) do |config|
   yum -y install htop
 
   #add aliases
-  sudo su - vagrant -c 'wget https://raw.githubusercontent.com/petergdoyle/estreaming/master/aliases'
+  su - vagrant -c 'wget https://raw.githubusercontent.com/petergdoyle/estreaming/master/aliases'
   sed -i '/# User specific aliases and functions/a source aliases' /home/vagrant/.bashrc
+
+  #check out code
+  su - vagrant -c 'git clone sudo https://github.com/petergdoyle/estreaming.git'
+  #add some symlinks
+  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/config /home/vagrant/xd.config'
+  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd /home/vagrant/xd.home'
+  su - vagrant -c 'ln -s /tmp/xd/output/ /home/vagrant/xd.out'
+  su - vagrant -c 'ln -s /home/vagrant/estreaming/java/activemq-jms-sender/ /home/vagrant/xd.jms-sender'
+  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/modules/processor/scripts/ /home/vagrant/xd.scripts'
+  su - vagrant -c 'ln -s /home/vagrant/estreaming/node/ /home/vagrant/node'
 
   SHELL
 end

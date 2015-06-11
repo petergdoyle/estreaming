@@ -91,9 +91,12 @@ Vagrant.configure(2) do |config|
   #export https_proxy=http://proxyden.galileo.corp.lcl:8080/
   #sudo echo "proxy=$http_proxy" >> /etc/yum.conf
 
+
+  #check out code
+  su - vagrant -c 'git clone https://github.com/petergdoyle/estreaming.git'
+
   #make sure the distro is up to date
   yum update -y
-  yum -y install vim
 
   #make sure virtualbox guest-additions are up to date
   service vboxdrv setup
@@ -117,13 +120,13 @@ Vagrant.configure(2) do |config|
   #install spring boot
   #install gvm first
   yum -y install unzip
-  sudo su - vagrant -c 'curl -s get.gvmtool.net | bash'
-  sudo su - vagrant -c 'source "/home/vagrant/.gvm/bin/gvm-init.sh"'
+  su - vagrant -c 'curl -s get.gvmtool.net | bash'
+  su - vagrant -c 'source "/home/vagrant/.gvm/bin/gvm-init.sh"'
   printf "gvm_auto_answer=true\ngvm_auto_selfupdate=true\n" > /home/vagrant/.gvm/etc/config
-  sudo su - vagrant -c 'gvm install springboot'
+  su - vagrant -c 'gvm install springboot'
   #su - vagrant -c 'gvm install groovy'     #optional
   #su - vagrant -c 'gvm install grails'     #optional
-  sudo su - vagrant -c 'spring --version'
+  su - vagrant -c 'spring --version'
 
   #install mongodb and start it and enable it at startup
   wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/7451a7f694b20df709cc/raw/42abf68f0782b47d48ff70e5f0722bdce98d870f/mongodb.repo
@@ -132,8 +135,8 @@ Vagrant.configure(2) do |config|
   systemctl start mongod
   chkconfig mongod on
   systemctl status mongod
-  #TODO define the capped collection
-  mongo version
+  mongo -version
+  su - vagrant -c 'mongo < /home/vagrant/estreaming/mongo/setup'
 
   #install node.js and npm
   yum -y install epel-release gcc gcc-c++
@@ -168,19 +171,18 @@ Vagrant.configure(2) do |config|
   yum -y groupinstall "X Window System"
   yum -y groupinstall xfce
   yum -y install x2goserver-xsession
+  yum -y install xfce4-terminal
   startx
 
   #install some helpful extras
   yum -y install firefox
-  yum -y install xfce4-terminal
   yum -y install htop
+  yum -y install vim
 
   #add aliases
   su - vagrant -c 'wget https://raw.githubusercontent.com/petergdoyle/estreaming/master/aliases'
   sed -i '/# User specific aliases and functions/a source aliases' /home/vagrant/.bashrc
 
-  #check out code
-  su - vagrant -c 'git clone sudo https://github.com/petergdoyle/estreaming.git'
   #add some symlinks
   su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/config /home/vagrant/xd.config'
   su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd /home/vagrant/xd.home'

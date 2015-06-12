@@ -87,10 +87,20 @@ Vagrant.configure(2) do |config|
   # SHELL
   config.vm.provision "shell", inline: <<-SHELL
 
+
   #TODO if you need to get through a proxy for yum and other utilities...
   #export http_proxy=http://host.com:port/
   #export https_proxy=http://host.com:port/
+  #export HTTP_PROXY=http://host.com:port/
+  #export HTTPS_PROXY=http://host.com:port/
+
   #sudo echo "proxy=http://host.com:port/" >> /etc/yum.conf
+  export http_proxy=http://proxyden.galileo.corp.lcl:8080/
+  export https_proxy=http://proxyden.galileo.corp.lcl:8080/
+  export HTTP_PROXY=http://proxyden.galileo.corp.lcl:8080/
+  export HTTPS_PROXY=http://proxyden.galileo.corp.lcl:8080/
+
+  sudo echo "proxy=http://proxyden.galileo.corp.lcl:8080/" >> /etc/yum.conf
 
 
   #check out code
@@ -145,8 +155,8 @@ Vagrant.configure(2) do |config|
   yum -y install nodejs npm
   #install express.js
   #TODO npm proxy settings if applicable
-  #npm config set proxy $http_proxy
-  #npm config set https-proxy $http_proxy
+  npm config set proxy http://proxyden.galileo.corp.lcl:8080/
+  npm config set https-proxy http://proxyden.galileo.corp.lcl:8080/
   npm install express -g
   npm install express-generator -g
   express -V
@@ -157,7 +167,7 @@ Vagrant.configure(2) do |config|
   mkdir -p /home/vagrant/storm
   mv apache-storm-0.9.5 /home/vagrant/storm
   ln -s /home/vagrant/storm/apache-storm-0.9.5 /home/vagrant/storm/default
-  chown -R root:root /home/vagrant/storm
+  chown -R vagrant:vagrant /home/vagrant/storm
   rm -f apache-storm-0.9.5.tar.gz
 
   #install kafka
@@ -200,7 +210,6 @@ Vagrant.configure(2) do |config|
   #a little more setup
   cd /home/vagrant/estreaming/java/activemq-jms-sender/
   su - vagrant -c 'mvn clean install'
-  cd
 
   SHELL
 end

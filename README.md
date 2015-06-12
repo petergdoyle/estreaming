@@ -2,7 +2,8 @@
 Create a twitter-like streaming server with spring-xd, mongodb, express, and node.js.
 
 ## Installation
-Install Pre-requisites:
+**Install Pre-requisites:**
+
 1. virtualbox
 2. vagrant
 3. git
@@ -78,7 +79,8 @@ Once you have that location identified (mine happened to be $HOME/vagrant/estrea
 
 **Note**: the commands are intended to run in Linux or in Git Bash, not from a windows command prompt.
 
-If you want to avoid opening many terminals or PuTTY session, then an X Server and a XFCE Desktop has been installed on the virtual box. You can go get an x2go client here http://wiki.x2go.org/doku.php and connect using "vagrant" and the RSA key described above (without a password).
+If you want to avoid opening many terminals or PuTTY session, then an X Server and a XFCE Desktop has been installed on the virtual box. You can go get an x2go client here http://wiki.x2go.org/doku.php and connect to localhost:2222 using "vagrant" (without a password) and providing the RSA key described above.
+
 
 **Run the demo**
 follow along here https://github.com/petergdoyle/estreaming/blob/master/scripts/spring_xd_demo_script it is also located in the scripts folder where you cloned this repo.

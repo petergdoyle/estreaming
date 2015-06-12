@@ -28,9 +28,13 @@ Vagrant.configure(2) do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  #config.vm.network "forwarded_port", guest: 3000, host: 3000
   config.vm.network "forwarded_port", guest: 8080, host: 8080
   config.vm.network "forwarded_port", guest: 9393, host: 9393
   config.vm.network "forwarded_port", guest: 9889, host: 9889
+  #config.vm.network "forwarded_port", guest: 61616, host: 61616
+  #config.vm.network "forwarded_port", guest: 27017, host: 27017
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -60,8 +64,8 @@ Vagrant.configure(2) do |config|
   # end
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--cpuexecutioncap", "80"]
-    vb.cpus=2 #recommended=4
-    vb.memory = "2048" #recommended=3072, +1024 if available
+    vb.cpus=2 #recommended=4 if available
+    vb.memory = "2048" #recommended=3072 or 4096 if available
   end
   #
   # View the documentation for the provider you are using for more
@@ -83,13 +87,10 @@ Vagrant.configure(2) do |config|
   # SHELL
   config.vm.provision "shell", inline: <<-SHELL
 
-  #if you need to get through a proxy for yum and other utilities...
+  #TODO if you need to get through a proxy for yum and other utilities...
   #export http_proxy=http://host.com:port/
   #export https_proxy=http://host.com:port/
   #sudo echo "proxy=http://host.com:port/" >> /etc/yum.conf
-  #export http_proxy=http://proxyden.galileo.corp.lcl:8080/
-  #export https_proxy=http://proxyden.galileo.corp.lcl:8080/
-  #sudo echo "proxy=$http_proxy" >> /etc/yum.conf
 
 
   #check out code
@@ -110,12 +111,13 @@ Vagrant.configure(2) do |config|
   #install spring xd
   #wget -q -O - packages.pivotal.io | sh  #http://blog.pivotal.io/pivotal/products/easy-pivotal-app-installs-rpm-deb-msi-brew-chef-puppet-and-more
   #yum install spring-xd
-  rpm -Uvh https://repo.spring.io/libs-release-local/org/springframework/xd/spring-xd/1.1.2.RELEASE/spring-xd-1.1.2.RELEASE-1.noarch.rpm
+  wget https://repo.spring.io/libs-release-local/org/springframework/xd/spring-xd/1.1.2.RELEASE/spring-xd-1.1.2.RELEASE-1.noarch.rpm
+  yum -y localinstall spring-xd-1.1.2.RELEASE-1.noarch.rpm
   alternatives --install /usr/bin/xd-admin xd-admin /opt/pivotal/spring-xd/xd/bin/xd-admin 99999
   alternatives --install /usr/bin/xd-container xd-container /opt/pivotal/spring-xd/xd/bin/xd-container 99999
   alternatives --install /usr/bin/xd-singlenode xd-singlenode /opt/pivotal/spring-xd/xd/bin/xd-singlenode 99999
-  wget https://raw.githubusercontent.com/petergdoyle/estreaming/master/groovy/airshop_csv_to_json_transform.groovy
-  mv airshop_csv_to_json_transform.groovy /opt/pivotal/spring-xd/xd/modules/processor/scripts/
+  rm spring-xd-1.1.2.RELEASE-1.noarch.rpm
+  ln -s /home/vagrant/estreaming/groovy/airshop_csv_to_json_transform.groovy /opt/pivotal/spring-xd/xd/modules/processor/scripts/airshop_csv_to_json_transform.groovy
 
   #install spring boot
   #install gvm first
@@ -142,7 +144,7 @@ Vagrant.configure(2) do |config|
   yum -y install epel-release gcc gcc-c++
   yum -y install nodejs npm
   #install express.js
-  # npm proxy settings
+  #TODO npm proxy settings if applicable
   #npm config set proxy $http_proxy
   #npm config set https-proxy $http_proxy
   npm install express -g
@@ -178,6 +180,10 @@ Vagrant.configure(2) do |config|
   yum -y install firefox
   yum -y install htop
   yum -y install vim
+  #atom text editor
+  wget https://github.com/atom/atom/releases/download/v0.208.0/atom.x86_64.rpm
+  yum -y localinstall -y atom.x86_64.rpm
+  rm atom.x86_64.rpm
 
   #add aliases
   su - vagrant -c 'wget https://raw.githubusercontent.com/petergdoyle/estreaming/master/aliases'
@@ -190,6 +196,11 @@ Vagrant.configure(2) do |config|
   su - vagrant -c 'ln -s /home/vagrant/estreaming/java/activemq-jms-sender/ /home/vagrant/xd.jms-sender'
   su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/modules/processor/scripts/ /home/vagrant/xd.scripts'
   su - vagrant -c 'ln -s /home/vagrant/estreaming/node/ /home/vagrant/node'
+
+  #a little more setup
+  cd /home/vagrant/estreaming/java/activemq-jms-sender/
+  su - vagrant -c 'mvn clean install'
+  cd
 
   SHELL
 end

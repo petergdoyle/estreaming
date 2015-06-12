@@ -48,14 +48,16 @@ this will copy clone the git repo.
 
 **Create a VirtualBox VM**
 
-Whereever you cloned your git repo, move to that directory and then get into the following location:
-```cd vagrant/estreaming```
+Whereever you cloned your git repo, move to that directory ($ESTREAMING_REPO_HOME) and then get into the following location:
+```cd $ESTREAMING_REPO_HOME/vagrant/estreaming```
 
 You should see a file there called Vagrantfile. That has the details of how the new virtualbox box will be provisioned. **Please note** that the default machine spec is set to 2 vcpus and 2048 Mb memory allocation. This is the minimum acceptable vitural machine spec require to run the demo, so that may or may not work depending on the capabilities of the hardware of the host machine.
 
 Pull a "base" box with this command. ```vagrant box add https://github.com/holms/vagrant-centos7-box/releases/download/7.1.1503.001/CentOS-7.1.1503-x86_64-netboot.box -- name  CentOS-7.1.1503-x86_64```
 Install the CentOS7 fix
 ```vagrant plugin install vagrant-centos7_fix```
+
+**the following vagrant commands must be performed while in the $ESTREAMING_REPO_HOME/vagrant/estreaming directory**
 
 Start the box and you should see a bunch of update and intallation messages on the console. This may take a few minutes but run the command:
 ```vagrant up```
@@ -66,18 +68,20 @@ To suspend your box, use this command:
 To remove the box altogether (maybe if problems installing or provisioning):
 ```vagrant destroy```
 
-To connect to the running box using vagrant, move to the ~/vagrant/estreaming directory and type ```vagrant ssh```
+If everything went well after running ```vagrant up``` then you should be able to connect to the running box using ```vagrant ssh``` (again you have to be in the $ESTREAMING_REPO_HOME/vagrant/estreaming directory)
+
+**Other ways to connect to the running box**
 
 To connect from any ssh client:
-Locate the private key for that box
+Locate the private key for that box (linux, for windows refer to http://stackoverflow.com/questions/9885108/ssh-to-vagrant-box-in-windows)
 ```vagrant ssh-config | grep IdentityFile  | awk '{print $2}'```
 
 Once you have that location identified (mine happened to be $HOME/vagrant/estreaming/.vagrant/machines/default/virtualbox/private_key), use a regular ssh command to connect from the command line:
 ```ssh -XC -c blowfish-cbc,arcfour -i $HOME/vagrant/estreaming/.vagrant/machines/default/virtualbox/private_key -l vagrant -p 2222 127.0.0.1```
 
-**Note**: if you are using PuTTY, that RSA Key must be provided in order to connect
+**Note**: if you are using PuTTY, that RSA Key must be provided in order to connect (http://stackoverflow.com/questions/9885108/ssh-to-vagrant-box-in-windows)
 
-**Note**: the commands are intended to run in Linux or in Git Bash, not from a windows command prompt.
+**Note**: the commands here are bash shell based and are intended to be run on Linux hosts or in Git Bash on Windows, not from a Windows command prompt.
 
 If you want to avoid opening many terminals or PuTTY session, then an X Server and a XFCE Desktop has been installed on the virtual box. You can go get an x2go client here http://wiki.x2go.org/doku.php and connect to localhost:2222 using "vagrant" (without a password) and providing the RSA key described above.
 

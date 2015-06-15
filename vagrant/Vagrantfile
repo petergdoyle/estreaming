@@ -147,8 +147,8 @@ Vagrant.configure(2) do |config|
   yum -y install nodejs npm
   #install express.js
   #TODO npm proxy settings if applicable
-  npm config set proxy http://proxyden.galileo.corp.lcl:8080/
-  npm config set https-proxy http://proxyden.galileo.corp.lcl:8080/
+  #npm config set proxy http://host.com:port/
+  #npm config set https-proxy http://host.com:port/
   npm install express -g
   npm install express-generator -g
   express -V

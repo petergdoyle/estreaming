@@ -152,6 +152,8 @@ Vagrant.configure(2) do |config|
   npm install express -g
   npm install express-generator -g
   express -V
+  #nice little utility to format a stream of json https://www.npmjs.com/package/format-json-stream
+  npm install format-json-stream -g 
 
   #install storm
   wget http://mirror.nexcess.net/apache/storm/apache-storm-0.9.5/apache-storm-0.9.5.tar.gz

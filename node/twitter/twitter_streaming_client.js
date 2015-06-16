@@ -1,13 +1,11 @@
 
 var Twitter = require('twitter-node-client').Twitter;
-var format = require('format-json-stream');
-
 //Callback functions
 var error = function (err, response, body) {
     console.log('ERROR [%s]', err);
 };
 var success = function (data) {
-    console.log('Data [%s]', data);
+    console.log(data);
 };
 
 
@@ -29,7 +27,6 @@ var twitter = new Twitter(config);
 
 
 var myArgs = process.argv.slice(2);
-console.log('myArgs: ', myArgs);
 var hashtag = myArgs[0];
 var limit = myArgs[1];
 

@@ -1,7 +1,33 @@
 
-The goal of this exercise is to build a server that can stream data over an HTTP connection.
+The goal of this demo is to build a server that can stream data over an HTTP
+
+From a user experience perspective I want to be able to do what I do when I go to the Twitter developer site.
+
+https://dev.twitter.com/streaming/overview
+
+I have an easy API that I can use to understand how to connect to Twitter and start streaming Tweets.
+  -- I can control what data I get and apply the appropriate filters
+  -- REST APIs are usually pretty easy to figure out without having to do a lot.
+  -- JSON as a format is very valuable. I don't have to figure out all the bindings and schemas and wsdls like I would have to do with SOAP based APIs
+  -- I am going to use Javascript as a programming API for the client and the servers, so JSON is by it's nature a JavaScript object in a serialized form
+
+While I won't cover authentication and authorization right now, it is easy for me to go and get my secure credentials as a registered Twitter Developer
+https://dev.twitter.com/oauth
+https://apps.twitter.com/
+
+So for a lot of the client and server piece I will rely on node.js
+
+I can easily create a Node.js based client app and a node-twitter wrapper api to do the boilerplate stuff to download some tweets for me.
+
+cd node/twitter/
+atom .
+node twitter_streaming_client "#java" 10 > tweets_with_java.json 
+cat tweets_with_java.json | format-json-stream | less
+
+
+So that is where I want to get to at the end of the demo, where I can connect to our streaming server using something like Node.js and start streaming data...
 
 
 So in order to do that we need a data source that will emit data continuously.
 
-Go to the directory that 
+Go to the directory that

@@ -1,0 +1,12 @@
+{
+  "name": "twitter_streaming_client",
+  "version": "0.0.0",
+  "description": "connect to twitter and grab a limited stream of tweets by hastag search",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "twitter-node-client": "*"
+  }
+}

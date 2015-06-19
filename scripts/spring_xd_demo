@@ -99,12 +99,12 @@ and create the new stream
 xd:>stream create --name jmstest --definition "jms | transform --script=airshop_csv_to_json_transform.groovy | mongodb --databaseName=test --collectionName=names" --deploy
 
 okay good now we have data being pushed into mongo
-... so lets look at the features we need in mongo 
-- capped collection 
+... so lets look at the features we need in mongo
+- capped collection
 - tailable cursor
 
-so let's stream data using Node.js that is being pushed into mongo - MEAN stack 
-here is our capped collection 
+so let's stream data using Node.js that is being pushed into mongo - MEAN stack
+here is our capped collection
 db.createCollection( "stream", { capped: true, size: 500 } )
 and here is our node code (open up intellij)
 
@@ -112,7 +112,7 @@ and here is our node code (open up intellij)
 
 xd:>stream create --name airshop_stream --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | mongodb --databaseName=airshop --collectionName=results" --deploy
 
-// introduce the taps 
+// introduce the taps
 // add one to just log the untransformed jms source to file (again)
 xd:>stream create --name tap_airshop_stream_to_file --definition "tap:stream:airshop_stream > file" --deploy
 
@@ -130,5 +130,3 @@ xd:>stream create --name tap_airshop_stream_to_kafka --definition "tap:stream:ai
 xd:>stream create --name analytics_airshop_price --definition "tap:stream:airshop_stream.transform > transform --expression=#jsonPath(payload,'$.message.price') | rich-gauge" --deploy
 
 xd:>rich-gauge display analytics_airshop_price
-
-

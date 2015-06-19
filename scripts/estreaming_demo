@@ -21,7 +21,7 @@ I can easily create a Node.js based client app and a node-twitter wrapper api to
 
 cd node/twitter/
 atom .
-node twitter_streaming_client "#java" 10 > tweets_with_java.json 
+node twitter_streaming_client "#java" 10 > tweets_with_java.json
 cat tweets_with_java.json | format-json-stream | less
 
 

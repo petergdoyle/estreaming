@@ -40,8 +40,28 @@ stream create --name airshop_stream --definition "jms --destination=airshop | tr
 - open up node app and run the tailing mongo client
   - show output to console
 
-- open up the node server app ****PROBLEM RIGHT NOW
-  - show output to console using curl and to web browser
+- open up the node server app - default firehose
+  - show output to web browser http://localhost:3000/airshop/results
+  - show output to curl  curl http://localhost:3000/airshop/results
+
+- API
+
+Show the code
+
+- ability to select fields
+  curl http://localhost:3000/airshop/results?fields=price
+
+- ability to start at a specific location in the stream
+  find a record and get the _id
+  export FRAME_ID=
+  curl http://localhost:3000/airshop/results?frame=$FRAME_ID
+  curl http://localhost:3000/airshop/results/$FRAME_ID
+
+- combine it all together
+  curl -v -L -G -d "frame=$FRAME_ID&fields=airlineNm,price,fltType" http://localhost:3000/airshop/results
+
+
+
 
 
 introduce the tap concept

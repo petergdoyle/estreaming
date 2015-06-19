@@ -133,7 +133,7 @@ Vagrant.configure(2) do |config|
   su - vagrant -c 'spring --version'
 
   #install mongodb and start it and enable it at startup
-  wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/7451a7f694b20df709cc/raw/42abf68f0782b47d48ff70e5f0722bdce98d870f/mongodb.repo
+  wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/7451a7f694b20df709cc/raw/b01b001478b40fc52f333b0ff9f9cb7ac2a25ac7/mongodb.repo
   mv mongodb.repo /etc/yum.repos.d/
   yum -y install mongodb-org mongodb-org-server
   systemctl start mongod

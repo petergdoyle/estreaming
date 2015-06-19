@@ -179,6 +179,10 @@ Vagrant.configure(2) do |config|
   yum -y groupinstall xfce
   yum -y install x2goserver-xsession
   yum -y install xfce4-terminal
+  wget --no-check-certificate https://dl.orangedox.com/xCs7czovfGqWuOhBgm/crunchy-dark-grey.tar.gz
+  tar -xvf crunchy-dark-grey.tar.gz
+  mv crunchy-dark-grey /usr/share/themes
+  #change to this theme using xfce4-appearance-settings 
   startx
 
   #install some helpful extras

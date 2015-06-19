@@ -33,6 +33,7 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 8080, host: 8080
   config.vm.network "forwarded_port", guest: 9393, host: 9393
   config.vm.network "forwarded_port", guest: 9889, host: 9889
+  config.vm.network "forwarded_port", guest: 22, host: 2222, host_ip: "0.0.0.0", id: "ssh", auto_correct: true
   #config.vm.network "forwarded_port", guest: 61616, host: 61616
   #config.vm.network "forwarded_port", guest: 27017, host: 27017
 
@@ -189,6 +190,13 @@ Vagrant.configure(2) do |config|
   wget https://github.com/atom/atom/releases/download/v0.208.0/atom.x86_64.rpm
   yum -y localinstall -y atom.x86_64.rpm
   rm atom.x86_64.rpm
+  #sublime
+  wget http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3065_x64.tar.bz2
+  tar -vxjf sublime_text_3_build_3065_x64.tar.bz2 -C /opt
+  alternatives --install /usr/bin/sublime sublime /opt/sublime_text_3/sublime_text 99999
+  rm -f sublime_text_3_build_3065_x64.tar.bz2
+
+
 
   #add aliases
   su - vagrant -c 'wget https://raw.githubusercontent.com/petergdoyle/estreaming/master/aliases'

@@ -9,6 +9,7 @@ var success = function (data) {
 };
 
 
+
 //Get this data from your twitter apps dashboard
 var config = {
     "consumerKey": "toLroxf9t7WzsdQvVSFVQr23y",
@@ -27,6 +28,10 @@ var twitter = new Twitter(config);
 
 
 var myArgs = process.argv.slice(2);
+if (!myArgs || myArgs.length<2) {
+	console.log("usage: node twitter_streaming_api_client.js \"#{hashtag}\" {limit} \nwhere {hashtag} is the tag you want to search for and {limit} is the number of records to pull from the stream");
+	return;
+}
 var hashtag = myArgs[0];
 var limit = myArgs[1];
 

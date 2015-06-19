@@ -186,6 +186,7 @@ Vagrant.configure(2) do |config|
   yum -y install firefox
   yum -y install htop
   yum -y install vim
+  yum -y install gedit
   #atom text editor
   wget https://github.com/atom/atom/releases/download/v0.208.0/atom.x86_64.rpm
   yum -y localinstall -y atom.x86_64.rpm

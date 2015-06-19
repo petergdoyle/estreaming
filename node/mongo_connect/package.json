@@ -7,11 +7,11 @@
     "test": "echo \"s\""
   },
   "author": "",
-  "license": "BSD"
+  "license": "BSD",
   "dependencies": {
     "mongodb": "*",
     "mongoose": "*",
-    "mongojs": "*",
+    "mongojs": "0.18.2",
     "JSONStream": "*"
   }
 }

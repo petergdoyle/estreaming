@@ -27,6 +27,7 @@ stream create --name jmstest_with_transform --definition "jms --destination=airs
 jms with transform into mongo
 - open up mongo console
   - explain the capped collection
+  db.results.stats()
 db.createCollection("results", { capped : true, size : 5242880, max : 5000 } )
   - explain the tail cursor
 allows a query to be run against mongo and keep the cursor open until connection is broken

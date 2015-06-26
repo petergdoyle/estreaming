@@ -24,10 +24,99 @@ atom .
 node twitter_streaming_client "#java" 10 > tweets_with_java.json
 cat tweets_with_java.json | format-json-stream | less
 
-
 So that is where I want to get to at the end of the demo, where I can connect to our streaming server using something like Node.js and start streaming data...
 
 
 So in order to do that we need a data source that will emit data continuously.
 
-Go to the directory that
+cd xd.jms-sender/
+if not built yet:
+mvn clean install
+
+so let's run a new JMS broker
+vim Broker.java
+./runBroker
+
+so lets create some flight search result data.
+vim MessageSender.java
+./runMessageSender
+
+so now we have some content
+
+
+So let's take a look at Spring XD
+
+start the xd runtime in singlenode
+sudo xd-singlenode
+
+start the xd shell to connect to the xd-singlenode server
+xd-shell
+
+so lets create our first simple stream
+
+and let's create a simple stream that picks up the jms messages and writes them to file
+xd:>stream create --name jmstest --definition "jms --destination=airshop |file" --deploy
+
+and we will just tail them from the default output location
+[vagrant@localhost xd.out]$ tail -f jmstest.out
+
+
+okay lets talk about our temporary stream storage server for a minute, mongo db...
+- document database - json document database
+- nosql
+- opensource and runs on all platforms
+- allows us to query and project just like SQL
+- it just uses a JSON syntax
+- has a powerful aggregation framework that allows us to do map-reduce, groupby type stuff, etc.
+- exposes itself with a RESTful URI
+- most importantly the usage of mongo in code maps directly into the mongo syntax
+- the shell is javascript and the node.js runtime (get to in a minute) allows us to use the same syntax (no more Object / Relation impedence mismatch)
+open mongo shell
+two special features of mongo
+- "capped collection" - we can contain the size of the data we collect by size or number of documents
+- "tailable cursors" - we can create cursor that will keep a long running collection
+- perfect for our data streaming needs.
+- node + mongo + express are a perfect "platform combination" for what we want to do here
+
+So lets get some data into mongo
+in order to do that, lets create a new spring xd stream
+but notice something about the jms shop data? it is in csv format
+so lets convert that to JSON along the way - we will do that with groovy
+vim xd.scripts/
+vim  xd.scripts/airshop_csv_to_json_transform.groovy
+
+and here is the spring xd stream definition we need
+xd:>stream create --name airshop_stream --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | mongodb --databaseName=airshop --collectionName=results"
+
+
+okay back to node.js
+lets run a node js program that will tail the streaming going into mongo into a console
+cd node/mongo_connnect
+node streaming_client_mongo.js
+
+and now lets run a server so clients can connect using http
+so we will run another streaming http server created using node.js and express and the mongo db driver software
+
+cd node/streaming_api_server
+npm start
+
+okay now lets stream from an ordinary curl client and a browser
+curl http://localhost:3000/airshop/results?fields=price
+firefox http://localhost:3000/airshop/results?fields=price
+
+- ability to start at a specific location in the stream
+  find a record and get the _id
+  export FRAME_ID=
+  curl http://localhost:3000/airshop/results?frame=$FRAME_ID
+  curl http://localhost:3000/airshop/results/$FRAME_ID
+
+- combine it all together
+  curl -v -L -G -d "frame=$FRAME_ID&fields=airlineNm,price,fltType" http://localhost:3000/airshop/results
+
+
+  okay now for some fun, lets see it in a web browser but using our d3 visualization library
+  stream create airshop_stream_flight_price_tap  --definition "tap:stream:airshop_stream.transform > field-value-counter --fieldName=flight.fltType --name='Flight Type'" --deploy
+
+  stream create airshop_stream_flight_count_tap --definition "tap:stream:airshop_stream.transform > aggregate-counter --name='Flight Data'" --deploy
+
+  stream create airshop_stream_flight_destination_city_count_tap --definition "tap:stream:airshop_stream.transform > field-value-counter --fieldName=flight.airportCityArr --name='Destination City'" --deploy

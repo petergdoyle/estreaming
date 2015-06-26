@@ -183,7 +183,7 @@ Vagrant.configure(2) do |config|
   wget --no-check-certificate https://dl.orangedox.com/xCs7czovfGqWuOhBgm/crunchy-dark-grey.tar.gz
   tar -xvf crunchy-dark-grey.tar.gz
   mv crunchy-dark-grey /usr/share/themes
-  #change to this theme using xfce4-appearance-settings 
+  #change to this theme using xfce4-appearance-settings
   startx
 
   #install some helpful extras
@@ -216,8 +216,7 @@ Vagrant.configure(2) do |config|
   su - vagrant -c 'ln -s /home/vagrant/estreaming/node/ /home/vagrant/node'
 
   #a little more setup
-  cd /home/vagrant/estreaming/java/activemq-jms-sender/
-  su - vagrant -c 'mvn clean install'
+  su - vagrant -c 'mvn -f /home/vagrant/estreaming/java/activemq-jms-sender/ clean install'
 
   SHELL
 end

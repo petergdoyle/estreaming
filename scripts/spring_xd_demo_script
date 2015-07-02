@@ -27,7 +27,7 @@ stream create --name jmstest_with_transform --definition "jms --destination=airs
 jms with transform into mongo
 - open up mongo console
   - explain the capped collection
-  db.results.stats()
+>db.results.stats()
 db.createCollection("results", { capped : true, size : 5242880, max : 5000 } )
   - explain the tail cursor
 allows a query to be run against mongo and keep the cursor open until connection is broken
@@ -52,12 +52,22 @@ Show the code
   curl http://localhost:3000/airshop/results?fields=price
 
 - ability to start at a specific location in the stream
-  find a record and get the _id
-  export FRAME_ID=
-  curl http://localhost:3000/airshop/results?frame=$FRAME_ID
-  curl http://localhost:3000/airshop/results/$FRAME_ID
+  find a record and get the _id by running the running the following command and you should see output similar to that shown. 
+[vagrant@localhost ~]$ mongo < ~/estreaming/mongo/find_frame_id.js
+MongoDB shell version: 3.0.4
+connecting to: test
+switched to db airshop
+{ "_id" : ObjectId("5592dbebe4b060fa8707f13c") }
+bye
+now export that id 
+[vagrant@localhost ~]$ export FRAME_ID=5592dbebe4b060fa8707f13c
 
-- combine it all together
+now you connect to the stream and use the RESTful features of the API by starting from the frame location that was found (the 100th record in the capped collection):
+there are two syntaxes to get the same resultset 
+[vagrant@localhost mongo]$ curl http://localhost:3000/airshop/results?frame=$FRAME_ID
+[vagrant@localhost mongo]$ curl http://localhost:3000/airshop/results/frame/$FRAME_ID
+
+now combine it all together combine it all together
   curl -v -L -G -d "frame=$FRAME_ID&fields=airlineNm,price,fltType" http://localhost:3000/airshop/results
 
 
@@ -66,6 +76,13 @@ Show the code
 
 introduce the tap concept
 run a tap with with a transform that prepends [INF0] to payload
+
+// introduce the taps
+basic jmstest to file
+SIMPLE:
+stream create --name jms_simple_test --definition "jms --destination=airshop |file" --deploy
+MANIPULATE PAYLOAD:
+stream create --name jms_payload_test --definition "jms --destination=airshop |transform --expression='[INFO] '+payload |file" --deploy
   - tail -f that log file
 
 introduce kafka
@@ -77,6 +94,7 @@ fire up kafka consumer to print to console
 run a tap off the airshop_stream into kafka
   start the kafka consumer
 stream create --name tap_airshop_stream_to_kafka --definition "tap:stream:airshop_stream.transform > kafka --topic=airshopTopic" --deploy
+
 
 
 intoduce storm spout and bolt concepts
@@ -91,9 +109,21 @@ intoduce storm spout and bolt concepts
 
 
 basic analyitics using Spring XD
-  - create the three taps
-  - explain spring boot
-	start spring boot
-  - open up the browser
+
+
+Start Spring Boot
+
+
+[vagrant@localhost ~]$ cd analytics-dashboard/
+[vagrant@localhost analytics-dashboard]$ spring run dashboard.groovy
+
+web browser 
+http://localhost:9889/dashboard.html 
+
+here is how far it can go...
+
+http://www.tnooz.com/article/a-fresh-way-of-visualizing-flight-search-aims-to-trump-ita-software-matrix-time-bars/
+
+
 
 done !

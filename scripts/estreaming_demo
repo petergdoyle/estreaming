@@ -108,7 +108,7 @@ firefox http://localhost:3000/airshop/results?fields=price
   find a record and get the _id
   export FRAME_ID=
   curl http://localhost:3000/airshop/results?frame=$FRAME_ID
-  curl http://localhost:3000/airshop/results/$FRAME_ID
+  curl http://localhost:3000/airshop/results/frame/$FRAME_ID
 
 - combine it all together
   curl -v -L -G -d "frame=$FRAME_ID&fields=airlineNm,price,fltType" http://localhost:3000/airshop/results

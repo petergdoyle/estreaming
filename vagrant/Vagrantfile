@@ -29,13 +29,13 @@ Vagrant.configure(2) do |config|
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # config.vm.network "forwarded_port", guest: 80, host: 8080
 
-  config.vm.network "forwarded_port", guest: 8080, host: 8080
+  config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "0.0.0.0", id: "activemq portal", auto_correct: true
   #spring xd runtime portal
-  config.vm.network "forwarded_port", guest: 9393, host: 9393
-  #streaming api server 
-  config.vm.network "forwarded_port", guest: 3000, host: 3000
+  config.vm.network "forwarded_port", guest: 9393, host: 9393, host_ip: "0.0.0.0", id: "spring-xd-console", auto_correct: true
+  #streaming api server
+  config.vm.network "forwarded_port", guest: 3000, host: 3000, host_ip: "0.0.0.0", id: "streaming api", auto_correct: true
   #analytics dashboard app
-  config.vm.network "forwarded_port", guest: 9889, host: 9889
+  config.vm.network "forwarded_port", guest: 9889, host: 9889, host_ip: "0.0.0.0", id: "spring-xd-analytics-dashboard", auto_correct: true
   #allows an ssh connection to be forwarded through the host machine on 2222
   config.vm.network "forwarded_port", guest: 22, host: 2222, host_ip: "0.0.0.0", id: "ssh", auto_correct: true
   #config.vm.network "forwarded_port", guest: 61616, host: 61616
@@ -100,6 +100,12 @@ Vagrant.configure(2) do |config|
   #export HTTPS_PROXY=http://host.com:port/
   #sudo echo "proxy=http://host.com:port/" >> /etc/yum.conf
   #sed -i "/# System wide functions and aliases/a export HTTP_PROXY=$HTTP_PROXY\\nexport HTTPS_PROXY=$HTTP_PROXY\\nexport http_proxy=$HTTP_PROXY\\nexport https_proxy=$HTTP_PROXY" /etc/bashrc
+
+  #fireall stuff should match the host port mapping above except 2222 ?
+  firewall-cmd --permanent --zone=public --add-port=8080/tcp
+  firewall-cmd --permanent --zone=public --add-port=9393/tcp
+  firewall-cmd --permanent --zone=public --add-port=3000/tcp
+  firewall-cmd --permanent --zone=public --add-port=9889/tcp
 
   #check out code
   su - vagrant -c 'git clone https://github.com/petergdoyle/estreaming.git'

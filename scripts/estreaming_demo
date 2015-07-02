@@ -17,11 +17,14 @@ https://apps.twitter.com/
 
 So for a lot of the client and server piece I will rely on node.js
 
+Node.js is to javascript, what the Java Virtual Machine (JRE) is to Java.
+
 I can easily create a Node.js based client app and a node-twitter wrapper api to do the boilerplate stuff to download some tweets for me.
 
 cd node/twitter/
 atom .
 node twitter_streaming_client "#java" 10 > tweets_with_java.json
+!delete the first line
 cat tweets_with_java.json | format-json-stream | less
 
 

@@ -146,7 +146,7 @@ Vagrant.configure(2) do |config|
   chkconfig mongod on
   systemctl status mongod
   mongo -version
-  su - vagrant -c 'mongo < /home/vagrant/estreaming/mongo/setup'
+  su - vagrant -c 'mongo < /home/vagrant/estreaming/mongo/setup.js'
 
   #install node.js and npm
   yum -y install epel-release gcc gcc-c++
@@ -187,6 +187,7 @@ Vagrant.configure(2) do |config|
   wget --no-check-certificate https://dl.orangedox.com/xCs7czovfGqWuOhBgm/crunchy-dark-grey.tar.gz
   tar -xvf crunchy-dark-grey.tar.gz
   mv crunchy-dark-grey /usr/share/themes
+  rm -f  crunchy-dark-grey.tar.gz
   #change to this theme using xfce4-appearance-settings
   startx
 

@@ -29,16 +29,16 @@ Vagrant.configure(2) do |config|
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # config.vm.network "forwarded_port", guest: 80, host: 8080
 
-  config.vm.network "forwarded_port", guest: 8080, host: 8080
+  config.vm.network "forwarded_port", guest: 61616, host: 61616, host_ip: "0.0.0.0", id: "activemq", auto_correct: true
   #spring xd runtime portal
-  config.vm.network "forwarded_port", guest: 9393, host: 9393
+  config.vm.network "forwarded_port", guest: 9393, host: 9393, host_ip: "0.0.0.0", id: "spring-xd-admin", auto_correct: true
   #streaming api server 
-  config.vm.network "forwarded_port", guest: 3000, host: 3000
+  config.vm.network "forwarded_port", guest: 3000, host: 3000, host_ip: "0.0.0.0", id: "streaming-api", auto_correct: true
   #analytics dashboard app
-  config.vm.network "forwarded_port", guest: 9889, host: 9889
+  config.vm.network "forwarded_port", guest: 9889, host: 9889, host_ip: "0.0.0.0", id: "spring-xd-analytics", auto_correct: true
   #allows an ssh connection to be forwarded through the host machine on 2222
   config.vm.network "forwarded_port", guest: 22, host: 2222, host_ip: "0.0.0.0", id: "ssh", auto_correct: true
-  #config.vm.network "forwarded_port", guest: 61616, host: 61616
+  #mongo db
   #config.vm.network "forwarded_port", guest: 27017, host: 27017
 
   # Create a private network, which allows host-only access to the machine
@@ -184,7 +184,7 @@ Vagrant.configure(2) do |config|
   yum -y groupinstall xfce
   yum -y install x2goserver-xsession
   yum -y install xfce4-terminal
-  wget --no-check-certificate https://dl.orangedox.com/xCs7czovfGqWuOhBgm/crunchy-dark-grey.tar.gz
+	wget -O crunchy-dark-grey.tar.gz https://dl.orangedox.com/xCs7czovfGqWuOhBgm/crunchy-dark-grey.tar.gz?dl=1
   tar -xvf crunchy-dark-grey.tar.gz
   mv crunchy-dark-grey /usr/share/themes
   rm -f  crunchy-dark-grey.tar.gz
@@ -222,6 +222,12 @@ Vagrant.configure(2) do |config|
 
   #a little more setup
   su - vagrant -c 'mvn -f /home/vagrant/estreaming/java/activemq-jms-sender/ clean install'
+
+  #open up the firewall
+  firewall-cmd --permanent --zone=public --add-port=3000/tcp
+  firewall-cmd --permanent --zone=public --add-port=9393/tcp
+  firewall-cmd --permanent --zone=public --add-port=9889/tcp
+  firewall-cmd --permanent --zone=public --add-port=61616/tcp
 
   SHELL
 end

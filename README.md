@@ -78,15 +78,19 @@ To connect from any ssh client:
 Locate the private key for that box (linux, for windows refer to http://stackoverflow.com/questions/9885108/ssh-to-vagrant-box-in-windows)
 
 ```sh
-$ vagrant ssh-config | grep IdentityFile  | awk '{print $2}'```
+$ vagrant ssh-config | grep IdentityFile  | awk '{print $2}'
+```
 
 
 Now you should have a running CentOS 7 Linux system with all the OS and estreaming components installed for you. Now you will be connect to the running system using X2Go.Once you have the location of the rsa private_key identified (mine happened to be $HOME/vagrant/estreaming/.vagrant/machines/default/virtualbox/private_key), connect to the the running virtual machine using X2Go. Add a new connection using the name "vagrant"and NO password but you must specify the location of the rsa private_key file you found with the previous command. As well under the window manager option, specify XFCE as the desktop manager. It will not work without these options. 
 
+
 As well, it is possible to use a regular ssh command to connect from the command line (on the host machine but we are going to open up a lot of terminals so that is not recommended)
 
 ```sh
-$ ssh -XC -c blowfish-cbc,arcfour -i $HOME/vagrant/estreaming/.vagrant/machines/default/virtualbox/private_key -l vagrant -p 2222 127.0.0.1```
+$ ssh -XC -c blowfish-cbc,arcfour -i $HOME/vagrant/estreaming/.vagrant/machines/default/virtualbox/private_key -l vagrant -p 2222 127.0.0.1
+```
+
 
 Now run the [demo](DEMO.md)
 

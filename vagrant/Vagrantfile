@@ -38,6 +38,8 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 9889, host: 9889, host_ip: "0.0.0.0", id: "spring-xd-analytics", auto_correct: true
   #allows an ssh connection to be forwarded through the host machine on 2222
   config.vm.network "forwarded_port", guest: 22, host: 2222, host_ip: "0.0.0.0", id: "ssh", auto_correct: true
+  #node proxy
+  config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "0.0.0.0", id: "node proxy", auto_correct: true
   #mongo db
   #config.vm.network "forwarded_port", guest: 27017, host: 27017
 
@@ -126,6 +128,8 @@ Vagrant.configure(2) do |config|
   alternatives --install /usr/bin/xd-singlenode xd-singlenode /opt/pivotal/spring-xd/xd/bin/xd-singlenode 99999
   rm spring-xd-1.1.2.RELEASE-1.noarch.rpm
   ln -s /home/vagrant/estreaming/groovy/airshop_csv_to_json_transform.groovy /opt/pivotal/spring-xd/xd/modules/processor/scripts/airshop_csv_to_json_transform.groovy
+  #important !! must allow the spring-ui app to be accessed via SPA apps or else cannot get around the CORS problems
+  sed -i "/#Port that admin-ui is listening on/a xd:\\n  ui:\\nallow_origin: \"*\"" /opt/pivotal/spring-xd/xd/config/servers.yml
 
   #install spring boot
   #install gvm first
@@ -184,29 +188,17 @@ Vagrant.configure(2) do |config|
   yum -y groupinstall xfce
   yum -y install x2goserver-xsession
   yum -y install xfce4-terminal
-	wget -O crunchy-dark-grey.tar.gz https://dl.orangedox.com/xCs7czovfGqWuOhBgm/crunchy-dark-grey.tar.gz?dl=1
+  wget -O crunchy-dark-grey.tar.gz https://dl.orangedox.com/xCs7czovfGqWuOhBgm/crunchy-dark-grey.tar.gz?dl=1
   tar -xvf crunchy-dark-grey.tar.gz
   mv crunchy-dark-grey /usr/share/themes
   rm -f  crunchy-dark-grey.tar.gz
-  #change to this theme using xfce4-appearance-settings
-  startx
 
   #install some helpful extras
   yum -y install firefox
   yum -y install htop
   yum -y install vim
   yum -y install gedit
-  #atom text editor
-  wget https://github.com/atom/atom/releases/download/v0.208.0/atom.x86_64.rpm
-  yum -y localinstall -y atom.x86_64.rpm
-  rm atom.x86_64.rpm
-  #sublime
-  wget http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3065_x64.tar.bz2
-  tar -vxjf sublime_text_3_build_3065_x64.tar.bz2 -C /opt
-  alternatives --install /usr/bin/sublime sublime /opt/sublime_text_3/sublime_text 99999
-  rm -f sublime_text_3_build_3065_x64.tar.bz2
-
-
+  yum -y install -y https://github.com/atom/atom/releases/download/v0.208.0/atom.x86_64.rpm
 
   #add aliases
   su - vagrant -c 'wget https://raw.githubusercontent.com/petergdoyle/estreaming/master/shell/aliases'
@@ -223,11 +215,12 @@ Vagrant.configure(2) do |config|
   #a little more setup
   su - vagrant -c 'mvn -f /home/vagrant/estreaming/java/activemq-jms-sender/ clean install'
 
-  #open up the firewall
+  #open up the firewall - NOTE these should be run on the host without --permanent perhaps to allow the host to portforward requests to the virtual machine
   firewall-cmd --permanent --zone=public --add-port=3000/tcp
   firewall-cmd --permanent --zone=public --add-port=9393/tcp
   firewall-cmd --permanent --zone=public --add-port=9889/tcp
   firewall-cmd --permanent --zone=public --add-port=61616/tcp
+  firewall-cmd --permanent --zone=public --add-port=8080/tcp
 
   SHELL
 end

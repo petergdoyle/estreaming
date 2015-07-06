@@ -1,0 +1,14 @@
+{
+  "name": "cors_proxy",
+  "version": "0.0.0",
+  "description": "a proxy to get around the cors probles with spring xd analytics demo",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"s\""
+  },
+  "author": "",
+  "dependencies": {
+    "http": "*",
+    "http-proxy": "*"
+  }
+}

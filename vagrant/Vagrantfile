@@ -205,15 +205,17 @@ Vagrant.configure(2) do |config|
   sed -i '/# User specific aliases and functions/a source ~/aliases' /home/vagrant/.bashrc
 
   #add some symlinks
-  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/config /home/vagrant/xd.config'
-  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd /home/vagrant/xd.home'
-  su - vagrant -c 'ln -s /tmp/xd/output/ /home/vagrant/xd.out'
-  su - vagrant -c 'ln -s /home/vagrant/estreaming/java/activemq-jms-sender/ /home/vagrant/xd.jms-sender'
-  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/modules/processor/scripts/ /home/vagrant/xd.scripts'
-  su - vagrant -c 'ln -s /home/vagrant/estreaming/node/ /home/vagrant/node'
+  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/config /home/vagrant/demo.xd-config'
+  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd /home/vagrant/demo.xd-home'
+  su - vagrant -c 'ln -s /tmp/xd/output/ /home/vagrant/demo.xd-out'
+  su - vagrant -c 'ln -s /home/vagrant/estreaming/java/activemq-jms-sender/ /home/vagrant/demo.jms-source'
+  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/modules/processor/scripts/ /home/vagrant/demo.xd-scripts'
+  su - vagrant -c 'ln -s /home/vagrant/estreaming/node/ /home/vagrant/demo.node'
+  su - vagrant -c 'ln -s /home/vagrant/estreaming/estreaming/analytics-dashboard/ /home/vagrant/demo.xd-analytics-dashboard/'
 
   #a little more setup
   su - vagrant -c 'mvn -f /home/vagrant/estreaming/java/activemq-jms-sender/ clean install'
+  su - vagrant -c 'cd /home/vagrant/estreaming/node/mongo_connect; npm install; cd /home/vagrant/estreaming/node/streaming_api_server; npm install;'
 
   #open up the firewall - NOTE these should be run on the host without --permanent perhaps to allow the host to portforward requests to the virtual machine
   firewall-cmd --permanent --zone=public --add-port=3000/tcp

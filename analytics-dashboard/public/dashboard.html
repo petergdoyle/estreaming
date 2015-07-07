@@ -63,7 +63,7 @@ body {
 <script src="js/aggcount.js"></script>
 <script src="js/bootstrap.js"></script>
 <script>
-  var baseUrl = "http://engine1:9393/metrics";
+  var baseUrl = "https://cleverfishsoftware.com/estreaming/xd/ui/metrics";
 
   var barchart = aggregateCountBarChart()
         .width(450)
@@ -111,6 +111,7 @@ body {
         d3.select("#bubbles")
             .datum(data)
             .call(bubblechart);
+	    .property("selected", function(d){ return d === 'Destination City'; })
       });
     }
     var bar = barmenu.property("value");

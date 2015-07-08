@@ -110,8 +110,7 @@ body {
         data.splice(500);
         d3.select("#bubbles")
             .datum(data)
-            .call(bubblechart);
-	    .property("selected", function(d){ return d === 'Destination City'; })
+            .call(bubblechart)
       });
     }
     var bar = barmenu.property("value");

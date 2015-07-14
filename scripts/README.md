@@ -154,4 +154,127 @@ So now back to he the Spring XD Shell terminal and we will create the new stream
 stream create --name airshop_stream --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | mongodb --databaseName=airshop --collectionName=results"
 ```
 
-Okay now open up another terminal and lets;
+Okay now open up another terminal and let's run a program that connects directly to the mongo capped collection that is now filling up with flight search data. For this we are going create a node.js program that connects to the database and creates a "tailable curser".
+
+``` console
+[vagrant@estreaming ~]$ cd demo.node/mongo_connect/
+[vagrant@estreaming mongo_connect]$ more streaming_client_mongojs.js
+```
+And the program should display
+``` javascript
+var mongojs = require('mongojs');
+var JSONStream = require('JSONStream');
+
+var url = 'mongodb://localhost:27017/airshop';
+
+var db = mongojs(url, ['results']);
+
+//create a cursor and use the console command
+var cursor = db.results.find({}, {}, {tailable:true, timeout:false});
+
+// since all cursors are streams we can just listen for data
+cursor.on('data', function(doc) {
+    console.log(doc);
+});
+
+```
+So let's run the node.js program. If for whatever reason you don't find a node_modules folder in the directory you will have to run a ```npm install``` command first and then the ```node streaming_client_mongojs.js``` command.
+
+``` console
+[vagrant@estreaming mongo_connect]$ node streaming_client_mongojs.js
+```
+
+And you should see the program catch up to the end of stream in the mongo collection and then start keeping time with the original jms-sender program. This program works fine but we want to be able to connet the streaming data using HTTP and be able to interact with it using a REST API. That is where the node.js server comes in. We will use express.js to build our routes and web server on top of the node.js runtime.
+
+Open up another console and go into the folder where the node server is located
+
+``` console
+[vagrant@estreaming ~]$ cd demo.node/streaming_api_server/
+[vagrant@estreaming ~]$ more routes/airshop.js
+```
+
+And you can see the server routing program that will allow us to interact with the data stream using a RESTful route mapping.
+
+``` javascript
+var express = require('express');
+var router = express.Router();
+var JSONStream = require('JSONStream');
+var http = require('http'), queryString = require('querystring');
+
+
+//mongojs stuff...
+var mongojs = require('mongojs');
+var url = 'mongodb://localhost:27017/airshop';
+var db = mongojs(url, ['results']);
+db.on('error',function(err) {
+    console.log('database error', err);
+});
+db.on('ready',function() {
+    console.log('database connected');
+});
+
+/* GET results starting at id specified ... */
+router.get('/results/frame/:frame', function(req, res, next) {
+    var frame = req.params.frame;
+    var fieldFilter = {};
+    var frameFilter = {};
+    frameFilter['_id'] = { $gte: mongojs.ObjectId(frame)};
+    res.setHeader('content-type', 'application/json');
+    res.connection.setTimeout(0);
+    db.results
+        .find(frameFilter,
+            fieldFilter,
+            {tailable:true, timeout:false})
+	    .pipe(JSONStream.stringify())
+	    .pipe(res);
+});
+
+
+/* GET results starting at id specified ...*/
+router.get('/results/', function(req, res, next) {
+
+    var frame = req.query.frame;
+    var fields = req.query.fields
+    console.log('url =',req.url)
+    console.log('frame=',frame);
+    console.log('fields=',fields);
+
+    var fieldFilter = {}; //
+    if (fields) {
+        fields.split(',').forEach(function(f) {
+            fieldFilter['flight.'.concat(f)] = 1;
+        });
+    }
+
+    var frameFilter = {};
+    if (frame) {
+        frameFilter['_id'] = { $gte: mongojs.ObjectId(frame)};
+    }
+
+    res.setHeader('content-type', 'application/json');
+    res.connection.setTimeout(0);
+    db.results
+        .find(frameFilter, fieldFilter,
+        {tailable:true, timeout:false})
+	    .pipe(JSONStream.stringify())
+	    .pipe(res);
+
+});
+
+```
+
+Okay now let's start the server. Again, if for some reason you don't find a node_modules folder you will have to run a ```npm install``` command first and then a ```npm start``` command
+
+``` console
+[vagrant@estreaming streaming_api_server]$ npm start
+
+> streaming_api_server@0.0.0 start /home/vagrant/estreaming/node/streaming_api_server
+> node ./bin/www
+
+````
+Okay we are done with the Streaming API Server. Now let's connect with a simple curl command and see if we can nnow stream the data over HTTP. The server is running on port 3000 on localhost. Find a free terminal and type the command to stream all the data in the mongo capped collection back through the console.
+
+``` console
+[vagrant@estreaming ~]$ curl http://localhost:3000/airshop/results
+```
+Now let's try something different. Let's start the stream at a different location other than the end. There is a little node.js program that will help us find a record identifier 1000 records from the end of what is currently in the mongo db collection. If you noticed when we ran the mongo client program the record identifiers are added by mongo as they are added to the cappdc colelction

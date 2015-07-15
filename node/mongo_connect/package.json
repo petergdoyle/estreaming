@@ -10,7 +10,6 @@
   "license": "BSD",
   "dependencies": {
     "mongodb": "*",
-    "mongoose": "*",
     "mongojs": "0.18.2",
     "JSONStream": "*"
   }

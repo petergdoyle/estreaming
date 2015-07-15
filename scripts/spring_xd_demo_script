@@ -52,18 +52,18 @@ Show the code
   curl http://localhost:3000/airshop/results?fields=price
 
 - ability to start at a specific location in the stream
-  find a record and get the _id by running the running the following command and you should see output similar to that shown. 
+  find a record and get the _id by running the running the following command and you should see output similar to that shown.
 [vagrant@localhost ~]$ mongo < ~/estreaming/mongo/find_frame_id.js
 MongoDB shell version: 3.0.4
 connecting to: test
 switched to db airshop
 { "_id" : ObjectId("5592dbebe4b060fa8707f13c") }
 bye
-now export that id 
+now export that id
 [vagrant@localhost ~]$ export FRAME_ID=5592dbebe4b060fa8707f13c
 
 now you connect to the stream and use the RESTful features of the API by starting from the frame location that was found (the 100th record in the capped collection):
-there are two syntaxes to get the same resultset 
+there are two syntaxes to get the same resultset
 [vagrant@localhost mongo]$ curl http://localhost:3000/airshop/results?frame=$FRAME_ID
 [vagrant@localhost mongo]$ curl http://localhost:3000/airshop/results/frame/$FRAME_ID
 
@@ -117,8 +117,8 @@ Start Spring Boot
 [vagrant@localhost ~]$ cd analytics-dashboard/
 [vagrant@localhost analytics-dashboard]$ spring run dashboard.groovy
 
-web browser 
-http://localhost:9889/dashboard.html 
+web browser
+http://localhost:9889/dashboard.html
 
 here is how far it can go...
 

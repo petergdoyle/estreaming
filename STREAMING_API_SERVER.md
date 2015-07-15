@@ -1,5 +1,5 @@
-Welcome To estreaming!
-======================
+Create the Streaming API Server!
+================================
 
 The goal of this project to build a server and a client capable producing and consuming a stream of data from virtually any data source.
 

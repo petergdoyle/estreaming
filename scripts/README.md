@@ -272,9 +272,48 @@ Okay now let's start the server. Again, if for some reason you don't find a node
 > node ./bin/www
 
 ````
-Okay we are done with the Streaming API Server. Now let's connect with a simple curl command and see if we can nnow stream the data over HTTP. The server is running on port 3000 on localhost. Find a free terminal and type the command to stream all the data in the mongo capped collection back through the console.
+Okay we are done with the Streaming API Server. Now let's connect with a simple curl command and see if we can now stream the data over HTTP. The server is running on port 3000 on localhost. Find a free terminal and type the command to stream all the data in the mongo capped collection back through the console.
 
 ``` console
 [vagrant@estreaming ~]$ curl http://localhost:3000/airshop/results
 ```
-Now let's try something different. Let's start the stream at a different location other than the end. There is a little node.js program that will help us find a record identifier 1000 records from the end of what is currently in the mongo db collection. If you noticed when we ran the mongo client program the record identifiers are added by mongo as they are added to the cappdc colelction
+Remember the data flowing into mongo from the stream source is continuous so every time I start to read from the the collection I am starting from the oldest record in the collection at that point in time and new records will be streamed as they are added once I catch up. That is why the flow of data seems quicker at first. But remember the collection is capped, so that last record changes continuously to maintain the size of the bounded collection where the older records are continuously sluffed off. But what if the connection to the streaming server got disconnected? We would lose data in between the time that we detected the disconnection and the time we reconnected. This is where the idea of a stream "rewind" comes in. We can do this using mongo because you will notice that mongo adds a unique id to the records being inserted into the collection. You will also notice that these are numeric and increment. So that means we could keep track of the last record we read and should we become disconnected, we could restart the stream, not from the oldest record in the collection, but from the position or "frame" that came after that last record we read.
+
+To demonstrate this we can use a small mongo console script to find the record that is (arbitrarily) 100th position from the end. We can then use the id returned to provide the Streaming API the "frame id" of that record as a starting place to start the stream. Take a look at the program.
+
+``` console
+[vagrant@estreaming ~]$ more ~/estreaming/mongo/find_frame_id.js
+```
+It is a very simple query to simply find the *current* record 100th from the end. Remember, though that by the time we get to use it, it will likely be closer to the end as records off the end are continously pushed out of the collection to keep the bounds of the cappec collection we set.
+``` javascript
+use airshop
+db.results.find({},{_id:1}).skip(100).limit(1).pretty()
+```
+We can then use the output as the id we need to start the stream. When I run the script I get the following output
+``` console
+[vagrant@localhost ~]$ mongo < ~/estreaming/mongo/find_frame_id.js
+MongoDB shell version: 3.0.4
+connecting to: test
+switched to db airshop
+{ "_id" : ObjectId("5592dbebe4b060fa8707f13c") }
+bye
+```
+So now I can use that id as a parameter to our Streaming REST API. Remember the routes in the server application we talked about before? There is one (two actually) in there that takes a frame parameter, so we will use that. So lets export that frame as FRAME_ID.
+``` console
+[vagrant@localhost ~]$ export FRAME_ID=5592dbebe4b060fa8707f13c
+```
+Now I can connect to the stream and use the RESTful features of the API and start streaming after the record in stream matching that frame id. Note there are two syntaxes that both are interpreted by our express.js routes as the same thing. Run either command below and you will start your streaming again, but now from a position in the stream where the frame id is greater than (the next one) that we specify.
+``` console
+[vagrant@estreaming ~]$ curl http://localhost:3000/airshop/results?frame=$FRAME_ID
+[vagrant@estreaming ~]$ curl http://localhost:3000/airshop/results/frame/$FRAME_ID
+```
+Another feature of the simple API I built are to specify only certain fields on the streamed result. This is one way to reduce the amount of data coming back to the client. This can be done by simple specifying thee fields as a comma separated list of the field names you see in the JSON document on any of the results. We can use the curl command to do this as well, we just append another parm to the url.
+``` console
+[vagrant@estreaming ~]$ curl http://localhost:3000/airshop/results?fields=price
+```
+The curl command is a bit odd if you want to specify more than one HTTP query parameter. For multiple parameters you must use a litte different syntax. The following example provides both the frame id and the field mask.
+``` console
+[vagrant@estreaming ~]$curl -v -L -G -d "frame=$FRAME_ID&fields=airlineNm,price,fltType" http://localhost:3000/airshop/results
+```
+
+**And that's it for the Streaming API! **

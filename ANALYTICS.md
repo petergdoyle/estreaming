@@ -5,7 +5,7 @@ Okay now let's do a basic visualization of the data we are streaming. This won't
 
 For this we need to create some "taps" off our main airshop_stream we created previously (see [STREAMING_API_SERVER.md](STREAMING_API_SERVER.md)). A "tap" is an apt term as we are not going to create new streams as much as we are going to modify the existing one(s) without disturbing any of the flow, all we do is take a "tap" off airshop_stream. Spring XD makes this quite easy and again we build a new stream. **And the best part is we do all this at runtime in real time**. We don't have to redefine or restart anything.
 
-So, lets create a tap that takes the transformed (CSV to JSON) airshop_stream and creates a new counter that Spring XD will keep track of for the Flight Type. If you look at the JSON streaming in on of the consoles we used to create the Streaming API Server, you will see a field named fltType that is scoped by the flight object. So all we do is specify the field  and the type of Spring XD built-in counter 'field-value-counter' and deploy it.
+So, lets create a tap that takes the transformed (CSV to JSON) airshop_stream and creates a new counter that Spring XD will keep track of for the Flight Type. If you look at the JSON streaming in on of the consoles we used to create the Streaming API Server, you will see a field named fltType that is scoped by the flight object. So all we do is specify the field  and the type of Spring XD built-in counter 'field-value-counter' and deploy it. So get back to the Spring XD Shell terminal and enter the following "tap" stream definitions. 
 
 ``` console
 stream create airshop_stream_flight_type_tap  --definition "tap:stream:airshop_stream.transform > field-value-counter --fieldName=flight.fltType --name='Flight Type'" --deploy
@@ -36,10 +36,12 @@ For this, again open up a terminal and navigate to the demo.xd-analytics locatio
 ```
 
 And now open up a web browser to this location
-http://localhost:9889/dashboard.html
+[http://localhost:9889/dashboard.html](http://localhost:9889/dashboard.html)
 
 And you should see something that looks like this:
-![spring-xd-shell](img/spring-xd-shell.png)
+![spring-xd-shell](img/spring_xd_analytics_dashboard.png)
+
+Hit the dropdowns to get a feel for what the data "looks like".
 
 here is how far it can go...
 

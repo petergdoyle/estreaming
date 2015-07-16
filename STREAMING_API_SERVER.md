@@ -18,7 +18,7 @@ Spring XD provides us with a very straightforward, and powerful runtime system t
 
 You should see Spring XD start up
 
-![spring-xd-singlenode-startup](spring-xd-singlenode-startup.png)
+![spring-xd-singlenode-startup](img/spring-xd-singlenode-startup.png)
 
 Give it a minute or so to get fully enabled and you should see something like:
 
@@ -32,7 +32,7 @@ Now open another tab on that terminal and type:
 
 You should see the Spring XD shell (client) start up
 
-![spring-xd-shell](spring-xd-shell.png)
+![spring-xd-shell](img/spring-xd-shell.png)
 
 
 **So let's create our first data stream with Spring XD!** In order to do that we need to create a data source. Spring XD provides us with a variety of connectors to use as a source. For a full list refer to the documentation [here](http://docs.spring.io/spring-xd/docs/current/reference/html/#sources). For our demo we are going to create a JMS data source. In order to do that we need to create a JMS Message Broker and a JMS Message Producer.
@@ -57,7 +57,7 @@ There is a java program that will start up a single-node instance of ActiveMQ JM
 
 Now you should see a single-node instance of ActiveMQ start up and initialize itself.
 
-![activemq-startup](activemq-startup.png)
+![activemq-startup](img/activemq-startup.png)
 
 Now we need to start creating a steady stream of messages to be pushed into the messaging queue (managed by the Broker). There is another java program that will create pseudo-random airline search results for us. Since the data being generated represents shopping results for air travel, the queue name will be named 'airshop'. So let's start that up and start messages flowing by running the script to do that:
 
@@ -68,7 +68,7 @@ Now we need to start creating a steady stream of messages to be pushed into the 
 
 You will have to answer a couple of questions that the script needs to provide to the progam. For now, just respond with "1" and "airshop":
 
-![run-message-sender](run-message-sender.png)
+![run-message-sender](img/run-message-sender.png)
 
 Hit return, and you should start seeing data rolling on the console that represents our holiday flight search results.
 

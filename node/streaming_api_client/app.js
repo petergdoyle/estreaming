@@ -1,10 +1,13 @@
 var http = require('http');
  
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+//curl http://localhost:3000/airshop/results
+
 var options = {
-  host: 'cleverfishsoftware.com',
-  port: 443,
-  path: '/estreaming/streams/airshop/results',
+  host: 'localhost',
+  port: 3000,
+  path: '/airshop/results',
   followAllRedirects: true
 };
 

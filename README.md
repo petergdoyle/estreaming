@@ -14,7 +14,8 @@ This project uses a number of open source projects stacked together:
 * [Apache Storm](https://storm.apache.org/)  Apache Storm is a free and open source distributed realtime computation system. Storm makes it easy to reliably process unbounded streams of data, doing for realtime processing what Hadoop did for batch processing. Storm is simple, can be used with any programming language, and is a lot of fun too! Storm can be used to build aggregate data streams where a consumer may not be able to digest the entire firehose stream because of it's volume and velocity. It can be used for the same purpose to feed Hadoop by dramatically reducing the size of the dataset to be stored in HDFS. Storm has many use cases: realtime analytics, online machine learning, continuous computation, distributed RPC, ETL, and more. Storm is fast: a benchmark clocked it at over a million tuples processed per second per node. It is scalable, fault-tolerant, guarantees your data will be processed, and is easy to set up and operate.
 
 
-Things are divided up:
+Documentation is divided up into these sections:
+
 1. Set up the virtual machine using VirtualBox and Vagrant [Installation](INSTALLATION.md)
 2. Up and Running the [Streaming API Server](STREAMING_API_SERVER.md) using Spring XD, Mongo, and Node.js
 2. Up and Running the [Streaming API Client](STREAMING_API_CLIENT.md) using Node.js

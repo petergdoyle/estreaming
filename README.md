@@ -13,6 +13,10 @@ Documentation is divided up into these sections:
 3. Building an Aggregate Stream using [Storm and Kafka](STORM_AND_KAFKA.md)
 
 
+What we will end up building intially will look like this:
+![img/streaming_runtime_end_to_end](img/streaming_runtime_end_to_end.PNG)
+
+
 This project uses a number of open source projects stacked together:
 
 * [Spring XD](http://projects.spring.io/spring-xd/) - Spring XD is a unified, distributed, and extensible system for data ingestion, real time analytics, batch processing, and data export.It is rich with features to create powerful data streams using a unix pipeline metaphor [reference](http://docs.spring.io/spring-xd/docs/1.2.0.RELEASE/reference/html/). It builds on top of mature, powerful and venerable Spring projects (Spring Data, Spring IO, Spring Data, Spring Batch, Spring Security, and Spring Boot)

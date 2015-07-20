@@ -14,8 +14,10 @@ Documentation is divided up into these sections:
 
 
 What we will end up building intially will look like this:
-![img/streaming_runtime_end_to_end](img/streaming_runtime_end_to_end.PNG)
+![streaming_runtime_end_to_end](img/streaming_runtime_end_to_end.PNG)
 
+Eventually we will build out the topology to do data reduction and aggregation using Apache Storm and Kafka:
+![img/future_topology_with_storm_and_kafka](img/future_topology_with_storm_and_kafka.PNG)
 
 This project uses a number of open source projects stacked together:
 

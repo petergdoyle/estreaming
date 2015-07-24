@@ -22,7 +22,7 @@ You should see a file there called Vagrantfile. That has the details of how the 
 
 Pull a "base" box with this command.
 ```sh
-$ vagrant box add https://github.com/holms/vagrant-centos7-box/releases/download/7.1.1503.001/CentOS-7.1.1503-x86_64-netboot.box -- name  CentOS-7.1.1503-x86_64
+$ vagrant box add https://github.com/holms/vagrant-centos7-box/releases/download/7.1.1503.001/CentOS-7.1.1503-x86_64-netboot.box --name  CentOS-7.1.1503-x86_64
 ```
 Install the CentOS 7 fix
 ```sh

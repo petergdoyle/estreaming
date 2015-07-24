@@ -1,0 +1,28 @@
+
+stream create --name jmstest --definition "jms --destination=airshop |file" --deploy
+
+stream create --name jmstest_with_transform --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | fi
+le" --deploy
+
+stream create --name jms_payload_test --definition "jms --destination=airshop |transform --expression='[INFO] '+payload |file" --deploy
+
+
+
+
+stream create --name airshop_stream --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | mongodb --
+databaseName=airshop --collectionName=results" --deploy
+
+
+
+
+stream create airshop_stream_flight_type_tap  --definition "tap:stream:airshop_stream.transform > field-value-counter --fieldName=flight.fltType --name='Flight Type'" --deploy
+
+stream create airshop_stream_flight_destination_city_count_tap --definition "tap:stream:airshop_stream.transform > field-value-counter --fieldName=flight.airportCityArr --name='Destination City'" --deploy
+
+stream create airshop_stream_flight_departure_city_count_tap --definition "tap:stream:airshop_stream.transform > field-value-counter --fieldName=flight.airportCityDpt --name='Departure City'" --deploy
+
+
+
+stream create --name tap_airshop_stream_to_kafka --definition "tap:stream:airshop_stream.transform > kafka --topic=airshopTopic" --deploy
+
+stream create --name jms_payload_test --definition "jms --destination=airshop |transform --expression='[INFO] '+payload |file" --deploy

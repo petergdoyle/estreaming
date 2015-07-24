@@ -129,7 +129,7 @@ Vagrant.configure(2) do |config|
   rm spring-xd-1.1.2.RELEASE-1.noarch.rpm
   ln -s /home/vagrant/estreaming/groovy/airshop_csv_to_json_transform.groovy /opt/pivotal/spring-xd/xd/modules/processor/scripts/airshop_csv_to_json_transform.groovy
   #important !! must allow the spring-ui app to be accessed via SPA apps or else cannot get around the CORS problems
-  sed -i "/#Port that admin-ui is listening on/a xd:\\n  ui:\\nallow_origin: \"*\"" /opt/pivotal/spring-xd/xd/config/servers.yml
+  sed -i "/#Port that admin-ui is listening on/a xd:\\n  ui:\\n    allow_origin: \"*\"" /opt/pivotal/spring-xd/xd/config/servers.yml
 
   #install spring boot
   #install gvm first
@@ -222,6 +222,8 @@ Vagrant.configure(2) do |config|
   firewall-cmd --permanent --zone=public --add-port=9889/tcp
   firewall-cmd --permanent --zone=public --add-port=61616/tcp
   firewall-cmd --permanent --zone=public --add-port=8080/tcp
+
+  hostnamectl set-hostname estreaming.vbx
 
   SHELL
 end

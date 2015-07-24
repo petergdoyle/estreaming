@@ -151,23 +151,23 @@ bye
 So now back to he the Spring XD Shell terminal and we will create the new stream that will take the JMS CSV flight search data and tranform it into JSON and move it into our capped Mongo db collection.
 
 ``` bash
-stream create --name airshop_stream --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | Mongodb --databaseName=airshop --collectionName=results"
+stream create --name airshop_stream --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | mongodb --databaseName=airshop --collectionName=results"
 ```
 
 Okay now open up another terminal and let's run a program that connects directly to the Mongo capped collection that is now filling up with flight search data. For this we are going create a node.js program that connects to the database and creates a "tailable curser".
 
 ``` console
-[vagrant@estreaming ~]$ cd demo.node/Mongo_connect/
-[vagrant@estreaming Mongo_connect]$ more streaming_client_Mongojs.js
+[vagrant@estreaming ~]$ cd demo.node/mongo_connect/
+[vagrant@estreaming mongo_connect]$ more streaming_client_mongojs.js
 ```
 And the program should display
 ``` javascript
-var Mongojs = require('Mongojs');
+var mongojs = require('mongojs');
 var JSONStream = require('JSONStream');
 
-var url = 'Mongodb://localhost:27017/airshop';
+var url = 'mongodb://localhost:27017/airshop';
 
-var db = Mongojs(url, ['results']);
+var db = mongojs(url, ['results']);
 
 //create a cursor and use the console command
 var cursor = db.results.find({}, {}, {tailable:true, timeout:false});
@@ -178,10 +178,10 @@ cursor.on('data', function(doc) {
 });
 
 ```
-So let's run the node.js program. If for whatever reason you don't find a node_modules folder in the directory you will have to run a ```npm install``` command first and then the ```node streaming_client_Mongojs.js``` command.
+So let's run the node.js program. If for whatever reason you don't find a node_modules folder in the directory you will have to run a ```npm install``` command first and then the ```node streaming_client_mongojs.js``` command.
 
 ``` console
-[vagrant@estreaming Mongo_connect]$ node streaming_client_Mongojs.js
+[vagrant@estreaming mongo_connect]$ node streaming_client_mongojs.js
 ```
 
 And you should see the program catch up to the end of stream in the Mongo collection and then start keeping time with the original jms-sender program. This program works fine but we want to be able to connet the streaming data using HTTP and be able to interact with it using a REST API. That is where the node.js server comes in. We will use express.js to build our routes and web server on top of the node.js runtime.
@@ -202,10 +202,10 @@ var JSONStream = require('JSONStream');
 var http = require('http'), queryString = require('querystring');
 
 
-//Mongojs stuff...
-var Mongojs = require('Mongojs');
-var url = 'Mongodb://localhost:27017/airshop';
-var db = Mongojs(url, ['results']);
+//mongojs stuff...
+var mongojs = require('mongojs');
+var url = 'mongodb://localhost:27017/airshop';
+var db = mongojs(url, ['results']);
 db.on('error',function(err) {
     console.log('database error', err);
 });
@@ -218,7 +218,7 @@ router.get('/results/frame/:frame', function(req, res, next) {
     var frame = req.params.frame;
     var fieldFilter = {};
     var frameFilter = {};
-    frameFilter['_id'] = { $gte: Mongojs.ObjectId(frame)};
+    frameFilter['_id'] = { $gte: mongojs.ObjectId(frame)};
     res.setHeader('content-type', 'application/json');
     res.connection.setTimeout(0);
     db.results
@@ -248,7 +248,7 @@ router.get('/results/', function(req, res, next) {
 
     var frameFilter = {};
     if (frame) {
-        frameFilter['_id'] = { $gte: Mongojs.ObjectId(frame)};
+        frameFilter['_id'] = { $gte: mongojs.ObjectId(frame)};
     }
 
     res.setHeader('content-type', 'application/json');
@@ -282,7 +282,7 @@ Remember the data flowing into Mongo from the stream source is continuous so eve
 To demonstrate this we can use a small Mongo console script to find the record that is (arbitrarily) 100th position from the end. We can then use the id returned to provide the Streaming API the "frame id" of that record as a starting place to start the stream. Take a look at the program.
 
 ``` console
-[vagrant@estreaming ~]$ more ~/estreaming/Mongo/find_frame_id.js
+[vagrant@estreaming ~]$ more ~/estreaming/mongo/find_frame_id.js
 ```
 It is a very simple query to simply find the *current* record 100th from the end. Remember, though that by the time we get to use it, it will likely be closer to the end as records off the end are continuously pushed out of the collection to keep the bounds of the capped collection we set.
 ``` javascript
@@ -291,7 +291,7 @@ db.results.find({},{_id:1}).skip(100).limit(1).pretty()
 ```
 We can then use the output as the id we need to start the stream. When I run the script I get the following output
 ``` console
-[vagrant@localhost ~]$ Mongo < ~/estreaming/Mongo/find_frame_id.js
+[vagrant@estreaming ~]$ mongo < ~/estreaming/mongo/find_frame_id.js
 MongoDB shell version: 3.0.4
 connecting to: test
 switched to db airshop
@@ -300,7 +300,7 @@ bye
 ```
 So now I can use that id as a parameter to our Streaming REST API. Remember the routes in the server application we talked about before? There is one (two actually) in there that takes a frame parameter, so we will use that. So let's export that frame as FRAME_ID.
 ``` console
-[vagrant@localhost ~]$ export FRAME_ID=5592dbebe4b060fa8707f13c
+[vagrant@estreaming ~]$ export FRAME_ID=5592dbebe4b060fa8707f13c
 ```
 Now I can connect to the stream and use the RESTful features of the API and start streaming after the record in stream matching that frame id. Note there are two syntaxes that both are interpreted by our express.js routes as the same thing. Run either command below and you will start your streaming again, but now from a position in the stream where the frame id is greater than (the next one) that we specify.
 ``` console

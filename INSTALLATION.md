@@ -12,10 +12,16 @@
 
 **Create a VirtualBox VM**
 
-Whereever you cloned your git repo, move to that directory ($ESTREAMING_REPO_HOME) and then get into the following location:
+For those on Windows, I will only include the instructions in bash (linux), so please install Git Bash  and then we will all be talking bash. I have idea how/if this works on Cygwin.
 
 ```sh
-$ cd $ESTREAMING_REPO_HOME/vagrant/estreaming
+$ git clone [https://github.com/petergdoyle/estreaming.git] estreaming
+```
+
+Wherever you cloned your git repo, move to that directory ($ESTREAMING_REPO_HOME) and then get into the following location:
+
+```sh
+$ cd $ESTREAMING_REPO_HOME
 ```
 
 You should see a file there called Vagrantfile. That has the details of how the new virtualbox box will be provisioned. **Please note** that the default machine spec is set to 2 vcpus and 2048 Mb memory allocation. This is the minimum acceptable vitural machine spec require to run the demo, so that may or may not work depending on the capabilities of the hardware of the host machine.
@@ -27,15 +33,6 @@ $ vagrant box add https://github.com/holms/vagrant-centos7-box/releases/download
 Install the CentOS 7 fix
 ```sh
 $ vagrant plugin install vagrant-centos7_fix
-```
-Once you have the Pre-reqs installed find a folder on your local drive and clone the estreaming repo. For those on Windows, I will only include the instructions in bash (linux), so please install Git Bash  and then we will all be talking bash. I have idea how/if this works on Cygwin.
-
-```sh
-$ git clone [https://github.com/petergdoyle/estreaming.git] estreaming
-```
-Now move into the folder wher the Vagrantfile is located
-```sh
-$ cd estreaming/vagrant
 ```
 
 Start the box and you should see a bunch of update and intallation messages on the console. This may take a few minutes but run the command:
@@ -75,7 +72,7 @@ Now you should have a running CentOS 7 Linux system with all the OS and estreami
 As well, it is possible to use a regular ssh command to connect from the command line (on the host machine but we are going to open up a lot of terminals so that is not recommended)
 
 ```sh
-$ ssh -XC -c blowfish-cbc,arcfour -i $HOME/vagrant/estreaming/.vagrant/machines/default/virtualbox/private_key -l vagrant -p 2222 127.0.0.1
+$ ssh -i $ESTREAMING_REPO_HOME/estreaming/.vagrant/machines/default/virtualbox/private_key -l vagrant -p 2222 127.0.0.1
 ```
 
 

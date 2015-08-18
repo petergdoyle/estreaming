@@ -192,7 +192,7 @@ Vagrant.configure(2) do |config|
 
   su - vagrant -c 'ln -s /vagrant/java/activemq-jms-sender/ /home/vagrant/demo.jms-source'
   su - vagrant -c 'ln -s /vagrant/node/ /home/vagrant/demo.node'
-  su - vagrant -c 'ln -s /vagrant/estreaming/analytics-dashboard/ /home/vagrant/demo.xd-analytics-dashboard/'
+  su - vagrant -c 'ln -s /vagrant/analytics-dashboard/ /home/vagrant/demo.xd-analytics-dashboard'
 
   #a little more setup
   su - vagrant -c 'mvn -f /vagrant/java/activemq-jms-sender/ clean install'

@@ -1,6 +1,7 @@
+
+alias xd-singlnode='sudo xd-singlenode'
 alias startactivemq='/usr/activemq/default/bin/activemq console'
 alias startspringxd='sudo /opt/pivotal/spring-xd/xd/bin/xd-singlenode'
-alias startcmaptools='nohup /home/peter.doyle/apps/cmaptools/CmapTools &'
 alias xdtaillog='tail -f xd.home/logs/singlenode.log'
 alias startkafkazookeeper='/usr/kafka/default/bin/zookeeper-server-start.sh ~/apps/kafka/default/config/zookeeper.properties'
 alias startkafka='/usr/kafka/default/bin/kafka-server-start.sh ~/apps/kafka/default/config/server.properties'

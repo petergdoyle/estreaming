@@ -1,0 +1,4 @@
+.vagrant
+activemq-data
+target
+node_modules

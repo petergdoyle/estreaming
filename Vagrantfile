@@ -17,7 +17,7 @@ Vagrant.configure(2) do |config|
   # YOU NEED TO ADD A BOX THAT WILL BE NAMED AND REFERENCED BELOW !!!
   # vagrant box add https://github.com/holms/vagrant-centos7-box/releases/download/7.1.1503.001/CentOS-7.1.1503-x86_64-netboot.box --name CentOS-7.1.1503-x86_64
   #
-  config.vm.box = "CentOS-7.1.1503-x86_64"
+  config.vm.box = "CentOS-7-x86_64-MIN"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -103,54 +103,52 @@ Vagrant.configure(2) do |config|
   #sudo echo "proxy=http://host.com:port/" >> /etc/yum.conf
   #sed -i "/# System wide functions and aliases/a export HTTP_PROXY=$HTTP_PROXY\\nexport HTTPS_PROXY=$HTTP_PROXY\\nexport http_proxy=$HTTP_PROXY\\nexport https_proxy=$HTTP_PROXY" /etc/bashrc
 
-  #check out code
-  su - vagrant -c 'git clone https://github.com/petergdoyle/estreaming.git'
-
   #make sure the distro is up to date
   yum update -y
+
+  #install some helpful extras
+  yum -y install htop net-tools vim unzip
 
   #make sure virtualbox guest-additions are up to date
   service vboxdrv setup
 
   #install oracle jdk 7
-  wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/c60903823a21847ee5c6/raw/6b1fffe26cc6efc8f1f718b190292ca578e8f0f2/equip_centos7_java7_64.sh && bash equip_centos7_java7_64.sh
-
+  #wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/c60903823a21847ee5c6/raw/6b1fffe26cc6efc8f1f718b190292ca578e8f0f2/equip_centos7_java7_64.sh && bash equip_centos7_java7_64.sh
+  curl --insecure https://gist.githubusercontent.com/petergdoyle/c60903823a21847ee5c6/raw/6b1fffe26cc6efc8f1f718b190292ca578e8f0f2/equip_centos7_java7_64.sh | bash
   #install maven
-  wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/42a988fbb07ad0e7ca99/raw/b39ed2274650bdc8f7158d5545a230e658c58929/equip_centos7_maven3_64.sh && bash equip_centos7_maven3_64.sh
+  #wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/42a988fbb07ad0e7ca99/raw/b39ed2274650bdc8f7158d5545a230e658c58929/equip_centos7_maven3_64.sh && bash equip_centos7_maven3_64.sh
+  curl --insecure https://gist.githubusercontent.com/petergdoyle/42a988fbb07ad0e7ca99/raw/b39ed2274650bdc8f7158d5545a230e658c58929/equip_centos7_maven3_64.sh | bash
 
   #install spring xd
   #wget -q -O - packages.pivotal.io | sh  #http://blog.pivotal.io/pivotal/products/easy-pivotal-app-installs-rpm-deb-msi-brew-chef-puppet-and-more
   #yum install spring-xd
-  wget https://repo.spring.io/libs-release-local/org/springframework/xd/spring-xd/1.1.2.RELEASE/spring-xd-1.1.2.RELEASE-1.noarch.rpm
+  curl --insecure -O https://repo.spring.io/libs-release-local/org/springframework/xd/spring-xd/1.1.2.RELEASE/spring-xd-1.1.2.RELEASE-1.noarch.rpm
   yum -y localinstall spring-xd-1.1.2.RELEASE-1.noarch.rpm
   alternatives --install /usr/bin/xd-admin xd-admin /opt/pivotal/spring-xd/xd/bin/xd-admin 99999
   alternatives --install /usr/bin/xd-container xd-container /opt/pivotal/spring-xd/xd/bin/xd-container 99999
   alternatives --install /usr/bin/xd-singlenode xd-singlenode /opt/pivotal/spring-xd/xd/bin/xd-singlenode 99999
-  rm spring-xd-1.1.2.RELEASE-1.noarch.rpm
-  ln -s /home/vagrant/estreaming/groovy/airshop_csv_to_json_transform.groovy /opt/pivotal/spring-xd/xd/modules/processor/scripts/airshop_csv_to_json_transform.groovy
+  ln -s /vagrant/groovy/airshop_csv_to_json_transform.groovy /opt/pivotal/spring-xd/xd/modules/processor/scripts/airshop_csv_to_json_transform.groovy
   #important !! must allow the spring-ui app to be accessed via SPA apps or else cannot get around the CORS problems
-  sed -i "/#Port that admin-ui is listening on/a xd:\\n  ui:\\n    allow_origin: \"*\"" /opt/pivotal/spring-xd/xd/config/servers.yml
+  sed -i "/#Port that admin-ui is listening on/a xd:\\n  ui:\\n    allow_origin: \\"*\\"" /opt/pivotal/spring-xd/xd/config/servers.yml
+  rm spring-xd-1.1.2.RELEASE-1.noarch.rpm
 
   #install spring boot
   #install gvm first
-  yum -y install unzip
   su - vagrant -c 'curl -s get.gvmtool.net | bash'
   su - vagrant -c 'source "/home/vagrant/.gvm/bin/gvm-init.sh"'
   printf "gvm_auto_answer=true\ngvm_auto_selfupdate=true\n" > /home/vagrant/.gvm/etc/config
   su - vagrant -c 'gvm install springboot'
-  #su - vagrant -c 'gvm install groovy'     #optional
-  #su - vagrant -c 'gvm install grails'     #optional
   su - vagrant -c 'spring --version'
 
   #install mongodb and start it and enable it at startup
-  wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/7451a7f694b20df709cc/raw/b01b001478b40fc52f333b0ff9f9cb7ac2a25ac7/mongodb.repo
+  curl -O --insecure https://gist.githubusercontent.com/petergdoyle/7451a7f694b20df709cc/raw/b01b001478b40fc52f333b0ff9f9cb7ac2a25ac7/mongodb.repo
   mv mongodb.repo /etc/yum.repos.d/
   yum -y install mongodb-org mongodb-org-server
   systemctl start mongod
   chkconfig mongod on
   systemctl status mongod
   mongo -version
-  su - vagrant -c 'mongo < /home/vagrant/estreaming/mongo/setup.js'
+  su - vagrant -c 'mongo < /vagrant/mongo/setup.js'
 
   #install node.js and npm
   yum -y install epel-release gcc gcc-c++
@@ -165,7 +163,7 @@ Vagrant.configure(2) do |config|
   npm install format-json-stream -g
 
   #install storm
-  wget http://mirror.nexcess.net/apache/storm/apache-storm-0.9.5/apache-storm-0.9.5.tar.gz
+  curl -O http://mirror.nexcess.net/apache/storm/apache-storm-0.9.5/apache-storm-0.9.5.tar.gz
   tar -xvf apache-storm-0.9.5.tar.gz
   mkdir -p /home/vagrant/storm
   mv apache-storm-0.9.5 /home/vagrant/storm
@@ -174,7 +172,7 @@ Vagrant.configure(2) do |config|
   rm -f apache-storm-0.9.5.tar.gz
 
   #install kafka
-  wget --no-check-certificate http://apache.claz.org/kafka/0.8.2.1/kafka_2.9.1-0.8.2.1.tgz
+  curl -O --insecure http://apache.claz.org/kafka/0.8.2.1/kafka_2.9.1-0.8.2.1.tgz
   tar -xvf kafka_2.9.1-0.8.2.1.tgz
   mkdir -p /home/vagrant/kafka
   mv kafka_2.9.1-0.8.2.1 /home/vagrant/kafka
@@ -182,46 +180,23 @@ Vagrant.configure(2) do |config|
   chown -R vagrant:vagrant /home/vagrant/kafka
   rm -f kafka_2.9.1-0.8.2.1.tgz
 
-  #install X and xfce desktop Optional
-  yum -y groupinstall "X Window System"
-  yum -y groupinstall xfce
-  yum -y install x2goserver-xsession
-  yum -y install xfce4-terminal
-  wget -O crunchy-dark-grey.tar.gz https://dl.orangedox.com/xCs7czovfGqWuOhBgm/crunchy-dark-grey.tar.gz?dl=1
-  tar -xvf crunchy-dark-grey.tar.gz
-  mv crunchy-dark-grey /usr/share/themes
-  rm -f  crunchy-dark-grey.tar.gz
-
-  #install some helpful extras
-  yum -y install firefox
-  yum -y install htop
-  yum -y install vim
-  yum -y install gedit
-  yum -y install -y https://github.com/atom/atom/releases/download/v0.208.0/atom.x86_64.rpm
-
   #add aliases
-  su - vagrant -c 'wget https://raw.githubusercontent.com/petergdoyle/estreaming/master/shell/aliases'
-  sed -i '/# User specific aliases and functions/a source ~/aliases' /home/vagrant/.bashrc
+  su - vagrant -c 'curl -o .aliases https://raw.githubusercontent.com/petergdoyle/estreaming/master/shell/aliases'
+  sed -i '/# User specific aliases and functions/a source ~/.aliases' /home/vagrant/.bashrc
 
   #add some symlinks
   su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/config /home/vagrant/demo.xd-config'
   su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd /home/vagrant/demo.xd-home'
   su - vagrant -c 'ln -s /tmp/xd/output/ /home/vagrant/demo.xd-out'
-  su - vagrant -c 'ln -s /home/vagrant/estreaming/java/activemq-jms-sender/ /home/vagrant/demo.jms-source'
   su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/modules/processor/scripts/ /home/vagrant/demo.xd-scripts'
-  su - vagrant -c 'ln -s /home/vagrant/estreaming/node/ /home/vagrant/demo.node'
-  su - vagrant -c 'ln -s /home/vagrant/estreaming/estreaming/analytics-dashboard/ /home/vagrant/demo.xd-analytics-dashboard/'
+
+  su - vagrant -c 'ln -s /vagrant/java/activemq-jms-sender/ /home/vagrant/demo.jms-source'
+  su - vagrant -c 'ln -s /vagrant/node/ /home/vagrant/demo.node'
+  su - vagrant -c 'ln -s /vagrant/estreaming/analytics-dashboard/ /home/vagrant/demo.xd-analytics-dashboard/'
 
   #a little more setup
-  su - vagrant -c 'mvn -f /home/vagrant/estreaming/java/activemq-jms-sender/ clean install'
-  su - vagrant -c 'cd /home/vagrant/estreaming/node/mongo_connect; npm install; cd /home/vagrant/estreaming/node/streaming_api_server; npm install;'
-
-  #open up the firewall - NOTE these should be run on the host without --permanent perhaps to allow the host to portforward requests to the virtual machine
-  firewall-cmd --permanent --zone=public --add-port=3000/tcp
-  firewall-cmd --permanent --zone=public --add-port=9393/tcp
-  firewall-cmd --permanent --zone=public --add-port=9889/tcp
-  firewall-cmd --permanent --zone=public --add-port=61616/tcp
-  firewall-cmd --permanent --zone=public --add-port=8080/tcp
+  su - vagrant -c 'mvn -f /vagrant/java/activemq-jms-sender/ clean install'
+  su - vagrant -c 'cd /vagrant/node/mongo_connect; npm install; cd /vagrant/node/streaming_api_server; npm install;'
 
   hostnamectl set-hostname estreaming.vbx
 

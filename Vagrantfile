@@ -106,6 +106,13 @@ Vagrant.configure(2) do |config|
   #make sure the distro is up to date
   yum update -y
 
+  #install Docker
+  curl -sSL https://get.docker.com/ | sh
+  usermod -aG docker vagrant
+  service docker start
+  chkconfig docker on
+  docker run hello-world
+
   #install some helpful extras
   yum -y install htop net-tools vim unzip
 
@@ -120,17 +127,33 @@ Vagrant.configure(2) do |config|
   curl --insecure https://gist.githubusercontent.com/petergdoyle/42a988fbb07ad0e7ca99/raw/b39ed2274650bdc8f7158d5545a230e658c58929/equip_centos7_maven3_64.sh | bash
 
   #install spring xd
-  #wget -q -O - packages.pivotal.io | sh  #http://blog.pivotal.io/pivotal/products/easy-pivotal-app-installs-rpm-deb-msi-brew-chef-puppet-and-more
-  #yum install spring-xd
-  curl --insecure -O https://repo.spring.io/libs-release-local/org/springframework/xd/spring-xd/1.1.2.RELEASE/spring-xd-1.1.2.RELEASE-1.noarch.rpm
-  yum -y localinstall spring-xd-1.1.2.RELEASE-1.noarch.rpm
-  alternatives --install /usr/bin/xd-admin xd-admin /opt/pivotal/spring-xd/xd/bin/xd-admin 99999
-  alternatives --install /usr/bin/xd-container xd-container /opt/pivotal/spring-xd/xd/bin/xd-container 99999
-  alternatives --install /usr/bin/xd-singlenode xd-singlenode /opt/pivotal/spring-xd/xd/bin/xd-singlenode 99999
-  ln -s /vagrant/groovy/airshop_csv_to_json_transform.groovy /opt/pivotal/spring-xd/xd/modules/processor/scripts/airshop_csv_to_json_transform.groovy
-  #important !! must allow the spring-ui app to be accessed via SPA apps or else cannot get around the CORS problems
-  sed -i "/#Port that admin-ui is listening on/a xd:\\n  ui:\\n    allow_origin: \\"*\\"" /opt/pivotal/spring-xd/xd/config/servers.yml
-  rm spring-xd-1.1.2.RELEASE-1.noarch.rpm
+  PGM_NAME="Spring XD"
+  PGM_CMD="spring --version"
+  if [ ! -d "/opt/pivotal/spring-xd/" ]; then
+    curl --insecure -O https://repo.spring.io/libs-release-local/org/springframework/xd/spring-xd/1.1.2.RELEASE/spring-xd-1.1.2.RELEASE-1.noarch.rpm
+    if [ -f "spring-xd-1.1.2.RELEASE-1.noarch.rpm" ]; then
+      yum -y localinstall spring-xd-1.1.2.RELEASE-1.noarch.rpm
+      ln -s /vagrant/groovy/airshop_csv_to_json_transform.groovy /opt/pivotal/spring-xd/xd/modules/processor/scripts/airshop_csv_to_json_transform.groovy
+      #important !! must allow the spring-ui app to be accessed via SPA apps or else cannot get around the CORS problems
+      sed -i "/#Port that admin-ui is listening on/a xd:\\n  ui:\\n    allow_origin: \\"*\\"" /opt/pivotal/spring-xd/xd/config/servers.yml
+      rm spring-xd-1.1.2.RELEASE-1.noarch.rpm
+      #install the xd commands
+      alternatives --install /usr/bin/xd-admin xd-admin /opt/pivotal/spring-xd/xd/bin/xd-admin 99999
+      alternatives --install /usr/bin/xd-container xd-container /opt/pivotal/spring-xd/xd/bin/xd-container 99999
+      alternatives --install /usr/bin/xd-singlenode xd-singlenode /opt/pivotal/spring-xd/xd/bin/xd-singlenode 99999
+      #add some symlinks
+      su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/config /home/vagrant/demo.xd-config'
+      su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd /home/vagrant/demo.xd-home'
+      su - vagrant -c 'ln -s /tmp/xd/output/ /home/vagrant/demo.xd-out'
+      su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/modules/processor/scripts/ /home/vagrant/demo.xd-scripts'
+      OUTPUT="$($PGM_CMD)"
+      echo "[Success] ${OUTPUT} installed"
+    else
+      echo "[Failure] unable to install $PGM_NAME"
+    fi
+  else
+    echo "[Info] skipping $PGM_NAME installation"
+  fi
 
   #install spring boot
   #install gvm first
@@ -184,19 +207,15 @@ Vagrant.configure(2) do |config|
   su - vagrant -c 'curl -o .aliases https://raw.githubusercontent.com/petergdoyle/estreaming/master/shell/aliases'
   sed -i '/# User specific aliases and functions/a source ~/.aliases' /home/vagrant/.bashrc
 
-  #add some symlinks
-  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/config /home/vagrant/demo.xd-config'
-  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd /home/vagrant/demo.xd-home'
-  su - vagrant -c 'ln -s /tmp/xd/output/ /home/vagrant/demo.xd-out'
-  su - vagrant -c 'ln -s /opt/pivotal/spring-xd/xd/modules/processor/scripts/ /home/vagrant/demo.xd-scripts'
-
   su - vagrant -c 'ln -s /vagrant/java/activemq-jms-sender/ /home/vagrant/demo.jms-source'
-  su - vagrant -c 'ln -s /vagrant/node/ /home/vagrant/demo.node'
+  su - vagrant -c 'ln -s /vagrant/node/mongo_connect /home/vagrant/demo.node-mongo-connnect'
+  su - vagrant -c 'ln -s /vagrant/node/streaming_api_server /home/vagrant/demo.node-streaming_api_server'
+  su - vagrant -c 'ln -s /vagrant/node/streaming_api_client /home/vagrant/demo.node-streaming_api_client'
   su - vagrant -c 'ln -s /vagrant/analytics-dashboard/ /home/vagrant/demo.xd-analytics-dashboard'
 
-  #a little more setup
+  #build java and node modules from source
   su - vagrant -c 'mvn -f /vagrant/java/activemq-jms-sender/ clean install'
-  su - vagrant -c 'cd /vagrant/node/mongo_connect; npm install; cd /vagrant/node/streaming_api_server; npm install;'
+  su - vagrant -c 'cd /vagrant/node/mongo_connect; npm install; cd /vagrant/node/streaming_api_server; npm install; cd /vagrant/node/streaming_api_server; npm install;'
 
   hostnamectl set-hostname estreaming.vbx
 

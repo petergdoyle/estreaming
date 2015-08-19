@@ -120,11 +120,9 @@ Vagrant.configure(2) do |config|
   service vboxdrv setup
 
   #install oracle jdk 7
-  #wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/c60903823a21847ee5c6/raw/6b1fffe26cc6efc8f1f718b190292ca578e8f0f2/equip_centos7_java7_64.sh && bash equip_centos7_java7_64.sh
-  curl --insecure https://gist.githubusercontent.com/petergdoyle/c60903823a21847ee5c6/raw/6b1fffe26cc6efc8f1f718b190292ca578e8f0f2/equip_centos7_java7_64.sh | bash
-  #install maven
-  #wget --no-check-certificate https://gist.githubusercontent.com/petergdoyle/42a988fbb07ad0e7ca99/raw/b39ed2274650bdc8f7158d5545a230e658c58929/equip_centos7_maven3_64.sh && bash equip_centos7_maven3_64.sh
-  curl --insecure https://gist.githubusercontent.com/petergdoyle/42a988fbb07ad0e7ca99/raw/b39ed2274650bdc8f7158d5545a230e658c58929/equip_centos7_maven3_64.sh | bash
+  curl --insecure https://gist.githubusercontent.com/petergdoyle/c60903823a21847ee5c6/raw/1b618f639f8f9bae634ae28128b9156cbad1d802/equip_centos7_java7_64.sh | bash
+  #install maven 3
+  curl --insecure https://gist.githubusercontent.com/petergdoyle/42a988fbb07ad0e7ca99/raw/a3c62758a9246fabc3d3419c8850c58fa93ea5d3/equip_centos7_maven3_64.sh | bash
 
   #install spring xd
   PGM_NAME="Spring XD"
@@ -215,7 +213,7 @@ Vagrant.configure(2) do |config|
 
   #build java and node modules from source
   su - vagrant -c 'mvn -f /vagrant/java/activemq-jms-sender/ clean install'
-  su - vagrant -c 'cd /vagrant/node/mongo_connect; npm install; cd /vagrant/node/streaming_api_server; npm install; cd /vagrant/node/streaming_api_server; npm install;'
+  su - vagrant -c 'cd /vagrant/node/mongo_connect; npm install; cd /vagrant/node/streaming_api_server; npm install; cd /vagrant/node/streaming_api_client; npm install;'
 
   hostnamectl set-hostname estreaming.vbx
 

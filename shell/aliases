@@ -10,3 +10,5 @@ alias runkafkaproducer='/usr/kafka/default/bin/kafka-console-producer.sh --broke
 alias kafkacreatetopic='/usr/kafka/default/bin/kafka-topics.sh  --create --zookeeper localhost:2181 --replication-factor 1 --partition 1 --topic kafkatopic'
 alias startnginx='sudo systemctl start nginx.service'
 alias runkafkaconsumer='/usr/kafka/default/bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic airshopTopic --from-beginning'
+
+alias netstat_tcp_listening="netstat -an |grep -E '^tcp' |grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'"

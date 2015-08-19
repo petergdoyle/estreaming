@@ -1,6 +1,7 @@
 {
   "name": "node-streaming-api-client",
   "version": "0.0.1",
+  "private": true,
   "description": "a simple node program to connect to the streaming api server",
   "main": "app.js",
   "scripts": {

@@ -1,6 +1,7 @@
 {
   "name": "mongo_connect",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "private": true,
   "description": "a test to stream mongo tail cursor through node.js",
   "main": "index.js",
   "scripts": {

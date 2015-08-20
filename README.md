@@ -9,7 +9,7 @@ Documentation is divided up into these sections:
 1. Set up the virtual machine using VirtualBox and Vagrant [Installation](INSTALLATION.md)
 2. Up and Running the [Streaming API Server](STREAMING_API_SERVER.md) using Spring XD, Mongo, and Node.js
 2. Up and Running the [Streaming API Client](STREAMING_API_CLIENT.md) using Node.js
-3. Visualization of the the Stream using [Spring XD Analytics](ANALYTICS.md)
+3. Visualization of the the Stream using [Spring XD Analytics](SPRING_XD_ANALYTICS.md)
 3. Building an Aggregate Stream using [Storm and Kafka](STORM_AND_KAFKA.md)
 
 

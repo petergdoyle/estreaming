@@ -12,10 +12,11 @@ var success = function (data) {
 
 //Get this data from your twitter apps dashboard
 var config = {
-    "consumerKey": "*",
-    "consumerSecret": "*",
-    "accessToken": "*-*",
-    "accessTokenSecret": "*"
+    "consumerKey": "toLroxf9t7WzsdQvVSFVQr23y",
+    "consumerSecret": "WKYo5wjI2yGDqr0SmJyI5kUPGh5oIA4die6gmRYw4BZWIpFh2f",
+    "accessToken": "1665922212-bvs5aSBK5VFMyf6wzNskIWlWQlleqZVoTYO03Dd",
+    "accessTokenSecret": "zI0C8sOo2VzsCDitEGBFMgaM1bPGagJX5rHfNo8ngyCnv"
+
 }
 
 var twitter = new Twitter(config);
@@ -30,7 +31,10 @@ var twitter = new Twitter(config);
 var myArgs = process.argv.slice(2);
 if (!myArgs || myArgs.length<2) {
 	console.log("usage: node twitter_streaming_api_client.js \"#{hashtag}\" {limit} \nwhere {hashtag} is the tag you want to search for and {limit} is the number of records to pull from the stream");
-	return;
+  console.log(myArgs);
+  console.log(myArgs.length<2);
+  console.log(myArgs);
+  return;
 }
 var hashtag = myArgs[0];
 var limit = myArgs[1];

@@ -101,7 +101,7 @@ For more on creating and installing your own streaming data transforms check [he
 Now, let's create our new stream definition and deploy it. This one is similar to before except we are throwing the transform in between.
 
 ``` bash
-stream create --name jmstest_with_transform --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | file" --deploy
+xd:>stream create --name jmstest_with_transform --definition "jms --destination=airshop | transform --script=airshop_csv_to_json_transform.groovy | file" --deploy
 ```
 
 Okay, go back to the same terminal that you did the "tail -f " on the other file and now type:
@@ -115,7 +115,7 @@ And you should see the the output now in JSON format. Okay now let's move on to 
 Open up another terminal (yes another) and start the Mongo client by typing
 
 ```console
-[vagrant@estreaming ~]$ echo "db.results.stats()" | Mongo airshop
+[vagrant@estreaming ~]$ echo "db.results.stats()" | mongo airshop
 ```
 
 And you should see information about the collection  "results" from the database "airshop" indicating that the collection has indeed been set up as a capped collection with indicating a maximum record size of 5000 and a maximum disk size of 5242880 bytes (disk size overrules record size)
@@ -158,7 +158,7 @@ Okay now open up another terminal and let's run a program that connects directly
 
 ``` console
 [vagrant@estreaming ~]$ cd demo.node/mongo_connect/
-[vagrant@estreaming mongo_connect]$ more streaming_client_mongojs.js
+[vagrant@estreaming mongo_connect]$ cat streaming_client_mongojs.js
 ```
 And the program should display
 ``` javascript
@@ -282,7 +282,7 @@ Remember the data flowing into Mongo from the stream source is continuous so eve
 To demonstrate this we can use a small Mongo console script to find the record that is (arbitrarily) 100th position from the end. We can then use the id returned to provide the Streaming API the "frame id" of that record as a starting place to start the stream. Take a look at the program.
 
 ``` console
-[vagrant@estreaming ~]$ more ~/estreaming/mongo/find_frame_id.js
+[vagrant@estreaming ~]$ more /vagrant/mongo/find_frame_id.js
 ```
 It is a very simple query to simply find the *current* record 100th from the end. Remember, though that by the time we get to use it, it will likely be closer to the end as records off the end are continuously pushed out of the collection to keep the bounds of the capped collection we set.
 ``` javascript
@@ -291,7 +291,7 @@ db.results.find({},{_id:1}).skip(100).limit(1).pretty()
 ```
 We can then use the output as the id we need to start the stream. When I run the script I get the following output
 ``` console
-[vagrant@estreaming ~]$ mongo < ~/estreaming/mongo/find_frame_id.js
+[vagrant@estreaming ~]$ mongo < /vagrant/mongo/find_frame_id.js
 MongoDB shell version: 3.0.4
 connecting to: test
 switched to db airshop
@@ -317,3 +317,5 @@ The curl command is a bit odd if you want to specify more than one HTTP query pa
 ```
 
 **And that's it for the Streaming API! **
+
+Now run the [Streaming API Server](STREAMING_API_SERVER.md)

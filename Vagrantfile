@@ -213,7 +213,7 @@ Vagrant.configure(2) do |config|
 
   #build java and node modules from source
   su - vagrant -c 'mvn -f /vagrant/java/activemq-jms-sender/ clean install'
-  su - vagrant -c 'cd /vagrant/node/mongo_connect; npm install; cd /vagrant/node/streaming_api_server; npm install; cd /vagrant/node/streaming_api_client; npm install;'
+  su - vagrant -c 'cd /vagrant/node/twitter; npm install; cd /vagrant/node/mongo_connect; npm install; cd /vagrant/node/streaming_api_server; npm install; cd /vagrant/node/streaming_api_client; npm install;'
 
   hostnamectl set-hostname estreaming.vbx
 

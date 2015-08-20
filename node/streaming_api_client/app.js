@@ -1,6 +1,6 @@
 var http = require('http');
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+//process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 //curl http://localhost:3000/airshop/results
 

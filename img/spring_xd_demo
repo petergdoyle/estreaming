@@ -1,25 +1,3 @@
-Dev.Twitter.com
-https://dev.twitter.com/streaming/overview
-https://dev.twitter.com/overview/api/twitter-libraries
-
-stream create --name twittersearchjava --definition "twittersearch --consumerKey=toLroxf9t7WzsdQvVSFVQr23y --consumerSecret=WKYo5wjI2yGDqr0SmJyI5kUPGh5oIA4die6gmRYw4BZWIpFh2f --query='java' | file" --deploy
-
-
-
-use spring xd to strart to stream tweets
-
-introduce spring xd
-http://docs.spring.io/spring-xd/docs/current-SNAPSHOT/reference/html/#introduction
-it provides a streaming runtime for us
-we have all these separate technologies and spring xd lets us manage them at runtime with a simple approach – it is set up with some fundamental components
-
-
-https://apps.twitter.com/app/8258889/keys to get my oath credentials
-
-xd:> stream create --name twittersearchjava --definition "twittersearch --consumerKey=toLroxf9t7WzsdQvVSFVQr23y --consumerSecret=WKYo5wjI2yGDqr0SmJyI5kUPGh5oIA4die6gmRYw4BZWIpFh2f --query='java' | file" –deploy
-
-cd ~/xd.out
-tail -f twittersearchjava.out
 
 
 let's create our own stream using JMS and ActiveMQ

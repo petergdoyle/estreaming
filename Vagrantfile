@@ -172,14 +172,11 @@ Vagrant.configure(2) do |config|
   su - vagrant -c 'mongo < /vagrant/mongo/setup.js'
 
   #install node.js and npm
-  yum -y install epel-release gcc gcc-c++
-  yum -y install nodejs npm
+  yum -y install epel-release gcc gcc-c++ nodejs npm
   #TODO npm proxy settings if applicable
   #npm config set proxy $HTTP_PROXY
   #npm config set https-proxy $HTTP_PROXY
-  npm install express -g
-  npm install express-generator -g
-  npm install forever -g
+  npm install express express-generator forever -g
   #nice little utility to format a stream of json https://www.npmjs.com/package/format-json-stream
   npm install format-json-stream -g
 
@@ -209,7 +206,7 @@ Vagrant.configure(2) do |config|
   su - vagrant -c 'ln -s /vagrant/node/mongo_connect /home/vagrant/demo.node-mongo-connnect'
   su - vagrant -c 'ln -s /vagrant/node/streaming_api_server /home/vagrant/demo.node-streaming_api_server'
   su - vagrant -c 'ln -s /vagrant/node/streaming_api_client /home/vagrant/demo.node-streaming_api_client'
-  su - vagrant -c 'ln -s /vagrant/analytics-dashboard/ /home/vagrant/demo.xd-analytics-dashboard'
+  su - vagrant -c 'ln -s /vagrant/xd-analytics/ /home/vagrant/demo.xd-analytics'
 
   #build java and node modules from source
   su - vagrant -c 'mvn -f /vagrant/java/activemq-jms-sender/ clean install'

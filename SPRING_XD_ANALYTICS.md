@@ -31,8 +31,8 @@ Now we need to "see" the data. So we are going to launch a groovy web app using 
 For this, again open up a terminal and navigate to the demo.xd-analytics location and launch the spring boot web server.
 
 ``` console
-[vagrant@estreaming ~]$ cd demo.xd-analytics-dashboard/
-[vagrant@estreaming demo.xd-analytics-dashboard]$ spring run dashboard.groovy
+[vagrant@estreaming ~]$ cd demo.xd-analytics/
+[vagrant@estreaming demo.xd-analytics]$ spring run dashboard.groovy
 ```
 
 And now open up a web browser to this location

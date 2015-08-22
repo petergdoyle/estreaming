@@ -3,3 +3,5 @@
 activemq-data
 node_modules
 target
+nohup.out
+*.log

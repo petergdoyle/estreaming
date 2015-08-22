@@ -207,6 +207,7 @@ Vagrant.configure(2) do |config|
   su - vagrant -c 'ln -s /vagrant/node/streaming_api_server /home/vagrant/demo.node-streaming_api_server'
   su - vagrant -c 'ln -s /vagrant/node/streaming_api_client /home/vagrant/demo.node-streaming_api_client'
   su - vagrant -c 'ln -s /vagrant/xd-analytics/ /home/vagrant/demo.xd-analytics'
+  su - vagrant -c 'ln -s /vagrant/xd-streams/ /home/vagrant/demo.xd-streams'
 
   #build java and node modules from source
   su - vagrant -c 'mvn -f /vagrant/java/activemq-jms-sender/ clean install'

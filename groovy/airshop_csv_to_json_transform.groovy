@@ -24,5 +24,6 @@ try {
   }
   jsonBuilder.toPrettyString()
 } catch (all) {
-  println("problem parsing "+payload);
+  println(all)
+  println("problem parsing "+payload)
 }

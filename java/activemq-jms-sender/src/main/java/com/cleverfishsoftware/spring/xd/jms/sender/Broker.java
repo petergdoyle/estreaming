@@ -27,8 +27,8 @@ public class Broker {
     private final int storeUsage;
 
     private Broker(String brokerName, String brokerUrl, int storeUsage, int tempUsage) {
-        this.brokerName = brokerName != null & brokerName.length() != 0 ? brokerName : DEFAULT_BROKER_NAME;
-        this.brokerUrl = brokerUrl != null & brokerUrl.length() != 0 ? brokerUrl : DEFAULT_BROKER_URL;
+        this.brokerName = (brokerName != null && brokerName.length() > 0) ? brokerName : DEFAULT_BROKER_NAME;
+        this.brokerUrl = (brokerUrl != null && brokerUrl.length() > 0) ? brokerUrl : DEFAULT_BROKER_URL;
         this.storeUsage = storeUsage > 0 ? storeUsage : DEFAULT_STORE_USAGE;
         this.tempUsage = tempUsage > 0 ? tempUsage : DEFAULT_TMP_USAGE;
     }
@@ -43,6 +43,8 @@ public class Broker {
         systemUsage.getTempUsage().setLimit(tempUsage);
 
         broker.setPersistent(false);
+
+        broker.start();
 
         System.out.println("Started ActiveMQ broker: " + broker.toString());
     }

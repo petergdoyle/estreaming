@@ -22,7 +22,8 @@ public class RunMessageSenderArgs {
         MessageSender.create(
                 cf,
                 queueName,
-                1000l / tps)
+                1000l / tps,
+                false)
                 .start();
 
     }

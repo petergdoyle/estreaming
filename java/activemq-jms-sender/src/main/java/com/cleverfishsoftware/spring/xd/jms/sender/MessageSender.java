@@ -38,15 +38,17 @@ public class MessageSender {
     private final JmsTemplate template;
     private final String queueName;
     private final long sleep;
+    private final boolean noisy;
 
-    public static MessageSender create(ConnectionFactory cf, String queueName, long sleep) {
-        return new MessageSender(cf, queueName, sleep);
+    public static MessageSender create(ConnectionFactory cf, String queueName, long sleep, boolean noisy) {
+        return new MessageSender(cf, queueName, sleep, noisy);
     }
 
-    public MessageSender(ConnectionFactory cf, String queueName, long sleep) {
+    public MessageSender(ConnectionFactory cf, String queueName, long sleep, boolean noisy) {
         this.template = new JmsTemplate(cf);
         this.queueName = queueName;
         this.sleep = sleep;
+        this.noisy = noisy;
     }
 
     static {
@@ -133,8 +135,9 @@ public class MessageSender {
                     .append(COMMA)
                     .append(type)
                     .toString();
-
-            out.println(msg);
+            if (this.noisy) {
+                out.println(msg);
+            }
             template.convertAndSend(queueName, msg);
         }
     }

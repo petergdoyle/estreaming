@@ -47,7 +47,8 @@ public class RunMessageSender {
         MessageSender.create(
                 cf,
                 queueName,
-                1000l / tps)
+                1000l / tps,
+                true)
                 .start();
 
     }

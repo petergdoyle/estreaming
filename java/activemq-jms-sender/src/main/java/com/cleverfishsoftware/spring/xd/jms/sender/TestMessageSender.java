@@ -20,7 +20,8 @@ public class TestMessageSender {
                 .create(
                         cf,
                         "default",
-                        1000l / 1
+                        1000l / 1,
+                        true
                 )
                 .start();
     }

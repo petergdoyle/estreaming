@@ -12,10 +12,10 @@ var success = function (data) {
 
 //Get this data from your twitter apps dashboard
 var config = {
-    "consumerKey": "toLroxf9t7WzsdQvVSFVQr23y",
-    "consumerSecret": "WKYo5wjI2yGDqr0SmJyI5kUPGh5oIA4die6gmRYw4BZWIpFh2f",
-    "accessToken": "1665922212-bvs5aSBK5VFMyf6wzNskIWlWQlleqZVoTYO03Dd",
-    "accessTokenSecret": "zI0C8sOo2VzsCDitEGBFMgaM1bPGagJX5rHfNo8ngyCnv"
+    "consumerKey": "*****",
+    "consumerSecret": "*****",
+    "accessToken": "*****-*****",
+    "accessTokenSecret": "*****"
 
 }
 

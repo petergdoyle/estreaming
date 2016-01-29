@@ -12,8 +12,8 @@ var success = function (data) {
 
 //Get this data from your twitter apps dashboard
 var config = {
-    "consumerKey": "toLroxf9t7WzsdQvVSFVQr23y",
-    "consumerSecret": "WKYo5wjI2yGDqr0SmJyI5kUPGh5oIA4die6gmRYw4BZWIpFh2f",
+    "consumerKey": "Br0f1MmM7zsoAxnsBrhpGMNhS",
+    "consumerSecret": "gCN02L4k4M4VF2ZbTLiyaK3ZPIcOhSgWYOC2bNZHcrjri3jmRF",
     "accessToken": "1665922212-bvs5aSBK5VFMyf6wzNskIWlWQlleqZVoTYO03Dd",
     "accessTokenSecret": "zI0C8sOo2VzsCDitEGBFMgaM1bPGagJX5rHfNo8ngyCnv"
 

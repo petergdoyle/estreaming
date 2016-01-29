@@ -1,0 +1,14 @@
+#!/bin/sh
+
+docker start estreaming_xd_singlenode
+docker start estreaming_xd_shell
+
+docker start estreaming_activemq_broker
+
+docker start estreaming_mongodb_server
+docker start estreaming_nodejs_streaming_api_server
+docker start estreaming_nodejs_runtime
+
+docker start estreaming_springboot_runtime
+
+docker start estreaming_activemq_message_sender

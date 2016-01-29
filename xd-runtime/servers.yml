@@ -1,0 +1,382 @@
+# XD Configuration file
+# You can set properties here to override the default which
+# are set in the application.yml file loaded by Spring Boot.
+#
+# Properties set in here will take precedence.
+#
+# Alternatively, you can set the environment variable XD_CONFIG
+# to point to a file (use a file:// URL). That file will then be
+# used instead.
+
+#XD data transport (default is redis for distributed, local for single node)
+#xd:
+#  transport: rabbit
+
+#  messagebus:
+#    local:
+#      queueSize:                   2147483647
+#      polling:                     1000
+#      executor:
+#        corePoolSize:              0
+#        maxPoolSize:               200
+#        queueSize:                 2147483647
+#        keepAliveSeconds:          60
+#    rabbit:
+#      compressionLevel:            1
+            # bus-level property, applies only when 'compress=true' for a stream module
+            # See java.util.zip.Deflater; 1=BEST_SPEED, 9=BEST_COMPRESSION, ...
+#      default:
+#        ackMode:                   AUTO
+            # Valid: AUTO (container acks), NONE (broker acks), MANUAL (consumer acks).
+            # Upper case only.
+            # Note: MANUAL requires specialized code in the consuming module and is unlikely to be
+            # used in an XD application. For more information, see
+            # http://docs.spring.io/spring-integration/reference/html/amqp.html#amqp-inbound-ack
+#        autoBindDLQ:               false
+#        backOffInitialInterval:    1000
+#        backOffMaxInterval:        10000
+#        backOffMultiplier:         2.0
+#        batchBufferLimit:          10000
+#        batchingEnabled:           false
+#        batchSize:                 100
+#        batchTimeout:              5000
+#        compress:                  false
+#        concurrency:               1
+#        deliveryMode:              PERSISTENT
+#        maxAttempts:               3
+#        maxConcurrency:            1
+#        prefix:                    xdbus.
+            # prefix for queue/exchange names so policies (ha, dle etc.) can be applied
+#        prefetch:                  1
+#        replyHeaderPatterns:       STANDARD_REPLY_HEADERS,*
+#        requestHeaderPatterns:     STANDARD_REQUEST_HEADERS,*
+#        requeue:                   true
+#        transacted:                false
+#        txSize:                    1
+
+#    redis:
+#      headers:
+            # comman-delimited list of additional (string-valued) header names to transport
+#      default:
+            # default bus properties, if not specified at the module level
+#        backOffInitialInterval:    1000
+#        backOffMaxInterval:        10000
+#        backOffMultiplier:         2.0
+#        concurrency:               1
+#        maxAttempts:               3
+#    kafka:
+#      brokers:                                 localhost:9092
+#      zkAddress:                               localhost:2181
+#      numOfKafkaPartitionsForCountEqualsZero:  10
+#      socketBufferSize:                        2097152
+#      offsetStoreTopic:                        SpringXdOffsets
+#      offsetStoreSegmentSize:                  25000000
+#      offsetStoreRetentionTime:                60000
+#      offsetStoreRequiredAcks:                 1
+#      offsetStoreMaxFetchSize:                 1048576
+#      offsetStoreBatchSize:                    200
+#      offsetStoreBatchEnabled:                 false
+#      offsetStoreBatchTime:                    1000
+#      offsetUpdateTimeWindow:                  10000
+#      offsetUpdateCount:                       0
+#      offsetUpdateShutdownTimeout:             2000
+#      default:
+#        batchingEnabled:           false
+#        batchSize:                 200
+#        batchTimeout:              5000
+#        replicationFactor:         1
+#        concurrency:               1
+#        requiredAcks:              1
+#        compressionCodec:          default
+#        autoCommitEnabled:         true
+#        queueSize:                 1000
+#        fetchSize:                 1048576
+#        minPartitionCount:         1
+
+#Disable batch database initialization
+#spring:
+#  batch:
+# Configure other Spring Batch repository values.  Most are typically not needed
+#    isolationLevel: ISOLATION_SERIALIZABLE
+#    clobType:
+#    dbType:
+#    maxVarcharLength: 2500
+#    tablePrefix: BATCH_
+#    validateTransactionState: true
+#    initializer:
+#       enabled: false
+
+---
+#Config for singlenode.
+#Transport for single node may be overridden by --transport command line option
+#If the singlenode needs to use external datasource for batch embeddedHsql can be set to false
+spring:
+  profiles: singlenode
+xd:
+  transport: local
+#embeddedHsql: true
+
+---
+#Config for use with HSQLDB
+#
+#Change the database host, port and name
+#hsql:
+#  server:
+#    host: localhost
+#    port: 9101
+#    dbname: xdjob
+#Change database username and password
+#spring:
+#  datasource:
+#    url: jdbc:hsqldb:hsql://${hsql.server.host:localhost}:${hsql.server.port:9101}/${hsql.server.dbname:xdjob}
+#    username: sa
+#    password:
+#    driverClassName: org.hsqldb.jdbc.JDBCDriver
+#    validationQuery: select 1 from INFORMATION_SCHEMA.SYSTEM_USERS
+
+#Config for use with MySQL - uncomment and edit with relevant values for your environment
+#spring:
+#  datasource:
+#    url: jdbc:mysql://yourDBhost:3306/yourDB
+#    username: yourUsername
+#    password: yourPassword
+#    driverClassName: com.mysql.jdbc.Driver
+#    validationQuery: select 1
+
+#Config for use with Postgres - uncomment and edit with relevant values for your environment
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://yourDBhost:5432/yourDB
+#    username: yourUsername
+#    password: yourPassword
+#    driverClassName: org.postgresql.Driver
+#    validationQuery: select 1
+
+---
+#ConnectionPoolSettings
+#spring:
+#  datasource:
+#    testOnBorrow: true
+#    validationInterval: 30000
+#    maxActive: 100
+#    maxIdle: 100
+#    minIdle: 10
+#    initialSize: 0
+#    maxWait: 30000
+#    testOnReturn: false
+#    testWhileIdle: false
+#    timeBetweenEvictionRunsMillis: 5000
+#    minEvictableIdleTimeMillis: 60000
+#    removeAbandoned: false
+#    removeAbandonedTimeout: 60
+#    logAbandoned: false
+#Tomcat JDBC Enhanced Attributes
+#    jmxEnabled: true
+#    fairQueue: true
+#    abandonWhenPercentageFull: 0
+#    maxAge: 0
+#    useEquals: true
+#    suspectTimeout: 0
+#    alternateUsernameAllowed: false
+
+---
+# Config to enable security on administration endpoints (consider adding ssl)
+#spring:
+#  profiles: admin
+#security:
+#  basic:
+#    enabled: true # false to disable security settings (default)
+#    realm: SpringXD
+#  user: # valid only if security.basic.enabled=true
+#    name: yourAdminUsername
+#    password: yourAdminPassword
+#    role: ADMIN, VIEW, CREATE
+---
+# Config to enable HTTPS on administration endpoints
+#spring:
+#  profiles: admin
+#server:
+#  ssl:
+#    key-alias: yourKeyAlias
+#    key-store: path/to/keystore
+#    key-store-password: yourKeyStorePassword
+#    key-password: yourKeyPassword
+#    trust-store: path/to/trust-store
+#    trust-store-password: yourTrustStorePassword
+---
+# Config to enable LDAP simple bind authentication for administration endpoints
+# (security.basic.enabled must be also set to true)
+#spring:
+#  profiles: admin
+#xd:
+# security:
+#   authentication:
+#     ldap:
+#       enabled: true # required for LDAP autentication to come into effect
+#       url: ldap://yourLdapHost:${yourLdapPort}
+#       userDnPattern: yourUserPattern # e.g. uid={0},ou=people,dc=example,dc=com
+---
+# Config to enable LDAP search and bind authentication for administration endpoints
+# (security.basic.enabled must be also set to true)
+#spring:
+#  profiles: admin
+#xd:
+# security:
+#   authentication:
+#     ldap:
+#       enabled: true # required for LDAP authentication to come into effect
+#       url: ldap://yourLdapHost:${yourLdapPort}
+#       managerDn: yourManagerDn # e.g. uid=bob,ou=managers,dc=example,dc=com
+#       managerPassword: yourManagerPassword
+#       userSearchBase: yourUserSearchBase # e.g. ou=otherpeople,dc=example,dc=com
+#       userSearchFilter: yourUserSearchFilter # e.g. uid={0}
+---
+# Config to enable/disable JMX/jolokia endpoints
+XD_JMX_ENABLED: true
+endpoints:
+  jolokia:
+    enabled: ${XD_JMX_ENABLED:true}
+  jmx:
+    enabled: ${XD_JMX_ENABLED:true}
+    uniqueNames: true
+
+# Config to enable the shutdown button on the UI
+
+#---
+#spring:
+#  profiles: container
+#management:
+#  port: 0
+
+
+---
+# Redis properties
+#spring:
+#  redis:
+#   port: 6379
+#   host: 127.0.0.1
+#   sentinel:
+#     master: mymaster
+#     nodes: 127.0.0.1:26379,127.0.0.1:26380,127.0.0.1:26381
+
+#Port that admin-ui is listening on
+xd:
+  ui:
+    allow_origin: '*'
+
+#server:
+#  port: 9393
+
+---
+# RabbitMQ properties
+#spring:
+#  rabbitmq:
+#   addresses: localhost:5672
+#   username: guest
+#   password: guest
+#   virtual_host: /
+#   useSSL: false
+#   sslProperties:
+
+
+---
+# Hadoop properties
+#spring:
+#  hadoop:
+#    fsUri: hdfs://localhost:8020
+#    resourceManagerHost: localhost
+#    resourceManagerPort: 8032
+#    yarnApplicationClasspath:
+---
+# Zookeeper properties
+# namespace is the path under the root where XD's top level nodes will be created
+# client connect string: host1:port1,host2:port2,...,hostN:portN
+#zk:
+#  namespace: xd
+#  client:
+#     connect: localhost:2181
+#     sessionTimeout: 60000
+#     connectionTimeout: 30000
+#     initialRetryWait: 1000
+#     retryMaxAttempts: 3
+---
+#Container Attributes: Used to target containers configured with attribute values for module deployment by specifying attribute expressions in the deployment manifest.
+#'groups' is a native XD convention for targeting a group of container instances and is also supported as a command line option and environment variable XD_CONTAINER_GROUPS.
+# A container instance may belong to multiple groups. XD also supports any user defined attributes provided here.
+#
+#xd:
+#  container:
+#    groups:  group1,group2
+#    color: green
+#    foo: bar
+---
+# Quiet Period
+#
+# The quiet period is the amount of time that must elapse after the newest container
+# arrives before deployments to new containers are initiated. A short quiet period
+# is ideal for development environments because it results in quick deployments
+# to new containers. In production environments, longer quiet periods are desirable
+# because it will prevent the first few containers from receiving all deployments.
+#
+# Module deployments triggered by container arrivals only apply to modules
+# that failed a previous deployment due to the lack of containers to host them.
+# Note that this property only applies to that type of deployment; new deployments
+# targeted to existing containers are not subject to delays.
+#
+# The default value for this property is 15000 ms.
+#
+#xd:
+#  admin:
+#    quietPeriod: 15000
+---
+# Module deployment timeout
+# The module deployment timeout is the number of milliseconds the admin server
+# will wait for a response to a module deployment request to a container.
+#xd:
+#  admin:
+#    deploymentTimeout: 30000
+---
+# User Extensions: Where XD scans the classpath to discover extended container configuration to add beans to the Plugins context.
+# Each property may be a comma delimited string. 'basepackages' refers to package names used for
+# annotated component (@Configuration or @Component stereotypes) scanning. 'locations' is a list of root resource directories containing XML or Groovy configuration.
+# XD prepends classpath:* if no prefix included and appends **/*.* to each location
+#xd:
+#  extensions:
+#      basepackages: com.acme.xd.extensions
+#      locations: META-INF/spring-xd/ext
+---
+#Custom module registry location
+#Any custom modules built can be placed into this configured location
+#The location must be set to a valid resource URL (file://, classpath:/ etc.,)
+#xd:
+#  customModule:
+#    home: file://mymodulehome
+
+---
+# Pretty print JSON output
+#typeconversion:
+# json:
+#  prettyPrint: true
+
+---
+# Spark Streaming Configuration
+#spark:
+#  storageLevel: MEMORY_ONLY
+#  master: spark://localhost:7077
+#  streaming:
+#    batchInterval: 2000
+
+---
+#Enable collecting message rates from containers that have management port enabled.
+#xd:
+#  messageRateMonitoring:
+#    enabled: true
+---
+
+#xd:
+#  analytics:
+#    redis:
+#         backOffInitialInterval:    1000
+#         backOffMaxInterval:        10000
+#         backOffMultiplier:         2.0
+#         maxAttempts:               5

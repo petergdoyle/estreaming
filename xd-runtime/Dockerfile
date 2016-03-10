@@ -7,8 +7,8 @@ RUN curl --insecure -O https://repo.spring.io/libs-release-local/org/springframe
 && alternatives --install /usr/bin/xd-container xd-container /opt/pivotal/spring-xd/xd/bin/xd-container 99999 \
 && alternatives --install /usr/bin/xd-singlenode xd-singlenode /opt/pivotal/spring-xd/xd/bin/xd-singlenode 99999
 
-COPY servers.yml /opt/pivotal/spring-xd/xd/config/servers.yml
-COPY groovy/airshop_csv_to_json_transform.groovy /opt/pivotal/spring-xd/xd/modules/processor/scripts/airshop_csv_to_json_transform.groovy
+COPY xd/scripts/* /opt/pivotal/spring-xd/xd/modules/processor/scripts/
+COPY xd/config/ /opt/pivotal/spring-xd/xd/config/
 
 RUN ln -s /opt/pivotal/spring-xd/xd/config demo.xd-config \
 && ln -s /opt/pivotal/spring-xd/xd demo.xd-home \

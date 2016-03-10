@@ -41,6 +41,7 @@ workdir=""
 network_native="--net host"
 network_default=""
 network="$network_default"
+links=""
 
 daemon='-d'
 transient='--rm'
@@ -60,6 +61,7 @@ docker_run() {
   docker_clean
   docker_cmd="docker run $mode -ti \
   --name $container_name \
+  $links \
   $volumes \
   $workdir \
   $network \

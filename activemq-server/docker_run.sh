@@ -22,6 +22,7 @@ container_name='estreaming_activemq_server'
 start_cmd=$start_cmd_min
 
 network_port_mapped="-p 0.0.0.0:61616:61616 \
--h $container_name.dkr"
+-p 0.0.0.0:8161:8161 \
+-h activemq.dkr"
 network="$network_port_mapped"
-docker_run
+docker_run 8161,61616

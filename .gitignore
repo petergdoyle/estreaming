@@ -5,3 +5,4 @@ node_modules
 target
 nohup.out
 *.log
+nbactions.xml

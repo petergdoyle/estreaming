@@ -20,22 +20,13 @@ import java.util.logging.Logger;
 import javax.jms.ConnectionFactory;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-//import org.springframework.jms.core.JmsTemplate;
-import com.google.common.util.concurrent.RateLimiter;
-import java.util.concurrent.atomic.AtomicInteger;
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.Session;
-import org.apache.activemq.ActiveMQConnectionFactory;
+import org.springframework.jms.core.JmsTemplate;
 
 /**
  *
  * @author peter.doyle
  */
-public class MessageSender {
+public class MessageSenderJMSTemplate {
 
     private static final String COMMA = ",";
     private static final int MIN_PRICE = 350;
@@ -44,37 +35,20 @@ public class MessageSender {
     private static final List<Airline> AIRLINES = new ArrayList<>();
     private static final List<Airport> AIRPORTS = new ArrayList<>();
 
-    private final AtomicInteger count = new AtomicInteger(0);
-
-//    private final JmsTemplate template;
+    private final JmsTemplate template;
     private final String queueName;
+    private final long sleep;
     private final boolean noisy;
-    private final RateLimiter throttle;
 
-    private final ConnectionFactory cf;
-    private final Connection connection;
-    private final Session session;
-    private final Queue queue;
-    private final MessageProducer producer;
-
-    public static MessageSender create(String brokerUrl, String queueName, long rate, boolean noisy) throws JMSException {
-        return new MessageSender(brokerUrl, queueName, RateLimiter.create(rate + 0.0f), noisy);
+    public static MessageSenderJMSTemplate create(ConnectionFactory cf, String queueName, long sleep, boolean noisy) {
+        return new MessageSenderJMSTemplate(cf, queueName, sleep, noisy);
     }
-    private final String brokerUrl;
 
-    private MessageSender(String brokerUrl, String queueName, RateLimiter throttle, boolean noisy) throws JMSException {
-        this.brokerUrl = brokerUrl;
-        this.throttle = throttle;
+    public MessageSenderJMSTemplate(ConnectionFactory cf, String queueName, long sleep, boolean noisy) {
+        this.template = new JmsTemplate(cf);
         this.queueName = queueName;
-//        this.template = new JmsTemplate(cf);
+        this.sleep = sleep;
         this.noisy = noisy;
-
-        cf = new ActiveMQConnectionFactory(brokerUrl);
-        ((ActiveMQConnectionFactory) cf).setUseAsyncSend(true);
-        connection = cf.createConnection();
-        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        queue = session.createQueue(this.queueName);
-        producer = session.createProducer(queue);
     }
 
     static {
@@ -107,21 +81,8 @@ public class MessageSender {
     private static final Random random = new Random();
     private static final Formatter priceFormatter = new Formatter();
 
-    public void start() throws JMSException, InterruptedException {
-        System.out.println("sending messages to ActiveMQ broker at " + brokerUrl);
-//        while (true) {
-//            Thread.sleep(sleep);
-//            send(System.out);
-//        }
-        while (true) {
-            send(System.out);
-            System.out.print("\r"+count.incrementAndGet() + " sent");
-        }
-    }
+    private void send(PrintStream out) throws InterruptedException {
 
-    private void send(PrintStream out) throws InterruptedException, JMSException {
-
-        throttle.tryAcquire();
         Airline airline = selectRandomAirline();
         Set<Airport> excludes = new HashSet<>();
         Airport from = selectRandomFromAirport(airline, excludes);
@@ -141,7 +102,7 @@ public class MessageSender {
             int arrHr = random.nextInt(((23) + 1) - depHr) + depHr;
             int arrMin = random.nextInt(((59) + 1) - depMin) + depMin;
 
-            String payload = new StringBuilder()
+            String msg = new StringBuilder()
                     .append(removeBadChars(airline.code))
                     .append(COMMA)
                     .append(removeBadChars(airline.name))
@@ -175,16 +136,22 @@ public class MessageSender {
                     .append(type)
                     .toString();
             if (this.noisy) {
-                out.println(payload);
+                out.println(msg);
             }
-//            template.convertAndSend(queueName, msg);
-            Message msg = session.createTextMessage(payload);
-            producer.send(msg);
+            template.convertAndSend(queueName, msg);
         }
     }
 
     private static String removeBadChars(String s) {
         return s.replace(",", "");
+    }
+
+    public void start() throws InterruptedException {
+        System.out.println("sending messages to ActiveMQ broker at " + DEFAULT_BROKER_URL);
+        while (true) {
+            Thread.sleep(sleep);
+            send(System.out);
+        }
     }
 
     private static Airline selectRandomAirline() {

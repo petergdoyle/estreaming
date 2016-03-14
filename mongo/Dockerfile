@@ -7,4 +7,6 @@ COPY find_frame_id.js /mongodb/find_frame_id.js
 RUN yum -y install mongodb-org mongodb-org-server
 RUN mkdir -p /data/db
 
+RUN mongo < /mongodb/setup.js
+
 ENTRYPOINT ["/usr/bin/mongod"]

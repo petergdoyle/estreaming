@@ -2,6 +2,10 @@
  */
 package com.cleverfishsoftware.spring.xd.jms.sender;
 
+import static com.cleverfishsoftware.spring.xd.jms.sender.Broker.DEFAULT_BROKER_URL;
+import javax.jms.ConnectionFactory;
+import org.apache.activemq.ActiveMQConnectionFactory;
+
 /**
  *
  * @author peter.doyle
@@ -10,23 +14,16 @@ public class RunMessageSenderJMSTemplate {
 
     public static void main(String[] args) throws Exception {
 
-        String brokerUrl = args[0];
+        int tps = Integer.parseInt(args[0]);
         String queueName = args[1];
-        int tps = Integer.parseInt(args[2]);
-        String consoleOutput = args[3];
-        boolean noisy = false;
-        if (consoleOutput.toLowerCase().equals("y")
-                || consoleOutput.toLowerCase().equals("yes")
-                || consoleOutput.toLowerCase().equals("true")) {
-            noisy = true;
-        }
 
+        ConnectionFactory cf = new ActiveMQConnectionFactory(DEFAULT_BROKER_URL);
 
-        MessageSender.create(
-                brokerUrl,
+        MessageSenderJMSTemplate.create(
+                cf,
                 queueName,
-                tps,
-                noisy)
+                1000l / tps,
+                false)
                 .start();
 
     }

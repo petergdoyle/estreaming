@@ -2,7 +2,6 @@
  */
 package com.cleverfishsoftware.spring.xd.jms.sender;
 
-import static com.cleverfishsoftware.spring.xd.jms.sender.Broker.DEFAULT_BROKER_URL;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,12 +38,14 @@ public class MessageSenderJMSTemplate {
     private final String queueName;
     private final long sleep;
     private final boolean noisy;
+    private final String brokerUrl;
 
-    public static MessageSenderJMSTemplate create(ConnectionFactory cf, String queueName, long sleep, boolean noisy) {
-        return new MessageSenderJMSTemplate(cf, queueName, sleep, noisy);
+    public static MessageSenderJMSTemplate create(String brokerUrl, ConnectionFactory cf, String queueName, long sleep, boolean noisy) {
+        return new MessageSenderJMSTemplate(brokerUrl, cf, queueName, sleep, noisy);
     }
 
-    public MessageSenderJMSTemplate(ConnectionFactory cf, String queueName, long sleep, boolean noisy) {
+    private MessageSenderJMSTemplate(String brokerUrl, ConnectionFactory cf, String queueName, long sleep, boolean noisy) {
+        this.brokerUrl = brokerUrl;
         this.template = new JmsTemplate(cf);
         this.queueName = queueName;
         this.sleep = sleep;
@@ -147,9 +148,11 @@ public class MessageSenderJMSTemplate {
     }
 
     public void start() throws InterruptedException {
-        System.out.println("sending messages to ActiveMQ broker at " + DEFAULT_BROKER_URL);
+        System.out.println("sending messages to ActiveMQ broker at " + brokerUrl);
         while (true) {
-            Thread.sleep(sleep);
+            if (sleep > 0) {
+                Thread.sleep(sleep);
+            }
             send(System.out);
         }
     }

@@ -6,7 +6,7 @@ package com.cleverfishsoftware.spring.xd.jms.sender;
  *
  * @author peter.doyle
  */
-public class RunMessageSenderArgs {
+public class RunMessageSender {
 
     public static void main(String[] args) throws Exception {
 

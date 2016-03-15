@@ -2,7 +2,6 @@
  */
 package com.cleverfishsoftware.spring.xd.jms.sender;
 
-import static com.cleverfishsoftware.spring.xd.jms.sender.Broker.DEFAULT_BROKER_URL;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

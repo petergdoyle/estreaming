@@ -17,6 +17,19 @@ check_network_socket_state() {
   fi
 }
 
+watch_network_socket_state() {
+  local ip=$1
+  if [ -e $ip ]; then
+    echo "watch_network_socket_state: variable ip is not set. cannot continue"
+    return 1
+  fi
+  check_network_socket_state $ip
+  while [ "$?" -ne "0" ]; do
+    sleep 2
+    check_network_socket_state $ip
+  done
+}
+
 validate_service_url() {
   local url=$1
   if [ -e $url ]; then

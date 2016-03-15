@@ -6,3 +6,4 @@ target
 nohup.out
 *.log
 nbactions.xml
+mq-docker

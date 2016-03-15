@@ -11,6 +11,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.pool.PooledConnectionFactory;
 
 /**
  *
@@ -44,7 +45,9 @@ public class RunPureJMSMessageSender {
 
         ConnectionFactory cf = new ActiveMQConnectionFactory(brokerUrl);
         ((ActiveMQConnectionFactory) cf).setUseAsyncSend(true);
-        Connection connection = cf.createConnection();
+        PooledConnectionFactory pcf = new PooledConnectionFactory();
+        pcf.setConnectionFactory(cf);
+        Connection connection = pcf.createConnection();
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         Queue queue = session.createQueue(queueName);
         MessageProducer producer = session.createProducer(queue);

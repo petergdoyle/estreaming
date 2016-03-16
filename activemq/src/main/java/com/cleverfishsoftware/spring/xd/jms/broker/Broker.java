@@ -1,6 +1,6 @@
 /*
  */
-package com.cleverfishsoftware.spring.xd.jms.sender.airline;
+package com.cleverfishsoftware.spring.xd.jms.broker;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.usage.SystemUsage;

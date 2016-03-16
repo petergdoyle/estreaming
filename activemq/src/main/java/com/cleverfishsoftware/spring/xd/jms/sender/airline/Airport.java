@@ -1,6 +1,6 @@
 /*
  */
-package com.cleverfishsoftware.spring.xd.jms.sender;
+package com.cleverfishsoftware.spring.xd.jms.sender.airline;
 
 import java.util.Objects;
 import org.apache.commons.csv.CSVRecord;

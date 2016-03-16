@@ -1,12 +1,12 @@
 /*
  */
-package com.cleverfishsoftware.spring.xd.jms.sender;
+package com.cleverfishsoftware.spring.xd.jms.sender.airline;
 
+import com.cleverfishsoftware.spring.xd.jms.sender.sample.PayloadGenerator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.HashSet;
@@ -16,25 +16,14 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jms.ConnectionFactory;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-//import org.springframework.jms.core.JmsTemplate;
-import com.google.common.util.concurrent.RateLimiter;
-import java.util.concurrent.atomic.AtomicInteger;
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.Session;
-import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
  *
- * @author peter.doyle
+ * @author peter
  */
-public class MessageSender {
+public class AirlineDataPayloadGenerator implements PayloadGenerator {
 
     private static final String COMMA = ",";
     private static final int MIN_PRICE = 350;
@@ -43,45 +32,12 @@ public class MessageSender {
     private static final List<Airline> AIRLINES = new ArrayList<>();
     private static final List<Airport> AIRPORTS = new ArrayList<>();
 
-    private final AtomicInteger count = new AtomicInteger(0);
-
-//    private final JmsTemplate template;
-    private final String queueName;
-    private final boolean noisy;
-    private final RateLimiter throttle;
-
-    private final ConnectionFactory cf;
-    private final Connection connection;
-    private final Session session;
-    private final Queue queue;
-    private final MessageProducer producer;
-
-    public static MessageSender create(String brokerUrl, String queueName, long rate, boolean noisy) throws JMSException {
-        return new MessageSender(brokerUrl, queueName, RateLimiter.create(rate + 0.0f), noisy);
-    }
-    private final String brokerUrl;
-
-    private MessageSender(String brokerUrl, String queueName, RateLimiter throttle, boolean noisy) throws JMSException {
-        this.brokerUrl = brokerUrl;
-        this.throttle = throttle;
-        this.queueName = queueName;
-//        this.template = new JmsTemplate(cf);
-        this.noisy = noisy;
-
-        cf = new ActiveMQConnectionFactory(brokerUrl);
-        ((ActiveMQConnectionFactory) cf).setUseAsyncSend(true);
-        connection = cf.createConnection();
-        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        queue = session.createQueue(this.queueName);
-        producer = session.createProducer(queue);
-    }
-
     static {
         try {
 
             InputStream in;
             Iterable<CSVRecord> records;
-            in = MessageSender.class.getClassLoader().getResourceAsStream("airlines.dat");
+            in = AirlineDataPayloadGenerator.class.getClassLoader().getResourceAsStream("airlines.dat");
             records = CSVFormat.DEFAULT.parse(new BufferedReader(new InputStreamReader(in)));
             for (CSVRecord each : records) {
                 Airline airline = new Airline(each);
@@ -89,7 +45,7 @@ public class MessageSender {
                     AIRLINES.add(airline);
                 }
             }
-            in = MessageSender.class.getClassLoader().getResourceAsStream("airports.dat");
+            in = AirlineDataPayloadGenerator.class.getClassLoader().getResourceAsStream("airports.dat");
             records = CSVFormat.DEFAULT.parse(new BufferedReader(new InputStreamReader(in)));
             for (CSVRecord each : records) {
                 Airport airport = new Airport(each);
@@ -99,28 +55,15 @@ public class MessageSender {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(MessageSender.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AirlineDataPayloadGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private static final Random random = new Random();
     private static final Formatter priceFormatter = new Formatter();
 
-    public void start() throws JMSException, InterruptedException {
-        System.out.println("sending messages to ActiveMQ broker at " + brokerUrl);
-//        while (true) {
-//            Thread.sleep(sleep);
-//            send(System.out);
-//        }
-        while (true) {
-            send(System.out);
-            System.out.print("\r"+count.incrementAndGet() + " sent");
-        }
-    }
-
-    private void send(PrintStream out) throws InterruptedException, JMSException {
-
-        throttle.tryAcquire();
+    @Override
+    public String[] getPayload(int size) {
         Airline airline = selectRandomAirline();
         Set<Airport> excludes = new HashSet<>();
         Airport from = selectRandomFromAirport(airline, excludes);
@@ -134,6 +77,8 @@ public class MessageSender {
         int minFlights = 1;
         int numFlights = random.nextInt((maxFlights + 1) - minFlights) + minFlights;
 
+        String [] payloads = new String[numFlights];
+        
         for (int i = 0; i < numFlights; i++) {
             int depHr = random.nextInt((23 + 1) - 0) + 0;
             int depMin = random.nextInt((59 + 1) - 0) + 0;
@@ -173,13 +118,10 @@ public class MessageSender {
                     .append(COMMA)
                     .append(type)
                     .toString();
-            if (this.noisy) {
-                out.println(payload);
-            }
-//            template.convertAndSend(queueName, msg);
-            Message msg = session.createTextMessage(payload);
-            producer.send(msg);
+            payloads[i]=payload;
         }
+        return payloads;
+
     }
 
     private static String removeBadChars(String s) {

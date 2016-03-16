@@ -34,7 +34,7 @@ echo -e "*** Select the Payload Generator Type *** \n\
 read opt
 case $opt in
     1)
-    payloadGeneratorClassName='com.cleverfishsoftware.spring.xd.jms.sender.sample.AirlineDataPayloadGenerator'
+    payloadGeneratorClassName='com.cleverfishsoftware.spring.xd.jms.sender.airline.AirlineDataPayloadGenerator'
     break
     ;;
     2)

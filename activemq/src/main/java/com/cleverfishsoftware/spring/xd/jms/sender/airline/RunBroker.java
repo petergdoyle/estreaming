@@ -1,8 +1,8 @@
 /*
  */
-package com.cleverfishsoftware.spring.xd.jms.sender;
+package com.cleverfishsoftware.spring.xd.jms.sender.airline;
 
-import static com.cleverfishsoftware.spring.xd.jms.sender.Broker.*;
+import static com.cleverfishsoftware.spring.xd.jms.sender.airline.Broker.*;
 
 /**
  *

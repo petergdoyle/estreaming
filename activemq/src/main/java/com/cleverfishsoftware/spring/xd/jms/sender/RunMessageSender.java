@@ -94,12 +94,12 @@ public class RunMessageSender {
         final MessageSender sender = JmsMessageSender.getInstance(cf, brokerUrl, queueName);
 
         while (true) {
-            throttle.acquire();
             if (limit > 0 && count.get() == limit) {
                 break;
             }
             final String[] payloads = payloadGenerator.getPayload(messageSize);
             for (int i = 0; i < payloads.length; i++) {
+                throttle.acquire();
                 if (limit > 0 && count.get() == limit) {
                     break;
                 }
@@ -151,7 +151,7 @@ public class RunMessageSender {
         long elapsedSeconds = different / secondsInMilli;
 
         System.out.printf(
-                "elapsed time: %d days, %d hours, %d minutes, %d seconds%n",
+                "\nelapsed time: %d days, %d hours, %d minutes, %d seconds%n",
                 elapsedDays,
                 elapsedHours, elapsedMinutes, elapsedSeconds);
 

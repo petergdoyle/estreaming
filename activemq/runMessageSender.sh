@@ -12,6 +12,8 @@ if [ "$message_limit" -eq "0" ]; then
   if [ "$message_timeout" -gt "0" ]; then
     timeout='timeout '$message_timeout's'
   fi
+else
+  timeout='time'
 fi
 read -e -p "Enter the message size (bytes): " -i "1000" message_size
 number_of_cores=$(grep -c ^processor /proc/cpuinfo)

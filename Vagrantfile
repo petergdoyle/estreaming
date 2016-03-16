@@ -10,6 +10,8 @@ Vagrant.configure(2) do |config|
 
   config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "0.0.0.0", id: "google cAdvisor port", auto_correct: true
 
+  config.vm.network "forwarded_port", guest: 8161, host: 8161, host_ip: "0.0.0.0", id: "amq server", auto_correct: true
+
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--cpuexecutioncap", "80"]
     vb.cpus=4 #recommended=4 if available

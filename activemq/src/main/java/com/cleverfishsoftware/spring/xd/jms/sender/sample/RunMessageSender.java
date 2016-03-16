@@ -75,7 +75,7 @@ public class RunMessageSender {
         final String payload = payloadBuilder.toString();
 
         System.out.println("Preparing to send "
-                + (limit > 0 ? limit : "unlimited ") + payload.length() + " byte messages "
+                + (limit > 0 ? limit : "unlimited") + " (" + payload.length() + "byte) messages "
                 + "to "
                 + brokerUrl + " "
                 + "at a rate of  " + rate + " messages per second "

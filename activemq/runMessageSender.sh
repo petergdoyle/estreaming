@@ -29,5 +29,5 @@ $console_output"
 echo $cmd
 eval $cmd
 
-echo "JMS MessageSender started on PID $!"
+#echo "JMS MessageSender started on PID $!"
 cd $pwd

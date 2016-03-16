@@ -21,7 +21,7 @@ public class RunJMSTemplateMessageSender {
 
         String brokerUrl = args[0];
         String queueName = args[1];
-        int tps = 0;
+        int rate = 0;
         boolean noisy = false;
         if (args.length > 2) {
             String tpsValue = args[2];
@@ -39,11 +39,7 @@ public class RunJMSTemplateMessageSender {
             }
         }
 
-        ConnectionFactory cf = new ActiveMQConnectionFactory(brokerUrl);
-        ((ActiveMQConnectionFactory) cf).setUseAsyncSend(true);
-        PooledConnectionFactory pcf = new PooledConnectionFactory();
-        pcf.setConnectionFactory(cf);
-        JmsTemplate template = new JmsTemplate(pcf);
+        JmsTemplate template = new JmsTemplate(ConnectionFactoryProvider(brokerUrl));
 
         StringBuilder payload = new StringBuilder();
         for (int i = 0; i < 100; i++) {
@@ -56,5 +52,13 @@ public class RunJMSTemplateMessageSender {
             template.convertAndSend(queueName, payload.toString());
             System.out.print("\r" + count.incrementAndGet() + " sent");
         }
+    }
+
+    private static ConnectionFactory ConnectionFactoryProvider(String brokerUrl) {
+        ConnectionFactory cf = new ActiveMQConnectionFactory(brokerUrl);
+        ((ActiveMQConnectionFactory) cf).setUseAsyncSend(true);
+        PooledConnectionFactory pcf = new PooledConnectionFactory();
+        pcf.setConnectionFactory(cf);
+        return pcf;
     }
 }

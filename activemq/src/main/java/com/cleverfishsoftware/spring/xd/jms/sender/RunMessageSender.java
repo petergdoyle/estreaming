@@ -1,6 +1,6 @@
 /*
  */
-package com.cleverfishsoftware.spring.xd.jms.sender.sample;
+package com.cleverfishsoftware.spring.xd.jms.sender;
 
 import com.google.common.util.concurrent.RateLimiter;
 import java.util.Date;

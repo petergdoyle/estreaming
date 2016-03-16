@@ -1,6 +1,6 @@
 /*
  */
-package com.cleverfishsoftware.spring.xd.jms.sender.sample;
+package com.cleverfishsoftware.spring.xd.jms.sender;
 
 import javax.jms.ConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;

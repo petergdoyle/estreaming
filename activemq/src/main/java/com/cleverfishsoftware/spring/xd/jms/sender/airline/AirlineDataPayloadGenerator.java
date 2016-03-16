@@ -2,7 +2,7 @@
  */
 package com.cleverfishsoftware.spring.xd.jms.sender.airline;
 
-import com.cleverfishsoftware.spring.xd.jms.sender.sample.PayloadGenerator;
+import com.cleverfishsoftware.spring.xd.jms.sender.PayloadGenerator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

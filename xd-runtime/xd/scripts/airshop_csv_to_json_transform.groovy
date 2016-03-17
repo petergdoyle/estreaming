@@ -21,8 +21,9 @@ try {
       price(Float.parseFloat(vals[13]))
       currency(vals[14])
       fltType(vals[15])
+      padding(vals[16])
   }
-  jsonBuilder.toPrettyString()
+  jsonBuilder.toString() // toPrettyString()
 } catch (all) {
   println(all)
   println("problem parsing "+payload)

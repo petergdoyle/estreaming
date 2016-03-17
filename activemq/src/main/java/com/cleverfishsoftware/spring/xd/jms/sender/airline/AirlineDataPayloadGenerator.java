@@ -77,15 +77,15 @@ public class AirlineDataPayloadGenerator implements PayloadGenerator {
         int minFlights = 1;
         int numFlights = random.nextInt((maxFlights + 1) - minFlights) + minFlights;
 
-        String [] payloads = new String[numFlights];
-        
+        String[] payloads = new String[numFlights];
+
         for (int i = 0; i < numFlights; i++) {
             int depHr = random.nextInt((23 + 1) - 0) + 0;
             int depMin = random.nextInt((59 + 1) - 0) + 0;
             int arrHr = random.nextInt(((23) + 1) - depHr) + depHr;
             int arrMin = random.nextInt(((59) + 1) - depMin) + depMin;
 
-            String payload = new StringBuilder()
+            StringBuilder record = new StringBuilder()
                     .append(removeBadChars(airline.code))
                     .append(COMMA)
                     .append(removeBadChars(airline.name))
@@ -116,9 +116,13 @@ public class AirlineDataPayloadGenerator implements PayloadGenerator {
                     .append(COMMA)
                     .append(currency)
                     .append(COMMA)
-                    .append(type)
+                    .append(type);
+            while (record.length() < size) { // add padding to match the desired message size
+               record.append("@");
+            }
+            String payload = record.append(COMMA)
                     .toString();
-            payloads[i]=payload;
+            payloads[i] = payload;
         }
         return payloads;
 

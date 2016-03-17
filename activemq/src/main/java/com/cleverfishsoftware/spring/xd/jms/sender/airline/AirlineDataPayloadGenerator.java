@@ -117,12 +117,13 @@ public class AirlineDataPayloadGenerator implements PayloadGenerator {
                     .append(currency)
                     .append(COMMA)
                     .append(type);
-            while (record.length() < size) { // add padding to match the desired message size
-               record.append("@");
+            if (record.length() + 2 < size) {
+                record.append(COMMA);
+                while (record.length() < size) { // add padding to match the desired message size, need at least one character after the comma
+                    record.append("@");
+                }
             }
-            String payload = record.append(COMMA)
-                    .toString();
-            payloads[i] = payload;
+            payloads[i] = record.toString();
         }
         return payloads;
 

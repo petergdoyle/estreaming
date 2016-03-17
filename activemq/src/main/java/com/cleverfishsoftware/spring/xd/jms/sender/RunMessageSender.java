@@ -98,26 +98,24 @@ public class RunMessageSender {
                 break;
             }
             final String[] payloads = payloadGenerator.getPayload(messageSize);
-            for (int i = 0; i < payloads.length; i++) {
+            for (final String payload : payloads) {
+                if (noisy) {
+                    System.out.println(payload);
+                }
                 throttle.acquire();
                 if (limit > 0 && count.get() == limit) {
                     break;
                 }
-                final String payload = payloads[i];
                 count.incrementAndGet();
-                executorService.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (Thread.currentThread().isInterrupted()) {
-                            return;
-                        }
-                        try {
-                            sender.send(payload);
-                            System.out.print("\r" + count.get() + " sent");
-                        } catch (Exception ex) {
-                        }
+                executorService.submit(() -> {
+                    if (Thread.currentThread().isInterrupted()) {
+                        return;
                     }
-
+                    try {
+                        sender.send(payload);
+                        System.out.print("\r" + count.get() + " sent");
+                    } catch (Exception ex) {
+                    }
                 });
             }
         }

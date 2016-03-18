@@ -31,7 +31,7 @@ public class OnesAndZerosPayloadGenerator implements PayloadGenerator {
         return new String[]{new String(data)};
     }
 
-    private byte[] extractBytes(ByteBuffer buffer, int size) {
+    private byte[] extractBytes(final ByteBuffer buffer, int size) {
         byte[] data = new byte[size];
         ByteBuffer duplicate = buffer.duplicate();
         duplicate.rewind();
@@ -39,7 +39,7 @@ public class OnesAndZerosPayloadGenerator implements PayloadGenerator {
         return data;
     }
 
-    private void fillBuffer(ByteBuffer buffer) {
+    private void fillBuffer(final ByteBuffer buffer) {
         boolean on = false;
         byte[] one = "1".getBytes();
         byte[] zero = "0".getBytes();
@@ -53,7 +53,7 @@ public class OnesAndZerosPayloadGenerator implements PayloadGenerator {
         }
     }
 
-    public static ByteBuffer resizeBuffer(ByteBuffer original, int size) {
+    public static ByteBuffer resizeBuffer(final ByteBuffer original, final int size) {
         ByteBuffer resizedBuffer = ByteBuffer.allocate(size);
         original.rewind();//copy from the beginning
         resizedBuffer.put(original);

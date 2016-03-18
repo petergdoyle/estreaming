@@ -78,7 +78,7 @@ public class RunMessageSender {
         }
 
         System.out.println("Preparing to send "
-                + (limit > 0 ? limit : "unlimited") + " (" + messageSize + " byte) messages "
+                + (limit > 0 ? limit : " an unlimited number of ") + " (" + messageSize + " byte) messages "
                 + "to "
                 + brokerUrl + " "
                 + "at a rate of  " + rate + " messages per second "

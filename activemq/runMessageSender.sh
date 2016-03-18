@@ -5,19 +5,20 @@ script_path=$( cd $(dirname $0) ; pwd -P )
 
 while true; do
   echo -e "*** Select the Messaging Provider Type *** \n \
-  1) ActiveMQ JMS (AMQ) \n \
-  2) Artimis (AMQ derivative) \n \
-  3) Apollo (AMQ derivative) \n \
-  4) Kafka \n \
-  5) ØMQ (zero mq) \n \
-  6) Spring Integration \n \
-  7) MQ Series JMS \n \
-  8) RabbitMQ \
+  1) ActiveMQ JMS (AMQ) \
   "
+#  2) Artimis (AMQ derivative) \n \
+#  3) Apollo (AMQ derivative) \n \
+#  4) Kafka \n \
+#  5) ØMQ (zero mq) \n \
+#  6) Spring Integration \n \
+#  7) MQ Series JMS \n \
+#  8) HornetMQ \
+#  8) RabbitMQ \
   read opt
   case $opt in
       1)
-      connectionFactoryClassName='com.cleverfishsoftware.spring.xd.jms.sender.ActiveMQConnectionFactoryProvider'
+      connection_factory_class_name='com.cleverfishsoftware.spring.xd.jms.sender.ActiveMQConnectionFactoryProvider'
       default_broker_url='tcp://localhost:61616'
       break
       ;;
@@ -47,19 +48,23 @@ while true; do
   1) Airline Flight Search Data (csv) \n \
   2) Car Rental Availablity Data (edifact)\n \
   3) Hotel Room Availablity Data (edifact)\n \
-  4) Ones and Zeros (character) \n \
-  5) Lorem-ipsum \n \
-  6) Integers (csv) \n \
-  6) Smileys \
+  4) Ones and Zeros (0,1,0,1,0...) \n \
+  5) Lorem-ipsum (Lorem ipsum dolor...)\n \
+  6) Comma Separated Integers (12,31,2,32...) \n \
+  7) Smileys (☺☻☺☻☺☻...)\
   "
   read opt
   case $opt in
       1)
-      payloadGeneratorClassName='com.cleverfishsoftware.spring.xd.jms.sender.airline.AirlineDataPayloadGenerator'
+      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.airline.AirlineDataPayloadGenerator'
       break
       ;;
-      2)
-      payloadGeneratorClassName='com.cleverfishsoftware.spring.xd.jms.sender.RandomCharacterPayloadGenerator'
+      4)
+      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.OnesAndZerosPayloadGenerator'
+      break
+      ;;
+      7)
+      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.SmileysPayloadGenerator'
       break
       ;;
       *)
@@ -75,8 +80,8 @@ java -cp .:target/spring-xd-jms-sender-1.0-SNAPSHOT.jar \
 com.cleverfishsoftware.spring.xd.jms.sender.RunMessageSender \
 $broker_url \
 $queue_name \
-$connectionFactoryClassName \
-$payloadGeneratorClassName \
+$connection_factory_class_name \
+$payload_generator_class_name \
 $message_rate \
 $message_limit \
 $message_size \

@@ -3,6 +3,7 @@
 package com.cleverfishsoftware.spring.xd.jms.sender.airline;
 
 import com.cleverfishsoftware.spring.xd.jms.sender.PayloadGenerator;
+import com.cleverfishsoftware.spring.xd.jms.sender.SmileysPayloadGenerator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,7 +121,11 @@ public class AirlineDataPayloadGenerator implements PayloadGenerator {
             if (record.length() + 2 < size) {
                 record.append(COMMA);
                 while (record.length() < size) { // add padding to match the desired message size, need at least one character after the comma
-                    record.append("@");
+                    if (record.length() % 2 == 0) {
+                        record.append(SmileysPayloadGenerator.whiteSmiley());
+                    } else {
+                        record.append(SmileysPayloadGenerator.blackSmiley());
+                    }
                 }
             }
             payloads[i] = record.toString();

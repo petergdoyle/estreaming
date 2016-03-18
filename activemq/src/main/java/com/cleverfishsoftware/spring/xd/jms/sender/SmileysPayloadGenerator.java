@@ -16,6 +16,17 @@ public class SmileysPayloadGenerator implements PayloadGenerator {
     public SmileysPayloadGenerator() {
     }
 
+    public static char whiteSmiley() {
+        return '\u263A';
+    }
+
+    public static char blackSmiley() {
+        return '\u263B';
+    }
+
+    private final char white_smiley = SmileysPayloadGenerator.whiteSmiley();
+    private final char black_smiley = SmileysPayloadGenerator.blackSmiley();
+
     @Override
     public String[] getPayload(final int size) {
         int buffersize = size * 2; //the charBuffer will need to be sized appropriately 
@@ -38,8 +49,6 @@ public class SmileysPayloadGenerator implements PayloadGenerator {
     }
 
     private void fillBuffer(final ByteBuffer buffer) {
-        char white_smiley = '\u263A';
-        char black_smiley = '\u263B';
         int charCount = 0;
         //System.out.println("filling buffer from position " + buffer.position());
         while (buffer.hasRemaining()) {
@@ -81,6 +90,9 @@ public class SmileysPayloadGenerator implements PayloadGenerator {
                 size = Integer.parseInt(argValue);
             }
         }
+        int length = new String(new char[]{SmileysPayloadGenerator.whiteSmiley()}).length();
+        System.out.println(SmileysPayloadGenerator.whiteSmiley() + " is " + length + " bytes long");
+
         SmileysPayloadGenerator payloadGenerator = new SmileysPayloadGenerator();
         String[] payloads = payloadGenerator.getPayload(size);
         for (String payload : payloads) {

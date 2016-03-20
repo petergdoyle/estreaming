@@ -1,0 +1,23 @@
+/*
+NOTE: This configuration is convenient for maintaining shared configuration across multiple projects in the samples repo. 
+If copying this example, it may be simpler to declare the  
+required configuration inline. 
+*/
+buildscript {
+   apply from: '../sample-modules-parent/buildscript.gradle', 
+   to: buildscript
+}
+apply from: '../sample-modules-parent/build.gradle'
+apply plugin: 'spring-xd-module'
+
+group = 'com.acme'
+version = '1.0.0.BUILD-SNAPSHOT'
+
+description = "Redis Store sink"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+dependencies {
+    compile "org.springframework.integration:spring-integration-redis:$springIntegrationVersion"
+}

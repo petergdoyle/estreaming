@@ -1,0 +1,60 @@
+
+Redis sink can be used to ingest data into redis store. You can choose queue, topic or key with selcted collection type to point to a specific data store.
+
+For example,
+
+xd:>stream create store-into-redis --definition "http | redis --queue=myList" --deploy
+xd:>Created and deployed new stream 'store-into-redis'
+Options
+The redis sink has the following options:
+
+collectionType
+the collection type to use for the given key (CollectionType, default: LIST, possible values: LIST,SET,ZSET,MAP,PROPERTIES)
+
+database
+database index used by the connection factory (int, default: 0)
+
+hostname
+redis host name (String, default: localhost)
+
+key
+name for the key (String, no default)
+
+keyExpression
+a SpEL expression to use for keyExpression (String, no default)
+
+maxActive
+max number of connections that can be allocated by the pool at a given time; negative value for no limit (int, default: 8)
+
+maxIdle
+max number of idle connections in the pool; a negative value indicates an unlimited number of idle connections (int, default: 8)
+
+maxWait
+max amount of time (in milliseconds) a connection allocation should block before throwing an exception when the pool is exhausted; negative value to block indefinitely (int, default: -1)
+
+minIdle
+target for the minimum number of idle connections to maintain in the pool; only has an effect if it is positive (int, default: 0)
+
+password
+redis password (String, default: ``)
+
+port
+redis port (int, default: 6379)
+
+queue
+name for the queue (String, no default)
+
+queueExpression
+a SpEL expression to use for queue (String, no default)
+
+sentinelMaster
+name of Redis master server (String, default: ``)
+
+sentinelNodes
+comma-separated list of host:port pairs (String, default: ``)
+
+topic
+name for the topic (String, no default)
+
+topicExpression
+a SpEL expression to use for topic (String, no default)

@@ -46,7 +46,7 @@ read -e -p "Enter number of threads (1-$number_of_cores): " -i "$number_of_cores
 while true; do
   echo -e "*** Select the Payload Record Generator Type *** \n \
   1) Airline Flight Search Data (csv) \n \
-  2) Car Rental Availablity Data (edifact)\n \
+  2) Car Availablity Data (edifact)\n \
   3) Hotel Room Availablity Data (edifact)\n \
   4) Ones and Zeros (0,1,0,1,0...) \n \
   5) Lorem-ipsum (Lorem ipsum dolor...)\n \
@@ -57,6 +57,10 @@ while true; do
   case $opt in
       1)
       payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.airline.AirlineDataPayloadGenerator'
+      break
+      ;;
+      2)
+      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.EdifactCarPayloadGenerator'
       break
       ;;
       4)

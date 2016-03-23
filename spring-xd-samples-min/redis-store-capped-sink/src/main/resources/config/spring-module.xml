@@ -11,14 +11,14 @@
 		http://www.springframework.org/schema/integration/redis/spring-integration-redis.xsd">
 
     <int:channel id="input" />
-    
+
     <int-redis:store-outbound-channel-adapter
         id="redisListAdapter" collection-type="LIST" channel="input"
         key="${collection}" auto-startup="false">
         <int-redis:request-handler-advice-chain>
             <beans:bean class="org.springframework.integration.handler.advice.ExpressionEvaluatingRequestHandlerAdvice">
                 <!-- after the redisTemplate does a lpush into redis, we keep the collection bounded to 50 -->
-                <beans:property name="onSuccessExpression" value="#redisTemplate.boundListOps(${collection}).trim(0, -51)"/>
+                <beans:property name="onSuccessExpression" value="#redisTemplate.boundListOps(${collection}).trim(1,-1)"/>
             </beans:bean>
         </int-redis:request-handler-advice-chain>
     </int-redis:store-outbound-channel-adapter>

@@ -8,7 +8,8 @@ stream create car_echo_jms_to_log --definition "jms --destination=car_availabili
 
 
 
+module delete sink:redis-store-capped
 
 module upload --file /upload/rredis-store-capped-sink-1.0.0.BUILD-SNAPSHOT.jar --name redis-store-capped --type sink
 
-stream create car_echo_jms_to_redis --definition "jms --destination=car_availability | redis-store-capped" --deploy
+stream create car_echo_jms_to_redis --definition "jms --destination=car | redis-store-capped" --deploy

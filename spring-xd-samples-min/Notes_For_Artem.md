@@ -147,7 +147,6 @@ The customized redis-sink source is located here [git](https://github.com/peterg
         key="${collection}" auto-startup="false">
         <int-redis:request-handler-advice-chain>
             <beans:bean class="org.springframework.integration.handler.advice.ExpressionEvaluatingRequestHandlerAdvice">
-                <!-- after the redisTemplate does a lpush into redis, we keep the collection bounded to 5 -->
                 <beans:property name="onSuccessExpression" value="#redisTemplate.boundListOps(${collection}).trim(-1,1)"/>
             </beans:bean>
         </int-redis:request-handler-advice-chain>
@@ -186,7 +185,8 @@ And a controlled jms sender to the car queue this unfortunately this does not pr
 
 ##Assertions and Next Steps?
 - I do understand how to configure an ExpressionEvaluationRequestHandlerAdvice to run the trim command on the RedisTemplate after the default "lpush" is done - and that module is operational. 
-- I do not think the suggested trim(1, -1) has the desired effect but now that you can see what I am trying to do maybe you can suggest something different - and I am unclear really how the trim() operation works based on this - so if you think there is a way to modify that for the desired effect then I could appreciate your help because trim(0,5) doesn't work right either (to give a cap of 5 elements where the oldest is removed after the size of the collection grows beyond 5)
+- I do not think the suggested trim(1, -1) has the desired effect but now that you can see what I am trying to do maybe you can suggest something different - and I am unclear really how the trim() operation works based on this - so if you think there is a way to modify that for the desired effect then I could appreciate your help because trim(0,5) doesn't work right either (for instance to define a cap of 50 elements where the oldest is removed after the size of the collection grows beyond 50)
 	- If there is no appropriate trim() parameter to give the desired behavior, then I believe what I really need to do is to turn the ```lpush``` to a ```rpush```. I do understand there is a boolean property on the RedisQueueOutboundChannelAdapter to change the default behavior from 'lpush' to an 'rpush'. I **do not** understand how to set that property on the RedisQueueOutboundChannelAdapter itself given the way I have attempted to solve this problem by modifying the sample redis-sink module
+		- When I look at Spring Sources I see the only construction of RedisQueueOutboundChannelAdapter done in the RedisMessageBus class - I have no idea what that class does or how to provide it with the propery leftPush = false 
 	- Any help would be much appreciated. 
 	- I am a big supporter of your efforts and have tried not to ask lazy or stupid questions and avoid brute-force ways to achieve this and I am many hours into this and want to solve it rather than drop it - Thanks!

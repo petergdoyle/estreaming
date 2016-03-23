@@ -6,4 +6,5 @@ img_name='estreaming/springxd'
 container_name='estreaming_xd_singlenode'
 start_cmd="xd-singlenode"
 network="$network_native"
+volumes="-v $PWD/upload:/upload"
 docker_run

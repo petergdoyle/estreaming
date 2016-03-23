@@ -1,0 +1,125 @@
+
+127.0.0.1:6379> lpush collection 1
+(integer) 1
+127.0.0.1:6379> lpush collection 2
+(integer) 2
+127.0.0.1:6379> lpush collection 3
+(integer) 3
+127.0.0.1:6379> lpush collection 4
+(integer) 4
+127.0.0.1:6379> lpush collection 5
+(integer) 5
+127.0.0.1:6379> lpush collection 6
+(integer) 6
+127.0.0.1:6379> lpush collection 7
+(integer) 7
+127.0.0.1:6379> lpush collection 8
+(integer) 8
+127.0.0.1:6379> lpush collection 9
+(integer) 9
+127.0.0.1:6379> lpush collection 10
+(integer) 10
+127.0.0.1:6379> lrange collection 0 -1
+ 1) "10"
+ 2) "9"
+ 3) "8"
+ 4) "7"
+ 5) "6"
+ 6) "5"
+ 7) "4"
+ 8) "3"
+ 9) "2"
+10) "1"
+
+127.0.0.1:6379> lpop collection
+"10"
+127.0.0.1:6379> lrange collection 0 -1
+1) "9"
+2) "8"
+3) "7"
+4) "6"
+5) "5"
+6) "4"
+7) "3"
+8) "2"
+9) "1"
+
+127.0.0.1:6379> rpop collection
+"1"
+127.0.0.1:6379> lrange collection 0 -1
+1) "9"
+2) "8"
+3) "7"
+4) "6"
+5) "5"
+6) "4"
+7) "3"
+8) "2"
+
+### so popping from the left is the wrong direction to read FIFO order
+127.0.0.1:6379> lpop collection
+"9"
+127.0.0.1:6379> lrange collection 0 -1
+1) "8"
+2) "7"
+3) "6"
+4) "5"
+5) "4"
+6) "3"
+7) "2"
+
+### so popping from the right is the right way to read FIFO order (when pushed from the left)
+127.0.0.1:6379> rpop collection
+"2"
+127.0.0.1:6379> lrange collection 0 -1
+1) "7"
+2) "6"
+3) "5"
+4) "4"
+5) "3"
+
+lPush (write), rpop(read) to read/write FIFO
+
+
+
+so...
+127.0.0.1:6379> lpush collection 1
+(integer) 1
+127.0.0.1:6379> lpush collection 2
+(integer) 2
+127.0.0.1:6379> lpush collection 3
+(integer) 3
+127.0.0.1:6379> lpush collection 4
+(integer) 4
+127.0.0.1:6379> lpush collection 5
+(integer) 5
+127.0.0.1:6379>
+lrange collection 0 -1
+1) "5"
+2) "4"
+3) "3"
+4) "2"
+5) "1"
+
+127.0.0.1:6379> rpop collection
+"1"
+127.0.0.1:6379> lrange collection 0 -1
+1) "5"
+2) "4"
+3) "3"
+4) "2"
+
+I want to remove the oldest element, in this case the "1" or the fifth element, not the newest element . This seems difficult the way the ltrim command works. I can definitely remove the oldest element with a ```ltrim collection 0 -2``` but that does not allow me to build keep the collection a maximum arbitrary size.
+So I think I really need to specify to the RedisQueueOutboundChannelAdapter to use a rpush command rather than lpush, then the ltrim command so the redisTemplate spel would look like #redisTemplate.boundListOps(${keyExpression}).trim(0, 5) to keep the newest 5 elements.
+Correct? If so, how to I change the default leftPush flag in the RedisQueueOutboundChannelAdapter and override the supplied redis:sink to use it?
+
+
+lpush collection 1
+lpush collection 2
+lpush collection 3
+lpush collection 4
+lpush collection 5
+
+
+
+Sorry, I do understand how to configure an ExpressionEvaluationRequestHandlerAdvice to run the trim command on the RedisTemplate after the default "lpush" is done, and that is working with a custom redis-sink module. I do agree with your explanation of trim(1, -1) to discard the oldest item but I believe I need a "rpush" to keep the queue bounded to a specific size (perhaps 5000 elements( so , so and to discard the oldest item once the size is exceeded so a . I do understand there is a boolean property on the RedisQueueOutboundChannelAdapter to change the default behavior from 'lpush' to an 'rpush'. I do **not** understand how to set that property on the RedisQueueOutboundChannelAdapter itself

@@ -15,6 +15,6 @@ public interface PayloadGenerator {
      * @param size the size of the content record 
      * @return at least one String, possibly more if the type of content makes sense to be generated as a batch
      */
-    String[] getPayload(int size);  
+    String[] getPayload(final int size);  
     
 }

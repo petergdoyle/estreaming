@@ -31,7 +31,7 @@ done
 read -e -p "Enter the broker url : " -i $default_broker_url broker_url
 read -e -p "Enter the activmq queue name: " -i "airshop" queue_name
 read -e -p "Enter the number of messages to generate (per second): " -i "10" message_rate
-read -e -p "Enter the max number of message (0 for unlimited): " -i "0" message_limit
+read -e -p "Enter the max number of messages (0 for unlimited): " -i "0" message_limit
 if [ "$message_limit" -eq "0" ]; then
   read -e -p "Enter a timeout value in seconds (0 for unlimited): " -i "0" message_timeout
   if [ "$message_timeout" -gt "0" ]; then
@@ -48,27 +48,32 @@ while true; do
   1) Airline Flight Search Data (csv) \n \
   2) Car Availablity Data (edifact)\n \
   3) Hotel Room Availablity Data (edifact)\n \
-  4) Ones and Zeros (0,1,0,1,0...) \n \
-  5) Lorem-ipsum (Lorem ipsum dolor...)\n \
-  6) Comma Separated Integers (12,31,2,32...) \n \
-  7) Smileys (☺☻☺☻☺☻...)\
+  4) Sequential Number (0000000001,0000000002,0000000003...) \n \
+  5) Ones and Zeros (0,1,0,1,0...) \n \
+  6) Lorem-ipsum (Lorem ipsum dolor...)\n \
+  7) Comma Separated Integers (12,31,2,32...) \n \
+  8) Smileys (☺☻☺☻☺☻...)\
   "
   read opt
   case $opt in
       1)
-      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.airline.AirlineDataPayloadGenerator'
+      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.AirlineDataPayloadGenerator'
       break
       ;;
       2)
-      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.EdifactCarPayloadGenerator'
+      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.EdifactCarPayloadGenerator'
       break
       ;;
       4)
-      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.OnesAndZerosPayloadGenerator'
+      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.SequentialNumberPayloadGenerator'
       break
       ;;
-      7)
-      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.SmileysPayloadGenerator'
+      5)
+      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.OnesAndZerosPayloadGenerator'
+      break
+      ;;
+      8)
+      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.SmileysPayloadGenerator'
       break
       ;;
       *)

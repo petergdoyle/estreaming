@@ -51,11 +51,12 @@ public class RedisStoreSinkTest {
         applicationContext.start();
         input.send(new GenericMessage<String>("hello"));
         assertEquals("hello", redisTemplate.boundListOps("mycollection").leftPop(5, TimeUnit.SECONDS));
-//                for (int i=0; i< 10; i++) {
-//		redisTemplate.boundListOps("car_echo_jms_to_redis")
-//                        .leftPush(i +" z0101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101");
-//                }
-        redisTemplate.boundListOps("car_echo_jms_to_redis").trim(0, 4);
+
+        String template = "%010d";
+        for (int i = 0; i < 10; i++) {
+            redisTemplate.boundListOps("capped_collection").leftPush(String.format(template, i));
+            redisTemplate.boundListOps("capped_collection").trim(0, 4);
+        }
     }
 
     @After

@@ -18,7 +18,7 @@
         <int-redis:request-handler-advice-chain>
             <beans:bean class="org.springframework.integration.handler.advice.ExpressionEvaluatingRequestHandlerAdvice">
                 <!-- after the redisTemplate does a lpush into redis, we keep the collection bounded to 50 -->
-                <beans:property name="onSuccessExpression" value="#redisTemplate.boundListOps(${collection}).trim(1,-1)"/>
+                <beans:property name="onSuccessExpression" value="#redisTemplate.boundListOps(${collection}).trim(-50,-1)"/>
             </beans:bean>
         </int-redis:request-handler-advice-chain>
     </int-redis:store-outbound-channel-adapter>

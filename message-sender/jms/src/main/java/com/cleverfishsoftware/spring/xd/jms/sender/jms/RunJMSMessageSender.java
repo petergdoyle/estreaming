@@ -1,7 +1,9 @@
 /*
  */
-package com.cleverfishsoftware.spring.xd.jms.sender;
+package com.cleverfishsoftware.spring.xd.jms.sender.jms;
 
+import com.cleverfishsoftware.spring.xd.jms.sender.MessageSender;
+import com.cleverfishsoftware.spring.xd.jms.sender.PayloadGenerator;
 import com.google.common.util.concurrent.RateLimiter;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
@@ -13,7 +15,7 @@ import javax.jms.ConnectionFactory;
  *
  * @author peter
  */
-public class RunMessageSender {
+public class RunJMSMessageSender {
 
     public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, Exception {
 

@@ -1,7 +1,8 @@
 /*
  */
-package com.cleverfishsoftware.spring.xd.jms.sender;
+package com.cleverfishsoftware.spring.xd.jms.sender.jms;
 
+import com.cleverfishsoftware.spring.xd.jms.sender.MessageSender;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Message;
@@ -13,7 +14,7 @@ import javax.jms.Session;
  *
  * @author peter
  */
-public class JmsMessageSender extends AbstractSender implements MessageSender {
+public class JmsMessageSender extends AbstractJMSSender implements MessageSender {
 
     private static JmsMessageSender instance;
     private final Connection connection;

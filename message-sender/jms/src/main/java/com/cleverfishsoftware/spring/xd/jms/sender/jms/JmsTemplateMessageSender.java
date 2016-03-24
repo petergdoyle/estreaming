@@ -1,7 +1,8 @@
 /*
  */
-package com.cleverfishsoftware.spring.xd.jms.sender;
+package com.cleverfishsoftware.spring.xd.jms.sender.jms;
 
+import com.cleverfishsoftware.spring.xd.jms.sender.MessageSender;
 import javax.jms.ConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 
@@ -9,7 +10,7 @@ import org.springframework.jms.core.JmsTemplate;
  *
  * @author peter
  */
-public class JmsTemplateMessageSender extends AbstractSender implements MessageSender {
+public class JmsTemplateMessageSender extends AbstractJMSSender implements MessageSender {
 
     private static JmsTemplateMessageSender instance;
 

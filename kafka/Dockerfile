@@ -9,3 +9,7 @@ RUN mkdir /kafka \
 COPY config/ /kafka/default/config
 
 ENV KAFKA_HOME=/kafka/default
+
+WORKDIR /kafka/default
+
+CMD /bin/bash

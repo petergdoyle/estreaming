@@ -1,17 +1,17 @@
 /*
  */
-package com.cleverfishsoftware.spring.xd.jms.sender;
+package com.cleverfishsoftware.spring.xd.jms.sender.jms;
 
 /**
  *
  * @author peter
  */
-public class AbstractSender {
+public class AbstractJMSSender {
 
     protected final String brokerUrl;
     protected final String queueName;
 
-    public AbstractSender(String brokerUrl, String queueName) {
+    public AbstractJMSSender(String brokerUrl, String queueName) {
         this.brokerUrl = brokerUrl;
         this.queueName = queueName;
     }

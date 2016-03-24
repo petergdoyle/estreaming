@@ -3,6 +3,6 @@
 
 no_cache=$1
 
-img_name='estreaming/basejdk'
+img_name='estreaming/nodejs'
 
 docker_build $no_cache

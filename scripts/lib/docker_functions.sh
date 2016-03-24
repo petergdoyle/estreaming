@@ -15,6 +15,14 @@ docker_build() {
 
 }
 
+docker_destroy() {
+  local container_name=$1
+  if [ -e $container_name ]; then
+    echo "param container_name is not set. cannot continue"
+    return 1
+  fi
+  docker_clean $container_name
+}
 
 docker_clean() {
   if [ -e $container_name ]; then

@@ -1,6 +1,6 @@
 /*
  */
-package com.cleverfishsoftware.spring.xd.jms.sender;
+package com.cleverfishsoftware.spring.xd.jms.sender.jms;
 
 import javax.jms.ConnectionFactory;
 

@@ -28,8 +28,18 @@ docker_build_all() {
     display_success "the docker build for $project_name/jdk8 built successfully"
   fi
 
+  cd docker/nodebase
+  ./docker_build.sh $no_cache
+  cd -
+  if [ $? -ne 0 ]; then
+    display_error "the docker build for $project_name/nodejs did not complete successfully"
+    exit
+  else
+    display_success "the docker build for $project_name/nodejs built successfully"
+  fi
+
   for folder in $(find . -type f -name 'Dockerfile' -exec dirname {} \;); do
-    if [[ "$folder" == './base' || "$folder" == './jdk8' ]]; then
+    if [[ "$folder" == './base' || "$folder" == './jdk8' || "$folder" == './nodebase' ]]; then
       continue
     fi
     cd $folder

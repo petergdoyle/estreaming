@@ -7,29 +7,29 @@ docker_build_all() {
   no_cache=$1
 
   #special base build
-  cd docker-base
+  cd docker/base
   ./docker_build.sh $no_cache
   cd -
   if [ $? -ne 0 ]; then
-    display_error "the docker build for $project_name/docker-base did not complete successfully"
+    display_error "the docker build for $project_name/base did not complete successfully"
     exit
   else
-    display_success "the docker build for $project_name/docker-base built successfully"
+    display_success "the docker build for $project_name/base built successfully"
   fi
   # jdk is out of the base because it adds about 500Mb to the image and
   # it is not needed by may containers
-  cd docker-jdk
+  cd docker/jdk8
   ./docker_build.sh $no_cache
   cd -
   if [ $? -ne 0 ]; then
-    display_error "the docker build for $project_name/docker-jdk did not complete successfully"
+    display_error "the docker build for $project_name/jdk8 did not complete successfully"
     exit
   else
-    display_success "the docker build for $project_name/docker-jdk built successfully"
+    display_success "the docker build for $project_name/jdk8 built successfully"
   fi
 
   for folder in $(find . -type f -name 'Dockerfile' -exec dirname {} \;); do
-    if [[ "$folder" == './docker-base' || "$folder" == './docker-jdk' ]]; then
+    if [[ "$folder" == './base' || "$folder" == './jdk8' ]]; then
       continue
     fi
     cd $folder

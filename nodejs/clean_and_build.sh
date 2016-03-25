@@ -1,26 +1,42 @@
 #!/bin/sh
 
+
 cd cors_proxy
-rm -fr node_modules
-npm install
+status=$(git status --porcelain .)
+if [[ "$status" != "" || ! -d "node_modules" ]]; then
+    rm -fr node_modules
+    npm install
+fi
 cd -
 
 cd mongo_connect
-rm -fr node_modules
-npm install
+status=$(git status --porcelain .)
+if [[ "$status" != "" || ! -d "node_modules" ]]; then
+  rm -fr node_modules
+  npm install
+fi
 cd -
 
 cd streaming_api_client
-rm -fr node_modules
-npm install
+status=$(git status --porcelain .)
+if [[ "$status" != "" || ! -d "node_modules" ]]; then
+  rm -fr node_modules
+  npm install
+fi
 cd -
 
 cd streaming_api_server
-rm -fr node_modules
-npm install
+status=$(git status --porcelain .)
+if [[ "$status" != "" || ! -d "node_modules" ]]; then
+  rm -fr node_modules
+  npm install
+fi
 cd -
 
 cd twitter
-rm -fr node_modules
-npm install
+status=$(git status --porcelain .)
+if [[ "$status" != "" || ! -d "node_modules" ]]; then
+  rm -fr node_modules
+  npm install
+fi
 cd -

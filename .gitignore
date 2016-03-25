@@ -9,4 +9,6 @@ nbactions.xml
 *.jar
 *.log
 *.out
+*.bz2
 mq-docker
+.DS_Store

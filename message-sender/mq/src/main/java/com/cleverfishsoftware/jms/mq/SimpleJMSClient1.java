@@ -30,35 +30,24 @@ public class SimpleJMSClient1 {
         try {
 
             cf = new MQQueueConnectionFactory();
-
             cf.setHostName("localhost");
             cf.setPort(new Integer("1414"));
             cf.setTransportType(WMQConstants.WMQ_CM_CLIENT);
             cf.setQueueManager("QM1");
             cf.setChannel("SYSTEM.DEF.SVRCONN");
-
-//            cf.setHostName("localhost");
-//            cf.setPort(new Integer("1414"));
-//            cf.setTransportType(WMQConstants.WMQ_CLIENT_NONJMS_MQ);
-//            cf.setQueueManager("QM1");
-//            cf.setChannel("SYSTEM.DEF.SVRCONN");
             user = "vagrant";
             password = "passw0rd";
             cf.setStringProperty(WMQConstants.USERID, user);
             cf.setStringProperty(WMQConstants.PASSWORD, password);
             cf.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, true);
-            queueConn = cf.createQueueConnection(user, password);
-
+//            queueConn = cf.createQueueConnection(user, password);
+            queueConn = cf.createQueueConnection();
             queueSession = queueConn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-
             queueSender = queueSession.createSender(queueSession.createQueue("QName"));
-
             queueSender.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-
             message = queueSession.createTextMessage(msg);
-
             queueSender.send(message);
-
+            queueSender.send(message);
             queueConn.close();
 
         } catch (Exception je) {

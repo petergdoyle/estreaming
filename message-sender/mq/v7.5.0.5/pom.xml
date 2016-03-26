@@ -11,51 +11,51 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jms</artifactId>
-            <version>4.1.1.RELEASE</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>com.ibm.mq</artifactId>
-            <version>8.0.0.0</version>
-        </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jms</artifactId>
+                <version>4.1.1.RELEASE</version>
+                <type>jar</type>
+            </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
-            <artifactId>com.ibm.mq.allclient</artifactId>
-            <version>8.0.0.0</version>
+            <artifactId>com.ibm.mqjms</artifactId>
+            <version>7.5.0.5</version>
         </dependency>
         <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>com.ibm.mq.defaultconfig</artifactId>
-            <version>8.0.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>com.ibm.mq.commonservices</artifactId>
-            <version>8.0.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>com.ibm.mq.headers</artifactId>
-            <version>8.0.0.0</version>
+            <groupId>com.ibm.disthub2</groupId>
+            <artifactId>com.ibm.disthub2</artifactId>
+            <version>7.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>com.ibm.mq.jmqi</artifactId>
-            <version>8.0.0.0</version>
+            <version>7.5.0.5</version>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
-            <artifactId>com.ibm.mq.jms.Nojndi</artifactId>
-            <version>8.0.0.0</version>
+            <artifactId>com.ibm.mq.commonservices</artifactId>
+            <version>7.5.0.5</version>
         </dependency>
         <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>javax.jms-api</artifactId>
-            <version>2.0-b10</version>
+            <groupId>com.ibm</groupId>
+            <artifactId>com.ibm.mq.headers</artifactId>
+            <version>7.5.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>com.ibm.mq.pcf</artifactId>
+            <version>7.5.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>com.ibm.mq.connector</artifactId>
+            <version>7.5.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>com.ibm.mq</artifactId>
+            <version>7.5.0.5</version>
         </dependency>
     </dependencies>
     <build>
@@ -73,19 +73,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                        </manifest>
-                    </archive>
-                </configuration>
             </plugin>
         </plugins>
     </build>

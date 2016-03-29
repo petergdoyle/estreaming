@@ -20,7 +20,7 @@ public class MQJMSMessageSender {
     public static void main(String[] args) throws JMSException {
 
         final String hostName = setHostName(args);
-        final String port = setPort(args);
+        final int port = setPort(args);
         final String queueManagerName = setQueueManagerName(args);
         final String channelName = setChannelName(args);
         final String queueName = setQueueName(args);
@@ -29,7 +29,7 @@ public class MQJMSMessageSender {
 
         MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
         cf.setHostName(hostName);
-        cf.setPort(new Integer(port));
+        cf.setPort(port);
         cf.setTransportType(WMQConstants.WMQ_CM_CLIENT);
         cf.setQueueManager(queueManagerName);
         cf.setChannel(channelName);
@@ -46,13 +46,9 @@ public class MQJMSMessageSender {
             queueSender.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
             TextMessage message = queueSession.createTextMessage(msg);
             queueSender.send(message);
+            System.out.println("successfully sent 1 message to the queue(" + queueName + ")");
         }
 
-    }
-
-    private static boolean setSecurityEnabled(String[] args) {
-        final boolean securityEnabled = args.length != 0 && args[6] != null && args[6].length() > 0 && args[6].equalsIgnoreCase("true");
-        return securityEnabled;
     }
 
     private static String setPassword(String[] args) {
@@ -65,13 +61,18 @@ public class MQJMSMessageSender {
         return user;
     }
 
+    private static boolean setSecurityEnabled(String[] args) {
+        final boolean securityEnabled = args.length != 0 && args[6] != null && args[6].length() > 0 && args[6].equalsIgnoreCase("true");
+        return securityEnabled;
+    }
+
     private static String setMsg(String[] args) {
         final String msg = args.length != 0 && args[5] != null && args[5].length() > 0 ? args[5] : "01010101010101";
         return msg;
     }
 
     private static String setQueueName(String[] args) {
-        final String queueName = args.length != 0 && args[4] != null && args[4].length() > 0 ? args[4] : "CAR_AVAILABILITY";
+        final String queueName = args.length != 0 && args[4] != null && args[4].length() > 0 ? args[4] : "QUEUE1";
         return queueName;
     }
 
@@ -85,8 +86,8 @@ public class MQJMSMessageSender {
         return queueManagerName;
     }
 
-    private static String setPort(String[] args) {
-        final String port = args.length != 0 && args[1] != null && args[1].length() > 0 ? args[1] : "1414";
+    private static int setPort(String[] args) {
+        final int port = args.length != 0 && args[1] != null && args[1].length() > 0 ? Integer.parseInt(args[1]) : 1414;
         return port;
     }
 

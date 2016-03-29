@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-mq_dir="../../mq"
+mq_dir=".."
 
 version='8.0.0.0'
 

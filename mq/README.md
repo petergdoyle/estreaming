@@ -25,20 +25,40 @@ Enter the port number: 1414
 9b4705ac01d1ecb5cc5ce6fa75050da68751528dc05b29472d3e8cf983b5f412
 ```
 
-####Turn on Authentication 
-By default, there is no authentication required to connect to the Queue Manager (see Dockerfile). The documentation for the github mq-docker image specifes that specifying security settings in a file that is COPYied to /etc/mqm/config.mqsc will apply security to the Queue Manager but this seems to not be working. So Security without any customization is applied. So if you want the authorization/authentication to be maintained on privileged users then as specified in conf/config_clauth_on.mqsc then run this script. You can verify settings by running the ```docker_exec_run_runmqsc.sh``` script to upen up a ```runmqsc``` session on the container then running a ```DIS QMGR``` and look for the ```CONNAUTH( )```entry - if there is some value in between the parenthesis then security in some form is still on. 
+####Turn off Authentication (Recommended initially)
+By default, MQ authorizations are required to connect to the Queue Manager. The documentation for the github mq-docker image specifes that specifying security settings in a file that is COPYied to /etc/mqm/config.mqsc will apply security to the Queue Manager but this seems to not be working. So Security without any customization is applied - therefore it is on. 
+If you don't want any authentication/authorization on the Queue Manager then run this script. 
 
 ```bash
 [vagrant@estreaming mq]$ ./docker_exec_apply_auth.sh
 ```
+It will run the mqsc commands
+```
+ALTER QMGR CHLAUTH(DISABLED) CONNAUTH(' ')
+REFRESH SECURITY TYPE(CONNAUTH)
+```
+
+####Turn on Authentication (Recommended later when things are running and security requirements are understood)
+So if you want the authorization/authentication to be maintained on privileged users then as specified in conf/config_clauth_on.mqsc then run this script. You can verify settings by running the ```docker_exec_run_runmqsc.sh``` script to upen up a ```runmqsc``` session on the container then running a ```DIS QMGR``` and look for the ```CONNAUTH( )```entry - if there is some value in between the parenthesis then security in some form is still on. 
+
+```bash
+[vagrant@estreaming mq]$ ./docker_exec_apply_auth.sh
+```
+
+It will prompt you for a user name and password that will get created on the server as an mq privileged user (added to the mqm group). Then it will run the following mqsc commands:
+```
+DEFINE CHANNEL(PASSWORD.SVRCONN) CHLTYPE(SVRCONN)
+SET CHLAUTH(PASSWORD.SVRCONN) TYPE(BLOCKUSER) USERLIST('nobody') DESCR('Allow privileged users on this channel')
+SET CHLAUTH('*') TYPE(ADDRESSMAP) ADDRESS('*') USERSRC(NOACCESS) DESCR('BackStop rule')
+SET CHLAUTH(PASSWORD.SVRCONN) TYPE(ADDRESSMAP) ADDRESS('*') USERSRC(CHANNEL) CHCKCLNT(REQUIRED)
+ALTER AUTHINFO(SYSTEM.DEFAULT.AUTHINFO.IDPWOS) AUTHTYPE(IDPWOS) ADOPTCTX(YES)
+REFRESH SECURITY TYPE(CONNAUTH)
+
+```
+For more information consult the reference below.
+
 
 ####Turn off Authentication 
-If you don't want any authentication/authorization on the Queume Manager then run this script. 
-
-```bash
-[vagrant@estreaming mq]$ ./docker_exec_apply_auth.sh
-```
-
 #####Destroy the container
 ```bash
 [vagrant@estreaming mq]$ ./docker_destroy.sh
@@ -85,7 +105,7 @@ AMQ8006: WebSphere MQ queue created.
 
 ####Compile and Run the Client program
 ```bash
-[vagrant@estreaming mq]$ ./test_mq_installation.sh
+[vagrant@estreaming mq-jms-client]$ ./test_mq_installation.sh
 ...
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS

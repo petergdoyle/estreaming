@@ -35,10 +35,12 @@ public class MQJMSMessageSender {
         cf.setChannel(channelName);
 
         if (securityEnabled) {
+            System.out.println("security enabled. checking name and password.");
             String user = setUser(args);
             String password = setPassword(args);
             applySecurity(cf, user, password);
         }
+        cf.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, true);
 
         try (QueueConnection queueConn = cf.createQueueConnection()) {
             QueueSession queueSession = queueConn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -99,7 +101,6 @@ public class MQJMSMessageSender {
     private static void applySecurity(final MQQueueConnectionFactory cf, final String user, final String password) throws JMSException {
         cf.setStringProperty(WMQConstants.USERID, user);
         cf.setStringProperty(WMQConstants.PASSWORD, password);
-        cf.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, true);
 //        QueueConnection queueConn = cf.createQueueConnection(user, password);
     }
 }

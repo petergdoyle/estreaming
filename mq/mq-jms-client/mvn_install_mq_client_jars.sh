@@ -1,13 +1,12 @@
 #!/bin/sh
 
-
-mq_dir=".."
+set -e
 
 version='8.0.0.0'
 
-if [[ ! -d "$mq_dir/lib" ]]; then
+if [[ ! -d "lib" ]]; then
 
-  echo " no client libs avaiable. please run $mq_dir/docker_exec_cp_mq_client_jars.sh first"
+  echo " no client libs avaiable. please run ../docker_exec_cp_mq_client_jars.sh first"
 
 else
     gid='com.ibm'
@@ -15,7 +14,7 @@ else
 
     for id in $aid
     do
-      cmd="mvn install:install-file -Dfile=$mq_dir/lib/$gid.$id.jar \
+      cmd="mvn install:install-file -Dfile=lib/$gid.$id.jar \
       -DgroupId=$gid -DartifactId=$gid.$id -Dversion=$version -Dpackaging=jar"
       eval "$cmd"
     done

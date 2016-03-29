@@ -40,7 +40,43 @@ $./docker_destroy.sh
 ```
 
 #Running the Client Code to put a Message on the Queue
-MQ requires that a Queue be defined on the server first so first thing is to create that Queue. Run the ```docker_exec_run_runmqsc.sh``` script to upen up a ```runmqsc``` session on the container. Then run the ```DEFINE QL(<queue-name>)``` where `<queue-name>` is the name of the Queue. You will then compile the program and be prompted for details about the installation by running the ```test_mq_installation``` script. After it runs, you should see a success message at the end
+
+####Install the IBM MQ V8 JMS client jars 
+IBM does not provide any open sourced or public maven accessible jars to connect to MQ. They do happen to be available in the Docker server image itself so you can obtain them from there. First run the script in the ```mq``` folder called ```docker_exec_cp_mq_client_jars``` to copy them from the running container to the ```mq/lib``` folder, then run the ```mq/mq-jms-client/mvn_install_mq_client_jars.sh``` to install the to the local maven repository. You should see each one install. There are about 8 jars to install this way.
+
+```bash
+$ cd mq-jms-client
+$ ../docker_exec_cp_mq_client_jars.sh
+$ ./mvn_install_mq_client_jars.sh
+...
+[INFO] --- maven-install-plugin:2.4:install-file (default-cli) @ mq-jms-client ---
+[INFO] Installing /vagrant/mq/lib/com.ibm.mq.jms.Nojndi.jar to /home/vagrant/.m2/repository/com/ibm/com.ibm.mq.jms.Nojndi/8.0.0.0/com.ibm.mq.jms.Nojndi-8.0.0.0.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 0.367 s
+[INFO] Finished at: 2016-03-29T11:12:31-04:00
+[INFO] Final Memory: 8M/102M
+[INFO] ------------------------------------------------------------------------
+```
+
+####Create a Queue
+
+MQ requires that a Queue be defined on the server first so first thing is to create that Queue. Run the ```docker_exec_run_runmqsc.sh``` script to upen up a ```runmqsc``` session on the container OR just run the Docker exec command as shown below. Then run the ```DEFINE QL(<queue-name>)``` where `<queue-name>` is the name of the Queue. You will then compile the program and be prompted for details about the installation by running the ```test_mq_installation``` script. After it runs, you should see a success message at the end
+
+```bash
+$ docker exec -ti estreaming_ibm_mq8_broker runmqsc 
+5724-H72 (C) Copyright IBM Corp. 1994, 2015.
+Starting MQSC for queue manager QM1.
+
+
+DEFINE QL(QUEUE1)
+     1 : DEFINE QL(QUEUE1)
+AMQ8006: WebSphere MQ queue created.
+
+
+```
+
 ####Compile and Run the Client program
 ```bash
 $ cd mq-jms-client

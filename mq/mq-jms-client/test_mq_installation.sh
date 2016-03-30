@@ -1,7 +1,8 @@
 #!/bin/sh
 
 mvn clean install
-
+pgm='MQJMSMessageSender'
+echo "Running program $pgm"
 read -e -p "Enter the host name: " -i "localhost" host
 read -e -p "Enter the port number: " -i "1414" port
 read -e -p "Enter the Queue Manager name: " -i "QM1" qm
@@ -17,5 +18,5 @@ fi
 
 java \
   -cp .:target/mq-jms-client-1.0-SNAPSHOT.jar \
-  com.cleverfishsoftware.jms.mq.SimpleJMSClient2 \
+  com.cleverfishsoftware.jms.mq.$pgm \
   $host $port $qm $ch $qu $msg $sec_enabled $user $pw

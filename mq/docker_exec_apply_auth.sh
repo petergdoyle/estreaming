@@ -5,7 +5,7 @@
 read -e -p "Enter the user name: " -i "vagrant" user
 read -e -p "Enter the user password: " -i "passw0rd" password
 docker exec \
-  --ti \
+  -ti \
   estreaming_ibm_mq8_broker \
   useradd $user -G mqm && echo $user:$password | chpasswd
 
@@ -14,7 +14,7 @@ docker exec \
 read -e -p "Enter the Queue Manager name: " -i "QM1" qm
 
 docker exec \
-  --ti \
+  -ti \
   estreaming_ibm_mq8_broker \
-  runmqsc $qm < /etc/mqm/config_clauth_on.mqsc
+  runmqsc $qm < /etc/mqm/config_clauth_on.mqsc \
   /bin/sh -c "runmqsc $qm < /etc/mqm/config_clauth_on.mqsc"

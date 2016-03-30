@@ -39,8 +39,10 @@ public class MQJMSMessageSender {
             String user = setUser(args);
             String password = setPassword(args);
             applySecurity(cf, user, password);
-        }
-        cf.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, true);
+            cf.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, true);
+        } /*else {
+        cf.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, false);
+        }*/
 
         try (QueueConnection queueConn = cf.createQueueConnection()) {
             QueueSession queueSession = queueConn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);

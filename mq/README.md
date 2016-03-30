@@ -340,3 +340,7 @@ successfully sent 1 message to the queue(QUEUE1)
 - [Introducing a Docker image for MQ Advanced for Developers](https://www.ibm.com/developerworks/community/blogs/messaging/entry/introducing_a_docker_image_for_mq_advanced_for_developers?lang=en) Arthur Barr  | Feb 24 2015 
 - [Getting going without turning off MQ Security](https://www.ibm.com/developerworks/community/blogs/messaging/entry/getting_going_without_turning_off_mq_security?lang=en) Morag Hughson  | Feb 12 2015 
 - [Run WebSphere® MQ commands on a queue manager](https://www.ibm.com/support/knowledgecenter/#!/SSFKSJ_7.5.0/com.ibm.mq.ref.adm.doc/q083460_.htm)
+- [IBM WebSphere MQ Administration: Types Of Logs](http://ibmmqadmin-madhu.blogspot.com/2012/09/types-of-logs.html)
+- [IBM MQ, Version 8.0: Connection authentication with the Java client](http://www.ibm.com/support/knowledgecenter/?lang=en#!/SSFKSJ_8.0.0/com.ibm.mq.sec.doc/q118680_.htm)
+- [IBM MQ, Version 8.0: Connection authentication](http://www.ibm.com/support/knowledgecenter/?lang=en#!/SSFKSJ_8.0.0/com.ibm.mq.sec.doc/q113240_.htm)
+- [IT11645: AN IBM MQ V8 CLIENT CONNECTION IS INCORRECTLY ALLOWED WHEN PASSWORDPROTECTION=ALWAYS AND USER_AUTHENTICATION_MQCSP=FALSE](http://www-01.ibm.com/support/docview.wss?uid=swg1IT11645)

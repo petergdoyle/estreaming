@@ -17,5 +17,5 @@ fi
 
 java \
   -cp .:target/mq-jms-client-1.0-SNAPSHOT.jar \
-  com.cleverfishsoftware.jms.mq.MQJMSMessageSender \
+  com.cleverfishsoftware.jms.mq.SimpleJMSClient2 \
   $host $port $qm $ch $qu $msg $sec_enabled $user $pw

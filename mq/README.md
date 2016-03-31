@@ -1,14 +1,15 @@
 #Building the Docker Image for IBM MQ 
-##Requirements
+##System Requirements
 - a running Docker Machine
 - ```git``` installed 
 - ```maven``` installed
+- see [Preparing your Docker host](https://github.com/ibm-messaging/mq-docker)
 
 ##Setup
-Everything is pretty much in the provided shell scripts for ease of use. They have been named appropriately for each activity. Feel free to open them up and see how they work. 
+Everything is pretty much in the provided shell scripts for ease of use and convenience. Each has been named appropriately for each activity. Feel free to open them up and see how they work. 
 
-#####Create a customizeable Docker image based on the IBM mq-docker git project (https://github.com/ibm-messaging/mq-docker.git)
-The ```docker_build``` script will check out the require git repository and build a base ```ibm/mq8``` image, then build a new local image labeled ```estreaming/mq8``` namespace that will be customized and used going forward. Change the name of the image if you wish.  
+#####Create a customizeable Docker image based on the IBM mq-docker git project (https://github.com/ibm-messaging/mq-docker)
+The ```docker_build``` script will check out the require git repository and builds a local base ```ibm/mq8``` image. Then it reads the supplied Dcokerfile in this repo and builds a new local image labeled ```estreaming/mq8``` that will be customized and used going forward. Change the name of the image if you wish in ```docker_build.sh``` but be aware other scripts are relying on those names, so they would have to change too.  So when you run the scripts, you should see git cloning the ibm stuff, then building two images. 
 ```bash
 [vagrant@estreaming mq]$ ./docker_build.sh 
 Cloning into 'mq-docker'...
@@ -101,8 +102,12 @@ Enter the port number: 1414
 9b4705ac01d1ecb5cc5ce6fa75050da68751528dc05b29472d3e8cf983b5f412
 ```
 
-To verify the container started okay, run the ```docker logs``` command on the conatiner and you should see something like the following:
+To verify the container started okay and the mq broker started up, run a ```docker ps -a``` to check to see that it is running and then a  ```docker logs``` command on the conatiner and you should see something like the following. Note that the mq logs should show PASS statuses on all of them. Sometimes the file-max line shows FAIL. If you see this, destroy the container with a ```docker_destroy.sh``` and run it again to see if it doesn't resovle the problem. 
 ```bash
+vagrant@estreaming ~]$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                    NAMES
+27403b42df1c        estreaming/mq8      "mq.sh"             24 hours ago        Up 24 seconds         0.0.0.0:1414->1414/tcp   estreaming_ibm_mq8_broker
+
 [vagrant@estreaming mq]$ docker logs estreaming_ibm_mq8_broker 
 ----------------------------------------
 Name:        WebSphere MQ
@@ -312,6 +317,15 @@ No commands have a syntax error.
 All valid MQSC commands were processed.
 
 ```
+
+####Add a mqm user
+Regardless if additional auth security on the Queuemanager was enabled or not, it seems in order to connect successfully to the MQ Queue Manager, you need to create a user on the machine that is running the Queue Manager. By default the value $USER running the JMS client is passed if no username/password is provided on the connection. If you do provide that then that authentication is used. This is confusing. Easiest thing to do is create a user on the container machine that is part of the mqm group. By default it will prompt you to create a user with a name take from $USER, take that to run the client from that machine. If you run the client from another machine with a different user, run the script again to create that use. To do that run the script ```docker_exec_add_mqm_user.sh```. There is more information on this topic [here](http://stackoverflow.com/questions/3767021/wmq-special-consideration-for-was-clients/3768346#3768346) and [here](http://www.ibm.com/support/knowledgecenter/?lang=en#!/SSFKSJ_8.0.0/com.ibm.mq.sec.doc/q118680_.htm). 
+```bash
+[vagrant@estreaming mq]$ ./docker_exec_add_mqm_user.sh 
+Enter the user name: miter
+Enter the user password: passw0rd
+```
+
 
 ####Compile and Run the Client program
 ```bash

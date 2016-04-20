@@ -18,7 +18,7 @@ while true; do
   read opt
   case $opt in
       1)
-      connection_factory_class_name='com.cleverfishsoftware.spring.xd.jms.sender.ActiveMQConnectionFactoryProvider'
+      connection_factory_class_name='com.cleverfishsoftware.spring.xd.jms.sender.jms.ActiveMQConnectionFactoryProvider'
       default_broker_url='tcp://localhost:61616'
       break
       ;;
@@ -57,11 +57,11 @@ while true; do
   read opt
   case $opt in
       1)
-      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.AirlineDataPayloadGenerator'
+      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.air.AirlineDataPayloadGenerator'
       break
       ;;
       2)
-      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.EdifactCarPayloadGenerator'
+      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.car.EdifactCarPayloadGenerator'
       break
       ;;
       4)
@@ -86,7 +86,7 @@ read -e -p "Display output to console (y/n) " -i "n" console_output
 
 cmd="$timeout \
 java -cp .:target/spring-xd-jms-sender-1.0-SNAPSHOT.jar \
-com.cleverfishsoftware.spring.xd.jms.sender.RunMessageSender \
+com.cleverfishsoftware.spring.xd.jms.sender.jms.RunJMSMessageSender \
 $broker_url \
 $queue_name \
 $connection_factory_class_name \

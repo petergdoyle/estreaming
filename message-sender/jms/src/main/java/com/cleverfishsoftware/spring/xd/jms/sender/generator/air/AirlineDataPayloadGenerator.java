@@ -122,9 +122,9 @@ public class AirlineDataPayloadGenerator implements PayloadGenerator {
                 record.append(COMMA);
                 while (record.length() < size) { // add padding to match the desired message size, need at least one character after the comma
                     if (record.length() % 2 == 0) {
-                        record.append(SmileysPayloadGenerator.whiteSmiley());
+                        record.append("0");
                     } else {
-                        record.append(SmileysPayloadGenerator.blackSmiley());
+                        record.append("1");
                     }
                 }
             }

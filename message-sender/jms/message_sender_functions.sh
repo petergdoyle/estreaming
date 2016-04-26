@@ -49,7 +49,8 @@ while true; do
   5) Ones and Zeros (0,1,0,1,0...) \n \
   6) Lorem-ipsum (Lorem ipsum dolor...)\n \
   7) Comma Separated Integers (12,31,2,32...) \n \
-  8) Smileys (☺☻☺☻☺☻...)\
+  8) Smileys (☺☻☺☻☺☻...) \n \
+  10) FileSystem Payload Generator \
   "
   read opt
   case $opt in
@@ -73,8 +74,18 @@ while true; do
       payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.SmileysPayloadGenerator'
       break
       ;;
+      10)
+      while true; do
+        read -e -p "Enter a file or directory location: " -i "" FileSystemPayloadGenerator_fn
+        if [[ -f $FileSystemPayloadGenerator_fn || -d $FileSystemPayloadGenerator_fn ]]; then
+          payload_generator_class_name="com.cleverfishsoftware.serverperf.generator.FileSystemPayloadGenerator[$FileSystemPayloadGenerator_fn]"
+          break
+        fi
+      done
+      break
+      ;;
       *)
-      echo "not currently supported, try again."
+      echo "That option is not currently supported, try again."
       ;;
   esac
 done

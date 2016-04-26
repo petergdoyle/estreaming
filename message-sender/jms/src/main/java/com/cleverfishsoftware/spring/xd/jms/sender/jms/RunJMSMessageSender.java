@@ -23,6 +23,15 @@ public class RunJMSMessageSender {
         String queueName = args[1];
         String connectionFactoryProviderClassName = args[2];
         String payloadGeneratorClassName = args[3];
+        String payloadGeneratorArgs;
+        int indexOf = payloadGeneratorClassName.indexOf("[");
+        if (indexOf > -1) {
+            String tmp = payloadGeneratorClassName.substring(indexOf);
+            payloadGeneratorClassName = payloadGeneratorClassName.substring(0, indexOf);
+            System.out.println("payloadGeneratorArgs:" + tmp);
+            System.out.println("payloadGeneratorClassName:" + payloadGeneratorClassName);
+        }
+
         int rate = 1;
         int limit = 0;
         int messageSize = 100;

@@ -11,4 +11,5 @@ nbactions.xml
 *.out
 *.bz2
 mq-docker
+Input*json
 .DS_Store

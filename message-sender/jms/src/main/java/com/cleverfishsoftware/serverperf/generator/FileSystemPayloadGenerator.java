@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Properties;
 
 /**
  *
@@ -21,7 +22,10 @@ public class FileSystemPayloadGenerator implements PayloadGenerator {
     private MappedByteBuffer buffer;
     private final StringBuilder sb;
 
-    public FileSystemPayloadGenerator(File file) throws FileNotFoundException, IOException {
+    private static FileSystemPayloadGenerator instance;
+
+    public FileSystemPayloadGenerator(String fn) throws FileNotFoundException, IOException {
+        File file = new File(fn);
         this.isFile = file.isFile();
         this.isDirectory = !this.isFile;
         if (isFile) {
@@ -48,7 +52,7 @@ public class FileSystemPayloadGenerator implements PayloadGenerator {
 
     public static void main(String... args) throws IOException {
         String fn = "/Users/peter/vagrant/server-perf/compression/estreaming-data/Input-1V_J0B_ATLPAR-3412-0008-0924-172400-266.json";
-        FileSystemPayloadGenerator fspg = new FileSystemPayloadGenerator(new File(fn));
+        FileSystemPayloadGenerator fspg = new FileSystemPayloadGenerator(fn);
         for (int i = 0; i < 5; i++) {
             System.out.println(fspg.getPayload(0)[0]);
         }

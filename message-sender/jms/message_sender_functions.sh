@@ -78,7 +78,8 @@ while true; do
       while true; do
         read -e -p "Enter a file or directory location: " -i "" FileSystemPayloadGenerator_fn
         if [[ -f $FileSystemPayloadGenerator_fn || -d $FileSystemPayloadGenerator_fn ]]; then
-          payload_generator_class_name="com.cleverfishsoftware.serverperf.generator.FileSystemPayloadGenerator[$FileSystemPayloadGenerator_fn]"
+          payload_generator_class_name="com.cleverfishsoftware.serverperf.generator.FileSystemPayloadGenerator'
+          javaOpts="-DFileSystemPayloadGenerator.file=$FileSystemPayloadGenerator_fn"
           break
         fi
       done
@@ -93,7 +94,7 @@ done
 read -e -p "Display output to console (y/n) " -i "n" console_output
 
 cmd="$timeout \
-java -cp .:target/spring-xd-jms-sender-1.0-SNAPSHOT.jar \
+java $javaOpts -cp .:target/spring-xd-jms-sender-1.0-SNAPSHOT.jar \
 com.cleverfishsoftware.spring.xd.jms.sender.jms.RunJMSMessageSender \
 $broker_url \
 $queue_name \

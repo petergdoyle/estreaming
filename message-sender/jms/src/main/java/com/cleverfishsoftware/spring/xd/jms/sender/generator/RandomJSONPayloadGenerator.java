@@ -16,6 +16,7 @@ public class RandomJSONPayloadGenerator implements PayloadGenerator {
     }
 
     public static void main(String... args) {
-        
+
     }
+
 }

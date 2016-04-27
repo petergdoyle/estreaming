@@ -6,6 +6,7 @@ import com.cleverfishsoftware.spring.xd.jms.sender.MessageSender;
 import com.cleverfishsoftware.spring.xd.jms.sender.PayloadGenerator;
 import com.google.common.util.concurrent.RateLimiter;
 import java.util.Date;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,13 +24,10 @@ public class RunJMSMessageSender {
         String queueName = args[1];
         String connectionFactoryProviderClassName = args[2];
         String payloadGeneratorClassName = args[3];
-        String payloadGeneratorArgs;
-        int indexOf = payloadGeneratorClassName.indexOf("[");
-        if (indexOf > -1) {
-            String tmp = payloadGeneratorClassName.substring(indexOf);
-            payloadGeneratorClassName = payloadGeneratorClassName.substring(0, indexOf);
-            System.out.println("payloadGeneratorArgs:" + tmp);
-            System.out.println("payloadGeneratorClassName:" + payloadGeneratorClassName);
+        
+        Properties props = new Properties();
+        if (System.getProperties().containsKey("FileSystemPayloadGenerator.file")) {
+            props.setProperty("FileSystemPayloadGenerator.file", System.getProperty("FileSystemPayloadGenerator.file"));
         }
 
         int rate = 1;
@@ -43,7 +41,7 @@ public class RunJMSMessageSender {
         ConnectionFactoryProvider connectionFactoryProvider = connectionFactoryProviderClass.newInstance();
 
         Class<PayloadGenerator> payloadGeneratorClass = (Class<PayloadGenerator>) Class.forName(payloadGeneratorClassName);
-        PayloadGenerator payloadGenerator = payloadGeneratorClass.newInstance();
+        PayloadGenerator payloadGenerator = payloadGeneratorClass.getConstructor(String.class)
 
         if (args.length > 4) {
             String argValue = args[4];

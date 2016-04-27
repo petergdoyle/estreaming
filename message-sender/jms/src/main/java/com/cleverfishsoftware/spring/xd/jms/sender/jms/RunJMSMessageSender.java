@@ -4,7 +4,9 @@ package com.cleverfishsoftware.spring.xd.jms.sender.jms;
 
 import com.cleverfishsoftware.spring.xd.jms.sender.MessageSender;
 import com.cleverfishsoftware.spring.xd.jms.sender.PayloadGenerator;
+import com.cleverfishsoftware.spring.xd.jms.sender.PayloadGeneratorBuilder;
 import com.google.common.util.concurrent.RateLimiter;
+import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -23,9 +25,9 @@ public class RunJMSMessageSender {
         String brokerUrl = args[0];
         String queueName = args[1];
         String connectionFactoryProviderClassName = args[2];
-        String payloadGeneratorClassName = args[3];
+        String payloadGeneratorBuilderClassName = args[3];
         
-        Properties props = new Properties();
+        Properties props = new Properties(); // any known properties for the PayloadGeneratorBuilder are found here... 
         if (System.getProperties().containsKey("FileSystemPayloadGenerator.file")) {
             props.setProperty("FileSystemPayloadGenerator.file", System.getProperty("FileSystemPayloadGenerator.file"));
         }
@@ -40,8 +42,9 @@ public class RunJMSMessageSender {
         Class<ConnectionFactoryProvider> connectionFactoryProviderClass = (Class<ConnectionFactoryProvider>) Class.forName(connectionFactoryProviderClassName);
         ConnectionFactoryProvider connectionFactoryProvider = connectionFactoryProviderClass.newInstance();
 
-        Class<PayloadGenerator> payloadGeneratorClass = (Class<PayloadGenerator>) Class.forName(payloadGeneratorClassName);
-        PayloadGenerator payloadGenerator = payloadGeneratorClass.getConstructor(String.class)
+        Class<PayloadGeneratorBuilder> payloadGeneratorBuilderClass = (Class<PayloadGeneratorBuilder>) Class.forName(payloadGeneratorBuilderClassName);
+        PayloadGeneratorBuilder  payloadGeneratorBuilder = payloadGeneratorBuilderClass.newInstance();
+        PayloadGenerator payloadGenerator = payloadGeneratorBuilder.getInstance(props);
 
         if (args.length > 4) {
             String argValue = args[4];

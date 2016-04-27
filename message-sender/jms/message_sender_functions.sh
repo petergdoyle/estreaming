@@ -42,43 +42,43 @@ number_of_cores=$(grep -c ^processor /proc/cpuinfo)
 read -e -p "Enter number of threads (1-$number_of_cores): " -i "$number_of_cores" number_of_threads
 while true; do
   echo -e "*** Select the Payload Record Generator Type *** \n \
-  1) Airline Flight Search Data (csv) \n \
-  2) Car Availablity Data (edifact)\n \
-  3) Hotel Room Availablity Data (edifact)\n \
-  4) Sequential Number (0000000001,0000000002,0000000003...) \n \
-  5) Ones and Zeros (0,1,0,1,0...) \n \
-  6) Lorem-ipsum (Lorem ipsum dolor...)\n \
-  7) Comma Separated Integers (12,31,2,32...) \n \
-  8) Smileys (☺☻☺☻☺☻...) \n \
-  10) FileSystem Payload Generator \
-  "
+ 1) Airline Flight Search Data (csv) \n \
+ 2) Car Availablity Data (edifact)\n \
+ 3) Hotel Room Availablity Data (edifact)\n \
+ 4) Sequential Number (0000000001,0000000002,0000000003...) \n \
+ 5) Ones and Zeros (0,1,0,1,0...) \n \
+ 6) Lorem-ipsum (Lorem ipsum dolor...)\n \
+ 7) Comma Separated Integers (12,31,2,32...) \n \
+ 8) Smileys (☺☻☺☻☺☻...) \n \
+10) FileSystem Payload Generator \
+"
   read opt
   case $opt in
       1)
-      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.air.AirlineDataPayloadGenerator'
+      payload_generator_builder_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.air.AirlineDataPayloadGeneratorBuilder'
       break
       ;;
       2)
-      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.car.EdifactCarPayloadGenerator'
+      payload_generator_builder_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.car.EdifactCarPayloadGeneratorBuilder'
       break
       ;;
       4)
-      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.SequentialNumberPayloadGenerator'
+      payload_generator_builder_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.SequentialNumberPayloadGeneratorBuilder'
       break
       ;;
       5)
-      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.OnesAndZerosPayloadGenerator'
+      payload_generator_builder_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.OnesAndZerosPayloadGeneratorBuilder'
       break
       ;;
       8)
-      payload_generator_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.SmileysPayloadGenerator'
+      payload_generator_builder_class_name='com.cleverfishsoftware.spring.xd.jms.sender.generator.SmileysPayloadGeneratorBuilder'
       break
       ;;
       10)
       while true; do
         read -e -p "Enter a file or directory location: " -i "" FileSystemPayloadGenerator_fn
         if [[ -f $FileSystemPayloadGenerator_fn || -d $FileSystemPayloadGenerator_fn ]]; then
-          payload_generator_class_name="com.cleverfishsoftware.serverperf.generator.FileSystemPayloadGenerator'
+          payload_generator_builder_class_name="com.cleverfishsoftware.serverperf.generator.FileSystemPayloadGeneratorBuilder"
           javaOpts="-DFileSystemPayloadGenerator.file=$FileSystemPayloadGenerator_fn"
           break
         fi
@@ -99,7 +99,7 @@ com.cleverfishsoftware.spring.xd.jms.sender.jms.RunJMSMessageSender \
 $broker_url \
 $queue_name \
 $connection_factory_class_name \
-$payload_generator_class_name \
+$payload_generator_builder_class_name \
 $message_rate \
 $message_limit \
 $message_size \

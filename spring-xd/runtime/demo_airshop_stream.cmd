@@ -6,4 +6,5 @@ stream create --name splash_stream --definition "jms --destination=splash | mong
 
 
 
-stream create kafka_log_stream --definition "kafka --zkconnect=localhost:2181 --topic=splash | log" --deploy
+stream create kafka_file_stream --definition "kafka --zkconnect=localhost:2181 --topic=splash | file" --deploy
+stream create kafka_mongo_stream --definition "kafka --zkconnect=localhost:2181 --topic=splash |mongodb --databaseName=splash --collectionName=solutions" --deploy

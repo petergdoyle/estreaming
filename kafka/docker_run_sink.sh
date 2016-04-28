@@ -4,7 +4,7 @@
 
 
 img_name='estreaming/kafka'
-container_name='estreaming_kafka_sink'
+container_name='estreaming_kafka_splash'
 
 start_cmd='bin/zookeeper-server-start.sh config/zookeeper.properties'
 

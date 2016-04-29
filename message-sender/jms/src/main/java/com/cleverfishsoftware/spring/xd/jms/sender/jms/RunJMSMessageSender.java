@@ -6,7 +6,6 @@ import com.cleverfishsoftware.spring.xd.jms.sender.MessageSender;
 import com.cleverfishsoftware.spring.xd.jms.sender.PayloadGenerator;
 import com.cleverfishsoftware.spring.xd.jms.sender.PayloadGeneratorBuilder;
 import com.google.common.util.concurrent.RateLimiter;
-import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;

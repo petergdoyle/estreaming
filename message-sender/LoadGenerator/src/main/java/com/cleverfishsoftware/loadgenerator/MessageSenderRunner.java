@@ -2,15 +2,14 @@
  */
 package com.cleverfishsoftware.loadgenerator;
 
-import com.cleverfishsoftware.loadgenerator.sender.jms.JmsMessageSenderBuilder;
-import com.cleverfishsoftware.loadgenerator.sender.jms.ConnectionFactoryProvider;
+import static com.cleverfishsoftware.loadgenerator.Common.isTrue;
+import static com.cleverfishsoftware.loadgenerator.Common.notNull;
 import com.google.common.util.concurrent.RateLimiter;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.jms.ConnectionFactory;
 
 /**
  *
@@ -20,17 +19,23 @@ public class MessageSenderRunner {
 
     public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, Exception {
 
-        String brokerUrl = args[0];
-        String queueName = args[1];
-        String connectionFactoryProviderClassName = args[2];
-        String payloadGeneratorBuilderClassName = args[3];
-//        String jmsMessageSenderBuilderClassName = args[4];
-
         Properties props = new Properties(); // any known properties for the PayloadGeneratorBuilder are found here... 
-        if (System.getProperties().containsKey("FileSystemPayloadGenerator.file")) {
-            props.setProperty("FileSystemPayloadGenerator.file", System.getProperty("FileSystemPayloadGenerator.file"));
-        }
+        System.getProperties().stringPropertyNames().stream().filter((key) -> (key.startsWith("LoadGenerator"))).forEach((key) -> {
+            props.setProperty(key, System.getProperty(key));
+        });
 
+        String jmsMessageSenderBuilderClassName = args[0];
+        String payloadGeneratorBuilderClassName = args[1];
+
+        Class<PayloadGeneratorBuilder> payloadGeneratorBuilderClass = (Class<PayloadGeneratorBuilder>) Class.forName(payloadGeneratorBuilderClassName);
+        PayloadGeneratorBuilder payloadGeneratorBuilder = payloadGeneratorBuilderClass.newInstance();
+        PayloadGenerator payloadGenerator = payloadGeneratorBuilder.getInstance(props);
+
+        Class<MessageSenderBuilder> messageSenderBuilderClassName = (Class<MessageSenderBuilder>) Class.forName(jmsMessageSenderBuilderClassName);
+        MessageSenderBuilder messageSenderBuilder = messageSenderBuilderClassName.newInstance();
+        MessageSender messageSender = messageSenderBuilder.getInstance(props);
+
+        // apply suggested defaults first
         int rate = 1;
         int limit = 0;
         int messageSize = 100;
@@ -38,62 +43,39 @@ public class MessageSenderRunner {
         int cores = availableProcessors;
         boolean noisy = false;
 
-        Class<ConnectionFactoryProvider> connectionFactoryProviderClass = (Class<ConnectionFactoryProvider>) Class.forName(connectionFactoryProviderClassName);
-        ConnectionFactoryProvider connectionFactoryProvider = connectionFactoryProviderClass.newInstance();
-
-        Class<PayloadGeneratorBuilder> payloadGeneratorBuilderClass = (Class<PayloadGeneratorBuilder>) Class.forName(payloadGeneratorBuilderClassName);
-        PayloadGeneratorBuilder  payloadGeneratorBuilder = payloadGeneratorBuilderClass.newInstance();
-        PayloadGenerator payloadGenerator = payloadGeneratorBuilder.getInstance(props);
-
-//        Class<MessageSenderBuilder> messageSenderClass = (Class<MessageSenderBuilder>)Class.forName(jmsMessageSenderBuilderClassName);
-
-        if (args.length > 4) {
-            String argValue = args[4];
-            if (argValue != null && argValue.length() > 0) {
-                rate = Integer.parseInt(argValue);
-            }
+        // override defaults with supplied args
+        String argValue = args[2];
+        if (notNull(argValue)) {
+            rate = Integer.parseInt(argValue);
         }
-        if (args.length > 5) {
-            String argValue = args[5];
-            if (argValue != null && argValue.length() > 0) {
-                limit = Integer.parseInt(argValue);
-            }
+        argValue = args[3];
+        if (notNull(argValue)) {
+            limit = Integer.parseInt(argValue);
         }
-        if (args.length > 6) {
-            String argValue = args[6];
-            if (argValue != null && argValue.length() > 0) {
-                messageSize = Integer.parseInt(argValue);
-            }
+        argValue = args[4];
+        if (notNull(argValue)) {
+            messageSize = Integer.parseInt(argValue);
         }
-        if (args.length > 7) {
-            String argValue = args[7];
-            if (argValue != null && argValue.length() > 0) {
-                cores = Integer.parseInt(argValue);
-                if (cores % availableProcessors != 0) {
-                    if (cores <= availableProcessors) {
-                        cores = availableProcessors;
-                    } else {
-                        while (cores % availableProcessors != 0) {
-                            cores--;
-                        }
+        argValue = args[5];
+        if (notNull(argValue)) {
+            cores = Integer.parseInt(argValue);
+            if (cores % availableProcessors != 0) {
+                if (cores <= availableProcessors) {
+                    cores = availableProcessors;
+                } else {
+                    while (cores % availableProcessors != 0) {
+                        cores--;
                     }
                 }
             }
         }
-        if (args.length > 8) {
-            String argValue = args[8];
-            if (argValue != null && argValue.length() > 0
-                    && (argValue.toLowerCase().equals("y")
-                    || argValue.toLowerCase().equals("yes")
-                    || argValue.toLowerCase().equals("true"))) {
-                noisy = true;
-            }
+        argValue = args[6];
+        if (isTrue(argValue)) {
+            noisy = true;
         }
 
         System.out.println("Preparing to send "
                 + (limit > 0 ? limit : " an unlimited number of ") + " (" + messageSize + " byte) messages "
-                + "to "
-                + brokerUrl + " "
                 + "at a rate of  " + rate + " messages per second "
                 + "using " + cores + " threads.");
 
@@ -103,8 +85,6 @@ public class MessageSenderRunner {
         final ExecutorService executorService = Executors.newFixedThreadPool(cores);
 
         final AtomicInteger count = new AtomicInteger();
-        final ConnectionFactory cf = connectionFactoryProvider.getInstance(brokerUrl, queueName);
-        final MessageSender sender = JmsMessageSenderBuilder.getInstance(cf, brokerUrl, queueName);
 
         while (true) {
             if (limit > 0 && count.get() == limit) {
@@ -125,7 +105,7 @@ public class MessageSenderRunner {
                         return;
                     }
                     try {
-                        sender.send(payload);
+                        messageSender.send(payload);
                         System.out.print("\r" + count.get() + " sent");
                     } catch (Exception ex) {
                     }

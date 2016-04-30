@@ -4,8 +4,9 @@ javaOpts=""
 
 while true; do
   echo -e "*** Select the Messaging Provider Type *** \n \
-  1) ActiveMQ JMS (AMQ) \n \
-  2) Kafka \
+  1) ActiveMQ JMS \n \
+  2) IBM MQ JMS \n \
+  3) Kafka \
   "
 #  2) Artimis (AMQ derivative) \n \
 #  3) Apollo (AMQ derivative) \n \
@@ -18,16 +19,22 @@ while true; do
   read opt
   case $opt in
       1)
-      connection_factory_class_name='com.cleverfishsoftware.loadgenerator.sender.jms.amq.ActiveMQConnectionFactoryProvider'
       default_broker_url='tcp://localhost:61616'
       read -e -p "Enter the broker url : " -i $default_broker_url broker_url
       read -e -p "Enter the queue name: " -i "queue1" queue_name
+      message_sender_builder_class_name="com.cleverfishsoftware.loadgenerator.sender.jms.JMSMessageSenderBuilder"
+javaOpts="-DLoadGenerator.ConnectionFactoryProvider.class=com.cleverfishsoftware.loadgenerator.sender.jms.amq.ActiveMQConnectionFactoryProvider \
+-DLoadGenerator.ConnectionFactoryProvider.broker_url=$broker_url \
+-DLoadGenerator.ConnectionFactoryProvider.queue_name=$queue_name"
       break
       ;;
-      2)
+      3)
       default_broker_url='localhost:9092'
       read -e -p "Enter the broker url : " -i $default_broker_url broker_url
       read -e -p "Enter the topic name: " -i "topic1" topic_name
+      message_sender_builder_class_name="com.cleverfishsoftware.loadgenerator.sender.kafka.KafkaMessageSenderBuilder"
+javaOpts="-DLoadGenerator.KafkaMessageSenderBuilder.broker_url=$broker_url \
+-DLoadGenerator.KafkaMessageSenderBuilder.topic_name=$topic_name"
       break
       ;;
       *)
@@ -84,11 +91,11 @@ while true; do
       break
       ;;
       10)
+      payload_generator_builder_class_name="com.cleverfishsoftware.loadgenerator.payload.FileSystemPayloadGeneratorBuilder"
       while true; do
-        read -e -p "Enter a file or directory location: " -i "" FileSystemPayloadGenerator_fn
-        if [[ -f $FileSystemPayloadGenerator_fn || -d $FileSystemPayloadGenerator_fn ]]; then
-          payload_generator_builder_class_name="com.cleverfishsoftware.loadgenerator.payload.FileSystemPayloadGeneratorBuilder"
-          javaOpts="-DFileSystemPayloadGenerator.file=$FileSystemPayloadGenerator_fn"
+        read -e -p "Enter a file or directory location: " -i "" file_system_payload_generator_fn
+        if [[ -f $file_system_payload_generator_fn || -d $file_system_payload_generator_fn ]]; then
+javaOpts="-DLoadGenerator.FileSystemPayloadGenerator.file=$file_system_payload_generator_fn"
           break
         fi
       done
@@ -106,9 +113,7 @@ cmd="$timeout \
 java $javaOpts \
 -cp .:target/LoadGenerator-1.0-SNAPSHOT.jar \
 com.cleverfishsoftware.loadgenerator.MessageSenderRunner \
-$broker_url \
-$queue_name \
-$connection_factory_class_name \
+$message_sender_builder_class_name \
 $payload_generator_builder_class_name \
 $message_rate \
 $message_limit \

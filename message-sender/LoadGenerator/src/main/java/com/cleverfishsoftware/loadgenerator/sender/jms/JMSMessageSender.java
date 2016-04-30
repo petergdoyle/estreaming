@@ -15,9 +15,11 @@ import javax.jms.Session;
  *
  * @author peter
  */
-public class JmsApiMessageSender extends AbstractJMSSender implements MessageSender {
+public class JMSMessageSender implements MessageSender {
 
-    static private JmsApiMessageSender instance;
+    private final ConnectionFactory cf;
+    private final String brokerUrl;
+    private final String queueName;
 
     private final Connection connection;
 
@@ -25,13 +27,10 @@ public class JmsApiMessageSender extends AbstractJMSSender implements MessageSen
     private final Queue queue;
     private final MessageProducer producer;
 
-    public static MessageSender getInstance(ConnectionFactory cf, String brokerUrl, String queueName) throws Exception {
-        instance = new JmsApiMessageSender(cf, brokerUrl, queueName);
-        return instance;
-    }
-
-    private JmsApiMessageSender(ConnectionFactory cf, String brokerUrl, String queueName) throws JMSException {
-        super(brokerUrl, queueName);
+    public JMSMessageSender(ConnectionFactory cf, String brokerUrl, String queueName) throws JMSException {
+        this.cf = cf;
+        this.brokerUrl = brokerUrl;
+        this.queueName = queueName;
         connection = cf.createConnection();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         queue = session.createQueue(queueName);

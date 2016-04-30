@@ -1,8 +1,8 @@
 /*
  */
-package com.cleverfishsoftware.loadgenerator.broker.jms;
+package com.cleverfishsoftware.loadgenerator.broker.jms.amq;
 
-import static com.cleverfishsoftware.loadgenerator.broker.jms.Broker.*;
+import static com.cleverfishsoftware.loadgenerator.broker.jms.amq.Broker.*;
 
 /**
  *

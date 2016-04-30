@@ -8,7 +8,5 @@ container_name='estreaming_kafka_broker'
 
 start_cmd='bin/kafka-server-start.sh config/server.properties'
 
-network_port_mapped=" -p 0.0.0.0:9092:9092"
-links="-v estreaming_kafka_zk"
-network="$network_port_mapped"
+network="$network_native"
 docker_run 9092

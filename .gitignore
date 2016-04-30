@@ -13,3 +13,4 @@ nbactions.xml
 mq-docker
 Input*json
 .DS_Store
+dist

@@ -95,7 +95,7 @@ while true; do
       while true; do
         read -e -p "Enter a file or directory location: " -i "" file_system_payload_generator_fn
         if [[ -f $file_system_payload_generator_fn || -d $file_system_payload_generator_fn ]]; then
-javaOpts="-DLoadGenerator.FileSystemPayloadGenerator.file=$file_system_payload_generator_fn"
+javaOpts="$javaOpts -DLoadGenerator.FileSystemPayloadGenerator.file=$file_system_payload_generator_fn"
           break
         fi
       done

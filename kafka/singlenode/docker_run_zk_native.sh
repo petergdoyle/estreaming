@@ -8,7 +8,5 @@ container_name='estreaming_kafka_zk'
 
 start_cmd='bin/zookeeper-server-start.sh config/zookeeper.properties'
 
-network_port_mapped="-p 0.0.0.0:2181:2181"
-
-network="$network_port_mapped"
-docker_run 2181
+network="$network_native"
+docker_run 2181,9092

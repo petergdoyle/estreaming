@@ -19,7 +19,7 @@ public class FileSystemPayloadGeneratorBuilder implements PayloadGeneratorBuilde
         if (!notNull(fn)) {
             throw new RuntimeException("missing system property: " + LOAD_GENERATOR_FILE_SYSTEM_PAYLOAD_GENERATORFI);
         }
-        return new FileSystemPayloadGenerator(fn);
+        return new FileSystemPayloadGenerator2(fn);
 
     }
     private static final String LOAD_GENERATOR_FILE_SYSTEM_PAYLOAD_GENERATORFI = "LoadGenerator.FileSystemPayloadGenerator.file";

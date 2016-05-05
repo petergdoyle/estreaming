@@ -8,7 +8,13 @@ container_name='estreaming_kafka_zk'
 
 start_cmd='bin/zookeeper-server-start.sh config/zookeeper.properties'
 
-network_port_mapped="-p 0.0.0.0:2181:2181"
+read -e -p "Run native networking mode(y/n): " -i "y" native
+if [[ "$native" == "n" || "$native" == "N" ]]; then
+  read -e -p "Enter the network port number: " -i "2181" port
+  network="-p 0.0.0.0:$port"
+else
+  network"$network_native"
+fi
 
-network="$network_port_mapped"
+network="$network"
 docker_run 2181

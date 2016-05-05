@@ -14,7 +14,7 @@ if [[ "$native" == "n" || "$native" == "N" ]]; then
   network="-p 0.0.0.0:$port"
   links="-link estreaming_kafka_zk"
 else
-  network"$network_native"
+  network="$network_native"
 fi
 
 volumes="-v $PWD/shared:/shared"

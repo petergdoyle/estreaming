@@ -13,7 +13,7 @@ if [[ "$native" == "n" || "$native" == "N" ]]; then
   read -e -p "Enter the network port number: " -i "2181" port
   network="-p 0.0.0.0:$port"
 else
-  network"$network_native"
+  network="$network_native"
 fi
 
 network="$network"

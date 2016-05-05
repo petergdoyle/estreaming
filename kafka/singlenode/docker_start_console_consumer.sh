@@ -5,7 +5,7 @@ read -e -p "Enter the zk host/port: " -i "localhost:2181" zk_host_port
 read -e -p "Enter the offset: " -i "--from-beginning" offset
 read -e -p "Enter the consumer group id: " -i "consumer-group-1" consumer_group
 
-echo "group.id=$consumer_group" shared/$consumer_group.properties
+echo "group.id=$consumer_group" > shared/$consumer_group.properties
 
 
 read -e -p "Run new kafka consumer: " -i "y" new_consumer

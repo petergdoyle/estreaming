@@ -1,6 +1,6 @@
 #!/bin/sh
 
-javaOpts=""
+javaOpts=''
 
 while true; do
   echo -e "*** Select the Messaging Provider Type *** \n \
@@ -23,9 +23,9 @@ while true; do
       read -e -p "Enter the broker url : " -i $default_broker_url broker_url
       read -e -p "Enter the queue name: " -i "queue1" queue_name
       message_sender_builder_class_name="com.cleverfishsoftware.loadgenerator.sender.jms.JMSMessageSenderBuilder"
-javaOpts="-DLoadGenerator.ConnectionFactoryProvider.class=com.cleverfishsoftware.loadgenerator.sender.jms.amq.ActiveMQConnectionFactoryProvider \
--DLoadGenerator.ConnectionFactoryProvider.broker_url=$broker_url \
--DLoadGenerator.ConnectionFactoryProvider.queue_name=$queue_name"
+      javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.class="com.cleverfishsoftware.loadgenerator.sender.jms.amq.ActiveMQConnectionFactoryProvider"'
+      javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.broker_url="'$broker_url'"'
+      javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.queue_name="'$queue_name'"'
       break
       ;;
       3)
@@ -33,12 +33,12 @@ javaOpts="-DLoadGenerator.ConnectionFactoryProvider.class=com.cleverfishsoftware
       read -e -p "Enter the broker url : " -i $default_broker_url broker_url
       read -e -p "Enter the topic name: " -i "topic1" topic_name
       message_sender_builder_class_name="com.cleverfishsoftware.loadgenerator.sender.kafka.KafkaMessageSenderBuilder"
-javaOpts="-DLoadGenerator.KafkaMessageSenderBuilder.broker_url=$broker_url \
--DLoadGenerator.KafkaMessageSenderBuilder.topic_name=$topic_name"
+      javaOpts=$javaOpts' -DLoadGenerator.KafkaMessageSenderBuilder.broker_url="'$broker_url'"'
+      javaOpts=$javaOpts' -DLoadGenerator.KafkaMessageSenderBuilder.topic_name="'$topic_name'"'
       break
       ;;
       *)
-      echo "not currently supported, try again."
+      echo "That option is not currently supported, try again."
       ;;
   esac
 done
@@ -53,7 +53,6 @@ if [ "$message_limit" -eq "0" ]; then
 else
   timeout='time'
 fi
-read -e -p "Enter the message size (bytes): " -i "1000" message_size
 number_of_cores=$(grep -c ^processor /proc/cpuinfo)
 read -e -p "Enter number of threads (1-$number_of_cores): " -i "$number_of_cores" number_of_threads
 while true; do
@@ -95,7 +94,7 @@ while true; do
       while true; do
         read -e -p "Enter a file or directory location: " -i "" file_system_payload_generator_fn
         if [[ -f $file_system_payload_generator_fn || -d $file_system_payload_generator_fn ]]; then
-javaOpts="$javaOpts -DLoadGenerator.FileSystemPayloadGenerator.file=$file_system_payload_generator_fn"
+          javaOpts=$javaOpts' -DLoadGenerator.FileSystemPayloadGenerator.file="'$file_system_payload_generator_fn'"'
           break
         fi
       done
@@ -106,6 +105,21 @@ javaOpts="$javaOpts -DLoadGenerator.FileSystemPayloadGenerator.file=$file_system
       ;;
   esac
 done
+
+read -e -p "Pad message size? (content type natural size varies): " -i "n" pad_message_size
+if [[ "$pad_message_size" == 'y' || "$pad_message_size" == 'Y' ]]; then
+  read -e -p "message size in bytes (0 for natural size): " -i "0" message_size
+else
+  message_size='0'
+fi
+read -e -p "Add a message batch identifier (will appear in message): " -i "n" add_batch_identfier
+if [[ "$add_batch_identfier" == 'y' || "$add_batch_identfier" == 'Y' ]]; then
+  read -e -p "Specify identifier: " -i " ><>" batch_identifier
+  javaOpts=$javaOpts' -DLoadGenerator.PayloadGenerator.batch_identifier="'$batch_identifier'"'
+else
+  batch_identifier=''
+fi
+
 
 read -e -p "Display output to console (y/n) " -i "n" console_output
 

@@ -29,11 +29,9 @@ public class MessageSenderRunner {
 
         Class<PayloadGeneratorBuilder> payloadGeneratorBuilderClass = (Class<PayloadGeneratorBuilder>) Class.forName(payloadGeneratorBuilderClassName);
         PayloadGeneratorBuilder payloadGeneratorBuilder = payloadGeneratorBuilderClass.newInstance();
-        PayloadGenerator payloadGenerator = payloadGeneratorBuilder.getInstance(props);
 
         Class<MessageSenderBuilder> messageSenderBuilderClassName = (Class<MessageSenderBuilder>) Class.forName(jmsMessageSenderBuilderClassName);
         MessageSenderBuilder messageSenderBuilder = messageSenderBuilderClassName.newInstance();
-        MessageSender messageSender = messageSenderBuilder.getInstance(props);
 
         // apply suggested defaults first
         int rate = 1;
@@ -41,6 +39,7 @@ public class MessageSenderRunner {
         int messageSize = 100;
         int availableProcessors = Runtime.getRuntime().availableProcessors();
         int cores = availableProcessors;
+        String batchIdentifier = "";
         boolean noisy = false;
 
         // override defaults with supplied args
@@ -48,14 +47,20 @@ public class MessageSenderRunner {
         if (notNull(argValue)) {
             rate = Integer.parseInt(argValue);
         }
+        props.setProperty("LoadGenerator.MessageSenderRunner.args.rate", argValue);
+
         argValue = args[3];
         if (notNull(argValue)) {
             limit = Integer.parseInt(argValue);
         }
+        props.setProperty("LoadGenerator.MessageSenderRunner.args.limit", argValue);
+
         argValue = args[4];
         if (notNull(argValue)) {
             messageSize = Integer.parseInt(argValue);
         }
+        props.setProperty("LoadGenerator.MessageSenderRunner.args.messageSize", argValue);
+
         argValue = args[5];
         if (notNull(argValue)) {
             cores = Integer.parseInt(argValue);
@@ -69,10 +74,16 @@ public class MessageSenderRunner {
                 }
             }
         }
+        props.setProperty("LoadGenerator.MessageSenderRunner.args.cores", argValue);
+
         argValue = args[6];
         if (isTrue(argValue)) {
             noisy = true;
         }
+        props.setProperty("LoadGenerator.MessageSenderRunner.args.noisy", Boolean.toString(noisy));
+
+        PayloadGenerator payloadGenerator = payloadGeneratorBuilder.getInstance(props);
+        MessageSender messageSender = messageSenderBuilder.getInstance(props);
 
         System.out.println("Preparing to send "
                 + (limit > 0 ? limit : " an unlimited number of ") + " (" + messageSize + " byte) messages "

@@ -13,8 +13,8 @@ import java.util.Properties;
 public class SequentialNumberPayloadGeneratorBuilder implements PayloadGeneratorBuilder {
 
     @Override
-    public PayloadGenerator getInstance(Properties properties) throws Exception {
-        return new SequentialNumberPayloadGenerator();
+    public PayloadGenerator getInstance(Properties props) throws Exception {
+        return new SequentialNumberPayloadGenerator(props);
     }
 
 }

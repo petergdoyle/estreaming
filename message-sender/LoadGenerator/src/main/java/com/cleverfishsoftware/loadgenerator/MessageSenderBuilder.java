@@ -10,5 +10,5 @@ import java.util.Properties;
  */
 public interface MessageSenderBuilder {
 
-    MessageSender getInstance(Properties props) throws Exception;
+    MessageSender getInstance(final Properties props) throws Exception;
 }

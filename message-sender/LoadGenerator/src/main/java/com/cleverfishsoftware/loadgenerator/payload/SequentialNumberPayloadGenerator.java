@@ -14,6 +14,14 @@ public class SequentialNumberPayloadGenerator implements PayloadGenerator {
 
     private final AtomicInteger count = new AtomicInteger(0);
     private StringBuilder buffer;
+    private final int messageSize;
+    private final String batchIdenfiier;
+
+    SequentialNumberPayloadGenerator(final Properties props) {
+        String property = props.getProperty("LoadGenerator.MessageSenderRunner.args.messageSize");
+        messageSize = Integer.parseInt(property);
+        batchIdenfiier = props.getProperty("LoadGenerator.PayloadGenerator.batch_identifier ");
+    }
 
     @Override
     public String[] getPayload(final int size) {
@@ -25,7 +33,6 @@ public class SequentialNumberPayloadGenerator implements PayloadGenerator {
             buffer.append(template);
             int capacity = size - templateLength;
             while (charCount < capacity) {
-//                System.out.println("size: " + size + " bufferCapacity: " + buffer.length());
                 if (charCount % 4 == 0) {
                     buffer.append(" ");
                 } else if (charCount % 2 == 0) {

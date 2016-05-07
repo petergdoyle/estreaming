@@ -14,7 +14,7 @@ import java.util.Properties;
 public class KafkaMessageSenderBuilder implements MessageSenderBuilder {
 
     @Override
-    public MessageSender getInstance(Properties props) throws Exception {
+    public MessageSender getInstance(final Properties props) throws Exception {
 
         String brokerUrl = props.getProperty(LOAD_GENERATOR_KAFKA_MESSAGE_SENDER_BUILDERBRO);
         if (!notNull(brokerUrl)) {

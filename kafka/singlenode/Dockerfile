@@ -8,6 +8,8 @@ RUN mkdir /kafka \
 
 COPY config/ /kafka/default/config
 
+RUN wget -O jmxterm-1.0-alpha-4-uber.jar http://downloads.sourceforge.net/project/cyclops-group/jmxterm/1.0-alpha-4/jmxterm-1.0-alpha-4-uber.jar?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fcyclops-group%2Ffiles%2Fjmxterm%2F1.0-alpha-4%2F
+
 ENV KAFKA_HOME=/kafka/default
 
 WORKDIR /kafka/default

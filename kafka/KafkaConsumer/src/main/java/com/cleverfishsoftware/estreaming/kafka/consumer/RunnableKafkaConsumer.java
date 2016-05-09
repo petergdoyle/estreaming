@@ -3,7 +3,6 @@
 package com.cleverfishsoftware.estreaming.kafka.consumer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +22,17 @@ class RunnableKafkaConsumer implements Runnable {
     private final KafkaConsumer<String, String> consumer;
     private final List<String> topics;
     private final int id;
+    private final long sleep;
 
-    public RunnableKafkaConsumer(int id, Properties props, List<String> topics) {
+    public RunnableKafkaConsumer(int id, Properties props, List<String> topics, long sleep) {
         this.props = new Properties(props);
-        this.topics = topics;
+        this.topics = new ArrayList<>(topics.size());
+        topics.stream().forEach((each) -> {
+            this.topics.add(each);
+        });
         this.id = id;
         this.consumer = new KafkaConsumer<>(props);
+        this.sleep = sleep;
     }
 
     @Override
@@ -37,18 +41,22 @@ class RunnableKafkaConsumer implements Runnable {
             consumer.subscribe(topics);
 
             while (true) {
-                ConsumerRecords<String, String> records = consumer.poll(Long.MAX_VALUE);
+                ConsumerRecords<String, String> records = consumer.poll(1000);
                 for (ConsumerRecord<String, String> record : records) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("partition", record.partition());
                     data.put("offset", record.offset());
                     data.put("value", record.value());
                     System.out.println(this.id + ": " + data);
+                    if (sleep > 0) {
+                        Thread.sleep(sleep);
+                    }
                 }
             }
-        } catch (WakeupException e) {
-            // ignore for shutdown 
-        } finally {
+        } catch (WakeupException | InterruptedException e) {
+            // ignore
+        } 
+        finally {
             consumer.close();
         }
     }

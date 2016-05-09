@@ -31,7 +31,7 @@ while true; do
       3)
       default_broker_url='localhost:9092'
       read -e -p "Enter the broker url : " -i $default_broker_url broker_url
-      read -e -p "Enter the topic name: " -i "topic1" topic_name
+      read -e -p "Enter the topic name: " -i "use-case-1" topic_name
       message_sender_builder_class_name="com.cleverfishsoftware.loadgenerator.sender.kafka.KafkaMessageSenderBuilder"
       javaOpts=$javaOpts' -DLoadGenerator.KafkaMessageSenderBuilder.broker_url="'$broker_url'"'
       javaOpts=$javaOpts' -DLoadGenerator.KafkaMessageSenderBuilder.topic_name="'$topic_name'"'

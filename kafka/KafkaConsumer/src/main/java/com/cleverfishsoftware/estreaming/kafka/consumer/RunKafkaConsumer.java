@@ -20,8 +20,8 @@ public class RunKafkaConsumer {
 
         String bootstrapServers = args[0];
         String consumerGroup = args[1];
-        System.out.println(Arrays.toString(args[2].split(",")));
         List<String> topics = Arrays.asList(args[2].split(","));
+        long sleep = Long.parseLong(args[3]);
 
         Properties kafkaProperties = new Properties();
         kafkaProperties.put("bootstrap.servers", bootstrapServers);
@@ -39,7 +39,7 @@ public class RunKafkaConsumer {
 
         final List<RunnableKafkaConsumer> consumers = new ArrayList<>();
         for (int i = 0; i < numConsumers; i++) {
-            RunnableKafkaConsumer consumer = new RunnableKafkaConsumer(i, kafkaProperties, topics);
+            RunnableKafkaConsumer consumer = new RunnableKafkaConsumer(i, kafkaProperties, topics, sleep);
             consumers.add(consumer);
             executor.submit(consumer);
         }

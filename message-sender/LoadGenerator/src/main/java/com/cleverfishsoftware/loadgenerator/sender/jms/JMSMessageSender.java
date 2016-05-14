@@ -18,18 +18,14 @@ import javax.jms.Session;
 public class JMSMessageSender implements MessageSender {
 
     private final ConnectionFactory cf;
-    private final String brokerUrl;
     private final String queueName;
-
     private final Connection connection;
-
     private final Session session;
     private final Queue queue;
     private final MessageProducer producer;
 
-    public JMSMessageSender(ConnectionFactory cf, String brokerUrl, String queueName) throws JMSException {
+    public JMSMessageSender(ConnectionFactory cf, String queueName) throws JMSException {
         this.cf = cf;
-        this.brokerUrl = brokerUrl;
         this.queueName = queueName;
         connection = cf.createConnection();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);

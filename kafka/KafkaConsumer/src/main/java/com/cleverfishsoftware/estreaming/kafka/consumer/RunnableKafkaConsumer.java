@@ -21,16 +21,16 @@ class RunnableKafkaConsumer implements Runnable {
     private final Properties props;
     private final KafkaConsumer<String, String> consumer;
     private final List<String> topics;
-    private final int id;
+    private final String consumerId;
     private final long sleep;
 
-    public RunnableKafkaConsumer(int id, Properties props, List<String> topics, long sleep) {
+    public RunnableKafkaConsumer(String consumerId, Properties props, List<String> topics, long sleep) {
         this.props = new Properties(props);
         this.topics = new ArrayList<>(topics.size());
         topics.stream().forEach((each) -> {
             this.topics.add(each);
         });
-        this.id = id;
+        this.consumerId = consumerId;
         this.consumer = new KafkaConsumer<>(props);
         this.sleep = sleep;
     }
@@ -47,7 +47,7 @@ class RunnableKafkaConsumer implements Runnable {
                     data.put("partition", record.partition());
                     data.put("offset", record.offset());
                     data.put("value", record.value());
-                    System.out.println(this.id + ": " + data);
+                    System.out.println(this.consumerId + ": " + data);
                     if (sleep > 0) {
                         Thread.sleep(sleep);
                     }
@@ -55,8 +55,7 @@ class RunnableKafkaConsumer implements Runnable {
             }
         } catch (WakeupException | InterruptedException e) {
             // ignore
-        } 
-        finally {
+        } finally {
             consumer.close();
         }
     }

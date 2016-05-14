@@ -10,10 +10,10 @@ read -e -p "Enter the Channel name: " -i "SYSTEM.DEF.SVRCONN" ch
 read -e -p "Enter the Queue name: " -i "QUEUE1" qu
 read -e -p "Enter the Message text: " -i "Hello World" msg
 
-read -e -p "Is security enabled on the Queue Manager? (y/n) " -i "n" sec_enabled
+read -e -p "Is security enabled on the Queue Manager? (y/n) " -i "y" sec_enabled
 if [ "$sec_enabled" == "y" ]; then
-  read -e -p "Enter the user name: " -i "QUEUE1" user
-  read -e -p "Enter the user password: " -i "Hello World" pw
+  read -e -p "Enter the user name: " -i "$USER" user
+  read -e -p "Enter the user password: " -i "passw0rd" pw
 fi
 
 java \

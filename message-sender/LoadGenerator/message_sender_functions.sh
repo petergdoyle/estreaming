@@ -21,11 +21,37 @@ while true; do
       1)
       default_broker_url='tcp://localhost:61616'
       read -e -p "Enter the broker url : " -i $default_broker_url broker_url
-      read -e -p "Enter the queue name: " -i "queue1" queue_name
+      read -e -p "Enter the queue name: " -i "QUEUE1" queue_name
       message_sender_builder_class_name="com.cleverfishsoftware.loadgenerator.sender.jms.JMSMessageSenderBuilder"
       javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.class="com.cleverfishsoftware.loadgenerator.sender.jms.amq.ActiveMQConnectionFactoryProvider"'
       javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.broker_url="'$broker_url'"'
       javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.queue_name="'$queue_name'"'
+      break
+      ;;
+      2)
+      message_sender_builder_class_name="com.cleverfishsoftware.loadgenerator.sender.jms.JMSMessageSenderBuilder"
+      #message_sender_builder_class_name="com.cleverfishsoftware.loadgenerator.sender.jms.mq.IBMMQMessageSenderBuilder"
+      javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.class="com.cleverfishsoftware.loadgenerator.sender.jms.mq.IBMMQConnectionFactoryProvider"'
+
+      read -e -p "Enter the host name: " -i "localhost" mq_host
+      javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.mq_host="'$mq_host'"'
+      read -e -p "Enter the port number: " -i "1414" mq_port
+      javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.mq_port="'$mq_port'"'
+      read -e -p "Enter the Queue Manager name: " -i "QM1" mq_queue_manager
+      javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.mq_queue_manager="'$mq_queue_manager'"'
+      read -e -p "Enter the Channel name: " -i "SYSTEM.DEF.SVRCONN" mq_channel
+      javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.mq_channel="'$mq_channel'"'
+      read -e -p "Enter the Queue name: " -i "QUEUE1" queue_name
+      javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.queue_name="'$queue_name'"'
+
+      read -e -p "Is security enabled on the Queue Manager? (y/n) " -i "y" mq_security_enabled
+      if [[ "$mq_security_enabled" == "y" || "$mq_security_enabled" == "Y"  ]]; then
+        read -e -p "Enter the user name: " -i "$USER" mq_user
+        javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.mq_user="'$mq_user'"'
+        read -e -p "Enter the user password: " -i "passw0rd" mq_pw
+        javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.mq_pw="'$mq_pw'"'
+      fi
+
       break
       ;;
       3)
@@ -56,18 +82,18 @@ fi
 number_of_cores=$(grep -c ^processor /proc/cpuinfo)
 read -e -p "Enter number of threads (1-$number_of_cores): " -i "$number_of_cores" number_of_threads
 while true; do
-  echo -e "*** Select the Payload Generator Type *** \n \
- 1) Airline Flight Search Data (csv) \n \
- 2) Car Availablity Data (edifact)\n \
- 3) Hotel Room Availablity Data (edifact)\n \
- 4) Sequential Number (0000000001,0000000002,0000000003...) \n \
- 5) Ones and Zeros (0,1,0,1,0...) \n \
- 6) Lorem-ipsum (Lorem ipsum dolor...)\n \
- 7) Comma Separated Integers (12,31,2,32...) \n \
- 8) Smileys (☺☻☺☻☺☻...) \n \
-10) FileSystem Payload Generator \
-"
-  read opt
+  read -e -p "*** Select the Payload Generator Type ***
+ 1) Airline Flight Search Data (csv)
+ 2) Car Availablity Data (edifact)
+ 3) Hotel Room Availablity Data (edifact)
+ 4) Sequential Number (0000000001,0000000002,0000000003...)
+ 5) Ones and Zeros (0,1,0,1,0...)
+ 6) Lorem-ipsum (Lorem ipsum dolor...)
+ 7) Comma Separated Integers (12,31,2,32...)
+ 8) Smileys (☺☻☺☻☺☻...)
+10) FileSystem Payload Generator
+" -i "4" opt
+  #read opt
   case $opt in
       1)
       payload_generator_builder_class_name='com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataPayloadGeneratorBuilder'

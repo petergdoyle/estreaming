@@ -1,6 +1,6 @@
 /*
  */
-package com.cleverfishsoftware.loadgenerator.broker.jms.amq;
+package com.cleverfishsoftware.estreaming.amq.broker;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.usage.SystemUsage;

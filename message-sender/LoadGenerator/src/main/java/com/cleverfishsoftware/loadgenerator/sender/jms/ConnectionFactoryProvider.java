@@ -2,6 +2,7 @@
  */
 package com.cleverfishsoftware.loadgenerator.sender.jms;
 
+import java.util.Properties;
 import javax.jms.ConnectionFactory;
 
 /**
@@ -10,6 +11,6 @@ import javax.jms.ConnectionFactory;
  */
 public interface ConnectionFactoryProvider {
 
-    ConnectionFactory getInstance(String brokerUrl, String queueName);
+    ConnectionFactory getInstance(Properties props) throws Exception;
 
 }

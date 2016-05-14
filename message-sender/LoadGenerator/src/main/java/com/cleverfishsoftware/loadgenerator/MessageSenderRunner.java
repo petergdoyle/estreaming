@@ -3,13 +3,13 @@
 package com.cleverfishsoftware.loadgenerator;
 
 import static com.cleverfishsoftware.loadgenerator.Common.isTrue;
-import static com.cleverfishsoftware.loadgenerator.Common.notNull;
 import com.google.common.util.concurrent.RateLimiter;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import static com.cleverfishsoftware.loadgenerator.Common.NotNullOrEmpty;
 
 /**
  *
@@ -25,7 +25,9 @@ public class MessageSenderRunner {
         });
 
         String jmsMessageSenderBuilderClassName = args[0];
+        props.setProperty("LoadGenerator.MessageSenderRunner.args.jmsMessageSenderBuilderClassName", jmsMessageSenderBuilderClassName);
         String payloadGeneratorBuilderClassName = args[1];
+        props.setProperty("LoadGenerator.MessageSenderRunner.args.payloadGeneratorBuilderClassName", payloadGeneratorBuilderClassName);
 
         Class<PayloadGeneratorBuilder> payloadGeneratorBuilderClass = (Class<PayloadGeneratorBuilder>) Class.forName(payloadGeneratorBuilderClassName);
         PayloadGeneratorBuilder payloadGeneratorBuilder = payloadGeneratorBuilderClass.newInstance();
@@ -44,25 +46,25 @@ public class MessageSenderRunner {
 
         // override defaults with supplied args
         String argValue = args[2];
-        if (notNull(argValue)) {
+        if (NotNullOrEmpty(argValue)) {
             rate = Integer.parseInt(argValue);
         }
         props.setProperty("LoadGenerator.MessageSenderRunner.args.rate", argValue);
 
         argValue = args[3];
-        if (notNull(argValue)) {
+        if (NotNullOrEmpty(argValue)) {
             limit = Integer.parseInt(argValue);
         }
         props.setProperty("LoadGenerator.MessageSenderRunner.args.limit", argValue);
 
         argValue = args[4];
-        if (notNull(argValue)) {
+        if (NotNullOrEmpty(argValue)) {
             messageSize = Integer.parseInt(argValue);
         }
         props.setProperty("LoadGenerator.MessageSenderRunner.args.messageSize", argValue);
 
         argValue = args[5];
-        if (notNull(argValue)) {
+        if (NotNullOrEmpty(argValue)) {
             cores = Integer.parseInt(argValue);
             if (cores % availableProcessors != 0) {
                 if (cores <= availableProcessors) {
@@ -82,12 +84,22 @@ public class MessageSenderRunner {
         }
         props.setProperty("LoadGenerator.MessageSenderRunner.args.noisy", Boolean.toString(noisy));
 
+        
+//        Enumeration<String> propertyNames = (Enumeration<String>) props.propertyNames();
+//        while (propertyNames.hasMoreElements()) {
+//            String key = propertyNames.nextElement();
+//            String value = props.getProperty(key);
+//            System.out.println(key+"="+value);
+//        }
+        System.out.println(props);
+        
+        
         PayloadGenerator payloadGenerator = payloadGeneratorBuilder.getInstance(props);
         MessageSender messageSender = messageSenderBuilder.getInstance(props);
 
         System.out.println("Preparing to send "
-                + (limit > 0 ? limit : " an unlimited number of ") + " (" + messageSize + " byte) messages "
-                + "at a rate of  " + rate + " messages per second "
+                + (limit > 0 ? limit : "an unlimited number of ") + " (" + messageSize + " byte) messages "
+                + "with a rate of  " + rate + " messages per second "
                 + "using " + cores + " threads.");
 
         Date now = new Date(System.currentTimeMillis());

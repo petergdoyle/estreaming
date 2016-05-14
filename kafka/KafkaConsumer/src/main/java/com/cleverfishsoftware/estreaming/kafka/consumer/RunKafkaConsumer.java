@@ -19,13 +19,14 @@ public class RunKafkaConsumer {
     public static void main(String[] args) {
 
         String bootstrapServers = args[0];
-        String consumerGroup = args[1];
-        List<String> topics = Arrays.asList(args[2].split(","));
-        long sleep = Long.parseLong(args[3]);
+        String consumerGroupId = args[1];
+        String consumerId = args[2];
+        List<String> topics = Arrays.asList(args[3].split(","));
+        long sleep = Long.parseLong(args[4]);
 
         Properties kafkaProperties = new Properties();
         kafkaProperties.put("bootstrap.servers", bootstrapServers);
-        kafkaProperties.put("group.id", consumerGroup);
+        kafkaProperties.put("group.id", consumerGroupId);
         kafkaProperties.put("enable.auto.commit", "true");
         kafkaProperties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         kafkaProperties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
@@ -39,7 +40,7 @@ public class RunKafkaConsumer {
 
         final List<RunnableKafkaConsumer> consumers = new ArrayList<>();
         for (int i = 0; i < numConsumers; i++) {
-            RunnableKafkaConsumer consumer = new RunnableKafkaConsumer(i, kafkaProperties, topics, sleep);
+            RunnableKafkaConsumer consumer = new RunnableKafkaConsumer(consumerId, kafkaProperties, topics, sleep);
             consumers.add(consumer);
             executor.submit(consumer);
         }

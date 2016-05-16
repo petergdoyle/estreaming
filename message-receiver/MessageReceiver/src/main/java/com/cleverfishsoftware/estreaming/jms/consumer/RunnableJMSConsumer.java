@@ -1,6 +1,6 @@
 /*
  */
-package com.cleverfishsoftware.estreaming.jms;
+package com.cleverfishsoftware.estreaming.jms.consumer;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;

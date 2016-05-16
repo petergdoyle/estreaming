@@ -1,6 +1,6 @@
 /*
  */
-package com.cleverfishsoftware.estreaming.jms;
+package com.cleverfishsoftware.estreaming.jms.consumer;
 
 import static com.cleverfishsoftware.loadgenerator.Common.NullOrEmpty;
 import com.cleverfishsoftware.loadgenerator.sender.jms.ConnectionFactoryProvider;

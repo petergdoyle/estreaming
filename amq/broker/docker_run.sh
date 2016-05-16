@@ -1,6 +1,6 @@
 #!/bin/sh
-. ../scripts/lib/docker_functions.sh
-. ../scripts/lib/network_functions.sh
+. ../../scripts/lib/docker_functions.sh
+. ../../scripts/lib/network_functions.sh
 
 start_cmd_min="java -Xms1G -Xmx1G \
 -jar /activemq/default/bin/activemq.jar start"

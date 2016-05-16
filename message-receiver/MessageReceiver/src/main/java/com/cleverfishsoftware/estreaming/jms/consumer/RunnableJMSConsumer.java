@@ -27,13 +27,15 @@ public class RunnableJMSConsumer implements Runnable {
     private final Session session;
     private final Queue queue;
     private final Destination destination;
-
     private final MessageConsumer consumer;
     private final long sleep;
+    private final boolean noisy;
+    private final String identifier;
+    
     private final AtomicInteger count = new AtomicInteger();
     private boolean running = true;
 
-    public RunnableJMSConsumer(ConnectionFactory cf, String queueName, long sleep) throws JMSException {
+    public RunnableJMSConsumer(String identifier, ConnectionFactory cf, String queueName, long sleep, boolean noisy) throws JMSException {
         this.cf = cf;
         this.queueName = queueName;
         connection = cf.createConnection();
@@ -45,6 +47,8 @@ public class RunnableJMSConsumer implements Runnable {
         // Create a MessageConsumer from the Session to the Topic or Queue
         consumer = session.createConsumer(destination);
         this.sleep = sleep;
+        this.identifier = identifier;
+        this.noisy=noisy;
     }
 
     @Override
@@ -54,33 +58,37 @@ public class RunnableJMSConsumer implements Runnable {
             while (running) {
 
                 try {
-                    System.out.println("waiting...");
-                    // Wait for a message
+//                    System.out.println("waiting...");
                     // A JMS message consumer can consume messages synchronously by calling one of the MessageConsumer's receive() methods:
                     //receive()
                     //receive (long timeout)
                     //receiveNoWait();
-                    //Calling receive() or receive (0) will block until there is a message available. This is the easiest form to receive a message synchronously. The only disadvantage is that the application thread is blocked indefinitely.
+                    //Calling receive() or receive (0) will block until there is a message available. This is the easiest form to receive a message synchronously. 
+                    //The only disadvantage is that the application thread is blocked indefinitely.
                     //
-                    //Receive with timeout and receiveNoWait are the two alternative API to consume messages synchronously. But applications should be aware of the intended contract and behavior of the APIs. Applications may not function reliably or consistently if they are not used properly.
+                    //Receive with timeout and receiveNoWait are the two alternative API to consume messages synchronously. But applications should be 
+                    //aware of the intended contract and behavior of the APIs. Applications may not function reliably or consistently if they are not used properly.
                     //                1. receive (long timeout)
                     //
                     //The JMS API JavaDoc for the API is quoted as follows.
                     //
                     //"Receives the next message that arrives within the specified timeout interval.
                     //
-                    //This call blocks until a message arrives, the timeout expires, or this message consumer is closed. A timeout of zero never expires, and the call blocks indefinitely."
+                    //This call blocks until a message arrives, the timeout expires, or this message consumer is closed. A timeout of zero never expires, and 
+                    //the call blocks indefinitely."
                     //
-                    //One important thing to note is the timeout value. This is the maximum wait time that the application should be expecting to wait. The call returns immediately if there is a message available. The call may block up to the specified timeout value if no message is available.
+                    //One important thing to note is the timeout value. This is the maximum wait time that the application should be expecting to wait. The call 
+                    //returns immediately if there is a message available. The call may block up to the specified timeout value if no message is available.
 
+                    // Wait for a message
                     Message message = consumer.receive(0);
 
-                    if (message instanceof TextMessage) {
-                        TextMessage textMessage = (TextMessage) message;
-                        String text = textMessage.getText();
-                        System.out.println("Received: " + text + "    Processed: " + count.incrementAndGet() + " messages");
+                    TextMessage textMessage = (TextMessage) message;
+                    String text = textMessage.getText();
+                    if (noisy) {
+                        System.out.println(identifier + " received: " + count.incrementAndGet() + " messages" + "  msg: " + text);
                     } else {
-                        System.out.println("Received: " + message + "    Processed: " + count.incrementAndGet() + " messages");
+                        System.out.print("\r" + count.incrementAndGet() + " received");
                     }
                     if (sleep > 0) {
                         try {
@@ -88,7 +96,6 @@ public class RunnableJMSConsumer implements Runnable {
                         } catch (InterruptedException ex) {
                         }
                     }
-                    System.out.println();
 
                 } catch (JMSException ex) {
                     Logger.getLogger(RunnableJMSConsumer.class.getName()).log(Level.SEVERE, null, ex);
@@ -98,6 +105,7 @@ public class RunnableJMSConsumer implements Runnable {
             consumer.close();
             session.close();
             connection.close();
+
         } catch (JMSException ex) {
             Logger.getLogger(RunnableJMSConsumer.class.getName()).log(Level.SEVERE, null, ex);
         }

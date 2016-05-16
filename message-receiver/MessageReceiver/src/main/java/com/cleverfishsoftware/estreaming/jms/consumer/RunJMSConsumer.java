@@ -20,7 +20,6 @@ public class RunJMSConsumer {
 
     public static void main(String[] args) throws Exception {
 
-
         Properties props = new Properties(); // any known properties for the RunJMSConsumer are found here... 
         System.getProperties().stringPropertyNames().stream().filter((key) -> (key.startsWith("RunJMSConsumer") || key.startsWith("LoadGenerator"))).forEach((key) -> {
             props.setProperty(key, System.getProperty(key));
@@ -35,6 +34,23 @@ public class RunJMSConsumer {
             throw new RuntimeException("missing system property: " + LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERQUE);
         }
 
+        String sleepTime = props.getProperty(RUN_JMS_CONSUMER_MESSAGE_CONSUMERSLEEP_TIME);
+        if (NullOrEmpty(sleepTime)) {
+            throw new RuntimeException("missing system property: " + RUN_JMS_CONSUMER_MESSAGE_CONSUMERSLEEP_TIME);
+        }
+        long sleep = Long.parseLong(sleepTime);
+
+        String identifier = props.getProperty(RUN_JMS_CONSUMER_MESSAGE_CONSUMERCONSUMER_ID);
+        if (NullOrEmpty(identifier)) {
+            throw new RuntimeException("missing system property: " + RUN_JMS_CONSUMER_MESSAGE_CONSUMERCONSUMER_ID);
+        }
+
+        String noisyValue = props.getProperty(RUN_JMS_CONSUMER_MESSAGE_CONSUMERNOISY);
+        if (NullOrEmpty(noisyValue)) {
+            throw new RuntimeException("missing system property: " + RUN_JMS_CONSUMER_MESSAGE_CONSUMERNOISY);
+        }
+        boolean noisy = Boolean.parseBoolean(noisyValue);
+
         Class<ConnectionFactoryProvider> cfpClass = (Class<ConnectionFactoryProvider>) Class.forName(cfpClassName);
         ConnectionFactoryProvider cfp = cfpClass.newInstance();
         ConnectionFactory cf = cfp.getInstance(props);
@@ -44,7 +60,7 @@ public class RunJMSConsumer {
 
         final List<RunnableJMSConsumer> consumers = new ArrayList<>();
         for (int i = 0; i < numConsumers; i++) {
-            RunnableJMSConsumer consumer = new RunnableJMSConsumer(cf, queueName, 0);
+            RunnableJMSConsumer consumer = new RunnableJMSConsumer(identifier, cf, queueName, sleep, noisy);
             consumers.add(consumer);
             executor.submit(consumer);
         }
@@ -64,7 +80,9 @@ public class RunJMSConsumer {
         });
 
     }
-
+    private static final String RUN_JMS_CONSUMER_MESSAGE_CONSUMERNOISY = "RunJMSConsumer.MessageConsumer.noisy";
+    private static final String RUN_JMS_CONSUMER_MESSAGE_CONSUMERCONSUMER_ID = "RunJMSConsumer.MessageConsumer.consumer_id";
+    private static final String RUN_JMS_CONSUMER_MESSAGE_CONSUMERSLEEP_TIME = "RunJMSConsumer.MessageConsumer.sleep_time";
     private static final String LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERCLA = "LoadGenerator.ConnectionFactoryProvider.class";
     private static final String LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERQUE = "LoadGenerator.ConnectionFactoryProvider.queue_name";
 }

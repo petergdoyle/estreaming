@@ -23,6 +23,11 @@ else
 fi
 
 #cmd="java -jar target/KafkaConsumer-1.0-SNAPSHOT.jar $broker_host_port $consumer_group_id $consumer_id $topic $sleep $append_overwrite $fout"
-cmd="java -jar target/KafkaConsumer-1.0-SNAPSHOT.jar $broker_host_port $consumer_group_id $consumer_id $topic $sleep"
+cmd="java -cp .:target/MessageReceiver-1.0-SNAPSHOT.jar com.cleverfishsoftware.estreaming.kafka.consumer.RunKafkaConsumer \
+$broker_host_port \
+$consumer_group_id \
+$consumer_id \
+$topic \
+$sleep"
 echo "$cmd"
 eval "$cmd"

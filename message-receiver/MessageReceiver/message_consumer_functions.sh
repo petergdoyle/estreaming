@@ -56,13 +56,19 @@ while true; do
 done
 
 read -e -p "Enter the consumer id: " -i "consumer-1" consumer_id
+javaOpts=$javaOpts' -DRunJMSConsumer.MessageConsumer.consumer_id="'$consumer_id'"'
 read -e -p "Enter consumer process latency (in millis): " -i "0" sleep
 javaOpts=$javaOpts' -DRunJMSConsumer.MessageConsumer.sleep_time="'$sleep'"'
 read -e -p "Display output to console (y/n) " -i "n" console_output
+noisy="false"
+if [[ $console_output == "Y" || $console_output == "y" ]]; then
+  noisy="true"
+fi
+javaOpts=$javaOpts' -DRunJMSConsumer.MessageConsumer.noisy="'$noisy'"'
 
 cmd="java -Xms1G -Xmx1G \
 $javaOpts \
--cp .:target/AMQConsumer-1.0-SNAPSHOT.jar \
-com.cleverfishsoftware.estreaming.jms.RunJMSConsumer"
+-cp .:target/MessageReceiver-1.0-SNAPSHOT.jar \
+com.cleverfishsoftware.estreaming.jms.consumer.RunJMSConsumer"
 
 echo $cmd

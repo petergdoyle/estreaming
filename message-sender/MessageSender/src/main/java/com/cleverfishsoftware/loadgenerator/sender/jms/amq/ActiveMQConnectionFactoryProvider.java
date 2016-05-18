@@ -9,6 +9,7 @@ import javax.jms.ConnectionFactory;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.pool.PooledConnectionFactory;
 import static com.cleverfishsoftware.loadgenerator.Common.NullOrEmpty;
+import org.apache.activemq.ActiveMQPrefetchPolicy;
 
 /**
  *
@@ -23,8 +24,11 @@ public class ActiveMQConnectionFactoryProvider implements ConnectionFactoryProvi
         if (NullOrEmpty(brokerUrl)) {
             throw new RuntimeException("missing system property: " + LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERBRO);
         }
-        ConnectionFactory cf = new ActiveMQConnectionFactory(brokerUrl);
-        ((ActiveMQConnectionFactory) cf).setUseAsyncSend(true);
+        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory(brokerUrl);
+        cf.setUseAsyncSend(true);
+        ActiveMQPrefetchPolicy prefetchPolicy=new ActiveMQPrefetchPolicy();
+        prefetchPolicy.setQueuePrefetch(1);
+        cf.setPrefetchPolicy(prefetchPolicy);
         PooledConnectionFactory pcf = new PooledConnectionFactory();
         pcf.setConnectionFactory(cf);
         return pcf;

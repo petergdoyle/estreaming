@@ -14,7 +14,7 @@ public class AirlineDataPayloadGeneratorBuilder implements PayloadGeneratorBuild
 
     @Override
     public PayloadGenerator getInstance(Properties properties) throws Exception {
-        return new AirlineDataPayloadGenerator();
+        return new AirlineDataPayloadGenerator(new AirlineDataFormatterJSON());
     }
 
 }

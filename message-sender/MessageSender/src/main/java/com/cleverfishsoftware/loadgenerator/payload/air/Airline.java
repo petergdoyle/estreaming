@@ -71,10 +71,7 @@ public class Airline implements Selectable {
             return false;
         }
         final Airline other = (Airline) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

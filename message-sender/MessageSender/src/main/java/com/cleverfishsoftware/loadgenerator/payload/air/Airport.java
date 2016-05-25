@@ -42,10 +42,7 @@ public class Airport {
         if (!(country.equals("United Kingdom") || (country.equals("Canada") || (country.equals("United States"))))) {
             return false;
         }
-        if (!code.matches("[A-Z]{3}")) {
-            return false;
-        }
-        return true;
+        return code.matches("[A-Z]{3}");
     }
 
     public String getHeaderLine() {
@@ -73,10 +70,7 @@ public class Airport {
             return false;
         }
         final Airport other = (Airport) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

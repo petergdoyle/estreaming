@@ -18,7 +18,7 @@ while true; do
   read opt
   case $opt in
       1)
-      default_broker_url='tcp://localhost:61616'
+      default_broker_url='tcp://localhost:61616?jms.prefetchPolicy.all=1'
       read -e -p "Enter the broker url : " -i $default_broker_url broker_url
       read -e -p "Enter the queue name: " -i "QUEUE1" queue_name
       javaOpts=$javaOpts' -DLoadGenerator.ConnectionFactoryProvider.class="com.cleverfishsoftware.loadgenerator.sender.jms.amq.ActiveMQConnectionFactoryProvider"'

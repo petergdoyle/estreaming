@@ -152,7 +152,7 @@ read -e -p "Display output to console (y/n) " -i "n" console_output
 cmd="$timeout \
 java -Xms1G -Xmx1G \
 $javaOpts \
--cp .:target/LoadGenerator-1.0-SNAPSHOT.jar \
+-cp .:target/MessageSender-1.0-SNAPSHOT.jar \
 com.cleverfishsoftware.loadgenerator.MessageSenderRunner \
 $message_sender_builder_class_name \
 $payload_generator_builder_class_name \

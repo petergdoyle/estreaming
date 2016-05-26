@@ -23,7 +23,6 @@ public class AirlineDataPayloadGenerator implements PayloadGenerator {
     private static final int MAX_PRICE = 1600;
 
     private static final Random RANDOM = new Random();
-    private static final Formatter PRICE_FORMATTER = new Formatter();
 
     private final List<Airline> airlines = new ArrayList<>();
     private final List<Airport> airports = new ArrayList<>();
@@ -45,7 +44,7 @@ public class AirlineDataPayloadGenerator implements PayloadGenerator {
         Airport from = selectRandomFromAirport(airline, excludes);
         excludes.add(from);
         Airport to = selectRandomToAirport(excludes);
-        String price = PRICE_FORMATTER.format(Locale.US, "%.2f", selectRandomPrice()).toString();
+        String price = new Formatter().format(Locale.US, "%.2f", selectRandomPrice()).toString();
         String type = airline.country.equals(to.country) ? "DOM" : "INTL";
         String currency = "USD";
 

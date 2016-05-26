@@ -6,8 +6,8 @@ import static com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataSource
 import static com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataSource.AIRPORTS;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  *
@@ -17,7 +17,7 @@ public class AirlineDataFormatterJSON implements AirlineDataFormatter {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    private final static Map<String, Object> FIELD_MAP = new TreeMap<>();
+    private final static Map<String, Object> FIELD_MAP = new LinkedHashMap<>();
 
     static {
         initializeFieldMap();
@@ -27,7 +27,6 @@ public class AirlineDataFormatterJSON implements AirlineDataFormatter {
     public String format(Airline airline, Airport from, Airport to, int depHr, int depMin, int arrHr, int arrMin, String price, String currency, String type, int size) {
 
         try {
-
             FIELD_MAP.put("airlineCd", airline.name);
             FIELD_MAP.put("airlineNm", airline.country);
             FIELD_MAP.put("airlineCntry", airline.country);

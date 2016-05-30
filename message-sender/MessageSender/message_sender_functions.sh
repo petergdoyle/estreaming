@@ -97,6 +97,13 @@ while true; do
   case $opt in
       1)
       payload_generator_builder_class_name='com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataPayloadGeneratorBuilder'
+      read -e -p "What type of output (csv or json)?: " -i "json" format_type
+      if [[ "$format_type" == "json" || "$format_type" == "JSON" ]]; then
+        airlineDataFormatterType = "com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataFormatterJSON"
+      else
+        airlineDataFormatterType = "com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataFormatterCSV"
+      fi
+      javaOpts=$javaOpts' -DLoadGenerator.AirlineDataPayloadGeneratorBuilder.airlineDataFormatterType="'$airlineDataFormatterType'"'
       break
       ;;
       2)

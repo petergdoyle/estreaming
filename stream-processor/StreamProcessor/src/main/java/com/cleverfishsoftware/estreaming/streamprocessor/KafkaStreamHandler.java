@@ -16,12 +16,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author peter
  */
 public class KafkaStreamHandler extends SimpleChannelInboundHandler<String> {
-
+    
     private static AtomicInteger instance = new AtomicInteger(0);
     private final ExecutorService executor;
-
+    
     public KafkaStreamHandler() {
-
+        
         String bootstrapServers = System.getProperty("bootstrap.servers");
         if (bootstrapServers == null || bootstrapServers.length() == 0) {
             bootstrapServers = "localhost:9092";
@@ -42,7 +42,7 @@ public class KafkaStreamHandler extends SimpleChannelInboundHandler<String> {
         if (topic == null || topic.length() == 0) {
             topic = "topic-1";
         }
-
+        
         Properties kafkaProperties = new Properties();
         kafkaProperties.put("bootstrap.servers", bootstrapServers);
         kafkaProperties.put("group.id", consumerGroupId);
@@ -53,26 +53,26 @@ public class KafkaStreamHandler extends SimpleChannelInboundHandler<String> {
         kafkaProperties.put("fetch.min.bytes", "50000");
         kafkaProperties.put("receive.buffer.bytes", "262144");
         kafkaProperties.put("max.partition.fetch.bytes", "2097152");
-
+        
         executor = Executors.newSingleThreadExecutor();
         
-            RunnableKafkaConsumer consumer = new RunnableKafkaConsumer(consumerId, kafkaProperties, Arrays.asList(new String[]{topic}), 0);
-            executor.submit(consumer);
+        RunnableKafkaConsumer consumer = new RunnableKafkaConsumer(consumerId, kafkaProperties, Arrays.asList(new String[]{topic}), 0);
+        executor.submit(consumer);
     }
-
+    
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         ctx.writeAndFlush("HELO: Type the path of the file to retrieve.\n");
     }
-
+    
     @Override
     public void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-
+        
     }
-
+    
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-
+        
         if (ctx.channel().isActive()) {
             ctx.writeAndFlush("ERR: "
                     + cause.getClass().getSimpleName() + ": "

@@ -66,17 +66,18 @@ public class MessageSenderRunner {
         argValue = args[5];
         if (NotNullOrEmpty(argValue)) {
             cores = Integer.parseInt(argValue);
-            if (cores % availableProcessors != 0) {
-                if (cores <= availableProcessors) {
-                    cores = availableProcessors;
-                } else {
-                    while (cores % availableProcessors != 0) {
-                        cores--;
-                    }
+            if (cores == 0) { //don't throw error, just correct it. 
+                cores++;
+            } else if (cores > availableProcessors) {
+                while (cores % availableProcessors != 0) { // wind it down to a multiple of the number of cores
+                    cores--;
                 }
             }
         }
-        props.setProperty("LoadGenerator.MessageSenderRunner.args.cores", argValue);
+        if (cores != availableProcessors) {
+            System.out.println("Number of threads adjusted to " + cores);
+        }
+        props.setProperty("LoadGenerator.MessageSenderRunner.args.cores", String.valueOf(cores));
 
         argValue = args[6];
         if (isTrue(argValue)) {
@@ -84,7 +85,6 @@ public class MessageSenderRunner {
         }
         props.setProperty("LoadGenerator.MessageSenderRunner.args.noisy", Boolean.toString(noisy));
 
-        
 //        Enumeration<String> propertyNames = (Enumeration<String>) props.propertyNames();
 //        while (propertyNames.hasMoreElements()) {
 //            String key = propertyNames.nextElement();
@@ -92,14 +92,14 @@ public class MessageSenderRunner {
 //            System.out.println(key+"="+value);
 //        }
         System.out.println(props);
-        
-        
+
         PayloadGenerator payloadGenerator = payloadGeneratorBuilder.getInstance(props);
         MessageSender messageSender = messageSenderBuilder.getInstance(props);
 
         System.out.println("Preparing to send "
-                + (limit > 0 ? limit : "an unlimited number of ") + " (" + messageSize + " byte) messages "
-                + "with a rate of  " + rate + " messages per second "
+                + (limit > 0 ? limit : "an unlimited number of ")
+                + " (" + (messageSize == 0 ? "default" : messageSize) + " byte) messages "
+                + "with a rate of " + rate + " messages per second "
                 + "using " + cores + " threads.");
 
         Date now = new Date(System.currentTimeMillis());

@@ -3,8 +3,8 @@
 package com.cleverfishsoftware.loadgenerator.sender.jms.mq;
 
 import com.cleverfishsoftware.loadgenerator.sender.jms.ConnectionFactoryProvider;
-import com.ibm.mq.jms.MQQueueConnectionFactory;
-import com.ibm.msg.client.wmq.WMQConstants;
+//import com.ibm.mq.jms.MQQueueConnectionFactory;
+//import com.ibm.msg.client.wmq.WMQConstants;
 import java.util.Properties;
 import javax.jms.ConnectionFactory;
 import static com.cleverfishsoftware.loadgenerator.Common.NullOrEmpty;
@@ -47,49 +47,51 @@ public class IBMMQConnectionFactoryProvider implements ConnectionFactoryProvider
             throw new RuntimeException("missing system property: " + LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERMQ_QN);
         }
 
-        MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
-        cf.setHostName(mqHost);
-        cf.setPort(mqPort);
-        cf.setTransportType(WMQConstants.WMQ_CM_CLIENT);
-        cf.setQueueManager(mqQueueManager);
-        cf.setChannel(mqChannel);
-        
-//        https://www.ibm.com/developerworks/community/blogs/messaging/entry/asynchronous_message_send_using_mq_jms_2_0?lang=en
-//        JMSContext jmsContext = cf.createContext();
-//        JMSProducer jmsProducer = jmsContext.createProducer();
-//        jmsProducer.setAsync(new CompletionListener() {
-//            @Override
-//            public void onCompletion(Message msg) {
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
+//        cf.setHostName(mqHost);
+//        cf.setPort(mqPort);
+//        cf.setTransportType(WMQConstants.WMQ_CM_CLIENT);
+//        cf.setQueueManager(mqQueueManager);
+//        cf.setChannel(mqChannel);
+//        
+////        https://www.ibm.com/developerworks/community/blogs/messaging/entry/asynchronous_message_send_using_mq_jms_2_0?lang=en
+////        JMSContext jmsContext = cf.createContext();
+////        JMSProducer jmsProducer = jmsContext.createProducer();
+////        jmsProducer.setAsync(new CompletionListener() {
+////            @Override
+////            public void onCompletion(Message msg) {
+////                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+////            }
+////
+////            @Override
+////            public void onException(Message msg, Exception excptn) {
+////                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+////            }
+////        });
+//        
+//
+//        boolean securityEnabledChannel = true;
+//
+//        if (securityEnabledChannel) {
+//
+//            String mqUser = props.getProperty(LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERMQ_US);
+//            if (NullOrEmpty(mqUser)) {
+//                throw new RuntimeException("missing system property: " + LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERMQ_US);
 //            }
 //
-//            @Override
-//            public void onException(Message msg, Exception excptn) {
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            String mqPw = props.getProperty(LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERMQ_PW);
+//            if (NullOrEmpty(mqPw)) {
+//                throw new RuntimeException("missing system property: " + LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERMQ_PW);
 //            }
-//        });
-        
+//
+//            cf.setStringProperty(WMQConstants.USERID, mqUser);
+//            cf.setStringProperty(WMQConstants.PASSWORD, mqPw);
+//            cf.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, true);
+//        }
 
-        boolean securityEnabledChannel = true;
+//        return cf;
 
-        if (securityEnabledChannel) {
-
-            String mqUser = props.getProperty(LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERMQ_US);
-            if (NullOrEmpty(mqUser)) {
-                throw new RuntimeException("missing system property: " + LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERMQ_US);
-            }
-
-            String mqPw = props.getProperty(LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERMQ_PW);
-            if (NullOrEmpty(mqPw)) {
-                throw new RuntimeException("missing system property: " + LOAD_GENERATOR_CONNECTION_FACTORY_PROVIDERMQ_PW);
-            }
-
-            cf.setStringProperty(WMQConstants.USERID, mqUser);
-            cf.setStringProperty(WMQConstants.PASSWORD, mqPw);
-            cf.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, true);
-        }
-
-        return cf;
+        return null;
 
     }
 

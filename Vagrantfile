@@ -23,7 +23,7 @@ Vagrant.configure(2) do |config|
 
   #best to update the os
   yum -y update && yum -y clean
-  yum -y install vim htop curl wget tree unzip bash-completion
+  yum -y install vim htop curl wget tree unzip bash-completion telnet net-tools jq
 
   eval 'docker --version' > /dev/null 2>&1
   if [ $? -eq 127 ]; then
@@ -83,10 +83,10 @@ EOF
   if [ $? -eq 127 ]; then
     mkdir /usr/maven
     #install maven
-    curl -O http://www.eu.apache.org/dist/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz \
-      && tar -xvf apache-maven-3.3.3-bin.tar.gz -C /usr/maven \
-      && ln -s /usr/maven/apache-maven-3.3.3 /usr/maven/default \
-      && rm -f apache-maven-3.3.3-bin.tar.gz
+    curl -O http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz \
+      && tar -xvf apache-maven-3.3.9-bin.tar.gz -C /usr/maven \
+      && ln -s /usr/maven/apache-maven-3.3.9 /usr/maven/default \
+      && rm -f apache-maven-3.3.9-bin.tar.gz
 
     alternatives --install "/usr/bin/mvn" "mvn" "/usr/maven/default/bin/mvn" 99999
 
@@ -141,11 +141,31 @@ EOF
   su - vagrant -c 'spring --version'
 
 
+  eval $'go version' > /dev/null 2>&1
+  if [ $? -eq 127 ]; then
+    yum -y install golang gpm
+    export GOPATH=/home/vagrant/go
+    mkdir $GOPATH
+  else
+    echo -e "\e[7;44;96go already appears to be installed. skipping."
+  fi
+
+  eval "$GOPATH/bin/burrow" > /dev/null 2>&1
+  if [ $? -eq 127 ]; then]
+    go get github.com/linkedin/burrow
+    cd $GOPATH/src/github.com/linkedin/burrow
+    gpm install
+    go install
+  else
+    echo -e "\e[7;44;96burrow already appears to be installed. skipping."
+  fi
+
+
   # on the vm host you need to open up some temporary ports on the firewall
   # if you are running on fedora or centos7 this is done with firewalld commands
-  firewall-cmd --add-port=3000/tcp
-  firewall-cmd --add-port=9889/tcp
-  firewall-cmd --add-port=9393/tcp
+  # firewall-cmd --add-port=3000/tcp
+  # firewall-cmd --add-port=9889/tcp
+  # firewall-cmd --add-port=9393/tcp
 
   #set hostname
   hostnamectl set-hostname estreaming.vbx

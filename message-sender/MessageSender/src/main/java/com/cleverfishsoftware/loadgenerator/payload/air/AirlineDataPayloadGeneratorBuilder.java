@@ -15,8 +15,8 @@ public class AirlineDataPayloadGeneratorBuilder implements PayloadGeneratorBuild
     @Override
     public PayloadGenerator getInstance(Properties properties) throws Exception {
 
-        String dataFormatterType = properties.getProperty("LoadGenerator.AirlineDataPayloadGeneratorBuilder.dataFormatterType");
-        Class<AirlineDataFormatter> dataFormatterClass = (Class<AirlineDataFormatter>) Class.forName(dataFormatterType);
+        String airlineDataFormatterType = properties.getProperty("LoadGenerator.AirlineDataPayloadGeneratorBuilder.airlineDataFormatterType");
+        Class<AirlineDataFormatter> dataFormatterClass = (Class<AirlineDataFormatter>) Class.forName(airlineDataFormatterType);
         AirlineDataFormatter airlineDataFormatter = dataFormatterClass.newInstance();
 
         return new AirlineDataPayloadGenerator(airlineDataFormatter);

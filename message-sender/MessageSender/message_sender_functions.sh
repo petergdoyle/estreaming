@@ -83,7 +83,7 @@ number_of_cores=$(grep -c ^processor /proc/cpuinfo)
 read -e -p "Enter number of threads (1-$number_of_cores): " -i "$number_of_cores" number_of_threads
 while true; do
   read -e -p "*** Select the Payload Generator Type ***
- 1) Airline Flight Search Data (csv)
+ 1) Airline Flight Search Data (csv,json)
  2) Car Availablity Data (edifact)
  3) Hotel Room Availablity Data (edifact)
  4) Sequential Number (0000000001,0000000002,0000000003...)
@@ -99,9 +99,9 @@ while true; do
       payload_generator_builder_class_name='com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataPayloadGeneratorBuilder'
       read -e -p "What type of output (csv or json)?: " -i "json" format_type
       if [[ "$format_type" == "json" || "$format_type" == "JSON" ]]; then
-        airlineDataFormatterType = "com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataFormatterJSON"
+        airlineDataFormatterType="com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataFormatterJSON"
       else
-        airlineDataFormatterType = "com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataFormatterCSV"
+        airlineDataFormatterType="com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataFormatterCSV"
       fi
       javaOpts=$javaOpts' -DLoadGenerator.AirlineDataPayloadGeneratorBuilder.airlineDataFormatterType="'$airlineDataFormatterType'"'
       break

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  *
@@ -27,6 +28,7 @@ public class AirlineDataFormatterJSON implements AirlineDataFormatter {
     public String format(Airline airline, Airport from, Airport to, int depHr, int depMin, int arrHr, int arrMin, String price, String currency, String type, int size) {
 
         try {
+            FIELD_MAP.put("id", UUID.randomUUID().toString());
             FIELD_MAP.put("airlineCd", airline.name);
             FIELD_MAP.put("airlineNm", airline.country);
             FIELD_MAP.put("airlineCntry", airline.country);

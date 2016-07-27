@@ -3,6 +3,7 @@
 package com.cleverfishsoftware.loadgenerator.payload.air;
 
 import static com.cleverfishsoftware.loadgenerator.payload.air.AirlineDataPayloadGenerator.removeBadChars;
+import java.util.UUID;
 
 /**
  *
@@ -15,6 +16,8 @@ public class AirlineDataFormatterCSV implements AirlineDataFormatter {
     @Override
     public String format(Airline airline, Airport from, Airport to, int depHr, int depMin, int arrHr, int arrMin, String price, String currency, String type, int size) {
         StringBuilder record = new StringBuilder()
+                .append(UUID.randomUUID().toString())
+                .append(COMMA)
                 .append(removeBadChars(airline.code))
                 .append(COMMA)
                 .append(removeBadChars(airline.name))

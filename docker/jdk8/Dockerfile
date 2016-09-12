@@ -8,8 +8,13 @@ RUN mkdir -p /usr/java; \
   ln -s /usr/java/jdk1.8.0_60/ /usr/java/default; \
   rm -f jdk-8u60-linux-x64.tar.gz
 
-RUN alternatives --install "/usr/bin/java" "java" "/usr/java/default/bin/java" 99999; \
-  alternatives --install "/usr/bin/javac" "javac" "/usr/java/default/bin/javac" 99999
+# RUN alternatives --install "/usr/bin/java" "java" "/usr/java/default/bin/java" 99999; \
+#   alternatives --install "/usr/bin/javac" "javac" "/usr/java/default/bin/javac" 99999
+
+
+# install the executables from bin
+RUN for each in $(find "/usr/java/default/bin" -executable -type f) ; do name=$(basename $each); alternatives --install "/usr/bin/$name" "$name" "$each" 99999; done
+
 
 #
 # adding a jdk for all containers will double the size of each one whether they use java or not

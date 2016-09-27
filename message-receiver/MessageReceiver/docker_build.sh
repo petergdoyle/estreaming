@@ -4,7 +4,7 @@
 
 no_cache=$1
 
-img_name='estreaming/java-message-sender'
+img_name='estreaming/java-message-receiver'
 
 . ./clean_and_build.sh
 

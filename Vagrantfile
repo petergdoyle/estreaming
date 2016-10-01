@@ -141,17 +141,21 @@ EOF
   su - vagrant -c 'spring --version'
 
 
+  export GOPATH=/home/vagrant/go
+  cat >/etc/profile.d/go.sh <<-EOF
+export GOPATH=$GOPATH
+EOF
+
   eval $'go version' > /dev/null 2>&1
   if [ $? -eq 127 ]; then
     yum -y install golang gpm
-    export GOPATH=/home/vagrant/go
     mkdir $GOPATH
   else
     echo -e "\e[7;44;96go already appears to be installed. skipping."
   fi
 
   eval "$GOPATH/bin/burrow" > /dev/null 2>&1
-  if [ $? -eq 127 ]; then]
+  if [ $? -eq 127 ]; then
     go get github.com/linkedin/burrow
     cd $GOPATH/src/github.com/linkedin/burrow
     gpm install

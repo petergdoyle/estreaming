@@ -1,4 +1,5 @@
 #!/bin/sh
+cd $(dirname $0)
 . ../../scripts/lib/docker_functions.sh
 . ../../scripts/lib/network_functions.sh
 
@@ -21,15 +22,10 @@ volumes="-v $PWD/shared:/shared"
 network="$network"
 
 read -e -p "Enter the number of brokers to run: " -i "1" instances
-
+port=9092
 for i in $(eval echo "{1..$instances"});   do
   container_name='estreaming_kafka_broker'_$i
-  # copy the default properties and make the appropriate config settings
-  cp config/server.properties config/server$i.properties
-  sed -i sed -i "/broker.id.*/c broker.id=$i"  config/server$i.properties
-  # specify the appropriate start command
   start_cmd="bin/kafka-server-start.sh config/server$i.properties"
-  docker_run
+  docker_run "$port"
+  port=$((port+1))
 done
-
-docker_run 9092

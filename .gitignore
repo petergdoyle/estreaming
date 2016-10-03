@@ -17,3 +17,4 @@ Input*json
 dist
 consumer-group*properties
 /Netty/nbproject/private/
+kafka/singlenode/config/server*.properties

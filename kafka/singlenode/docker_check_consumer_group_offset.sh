@@ -8,4 +8,9 @@ else
   bootstrap_server=$2
 fi
 
-docker exec -ti estreaming_kafka_broker bin/kafka-consumer-groups.sh --new-consumer --bootstrap-server $bootstrap_server --describe --group $consumer_group_id
+brokers=$(docker ps -a |grep kafka_broker|  awk '{print $10;}')
+echo -e "The following Kafka brokers were found: \n$brokers"
+brokers_arr=($brokers)
+read -e -p "Pick a broker instance (any one):" -i ${brokers_arr[0]} selected_broker
+
+docker exec -ti $selected_broker bin/kafka-consumer-groups.sh --new-consumer --bootstrap-server $bootstrap_server --describe --group $consumer_group_id

@@ -7,7 +7,7 @@ no_cache=$1
 
 read -e -p "Run native networking mode(y/n): " -i "y" native
 if [[ "$native" == "n" || "$native" == "N" ]]; then
-  read -e -p "Enter the zk host/port: " -i "estreaming_kafka_zk:2181" zk_host_port
+  read -e -p "Enter the zk host/port: " -i "estreaming-kafka-zk:2181" zk_host_port
 else
   zk_host_port="localhost:2181"
 fi

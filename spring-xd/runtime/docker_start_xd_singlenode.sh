@@ -1,2 +1,2 @@
 #!/bin/sh
-docker start estreaming_xd_singlenode
+docker start estreaming-xd-singlenode

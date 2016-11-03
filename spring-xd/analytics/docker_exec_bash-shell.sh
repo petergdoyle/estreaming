@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker exec -ti estreaming_springboot_runtime /bin/bash
+docker exec -ti estreaming-springboot-runtime /bin/bash

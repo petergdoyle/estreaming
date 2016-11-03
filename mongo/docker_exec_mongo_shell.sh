@@ -1,2 +1,2 @@
 #!/bin/sh
-docker exec -ti estreaming_mongodb_server mongo
+docker exec -ti estreaming-mongodb-server mongo

@@ -5,7 +5,7 @@
 
 img_name='estreaming/nodejs'
 
-container_name='estreaming_nodejs_runtime'
+container_name='estreaming-nodejs-runtime'
 start_cmd="/bin/bash"
 network="$network_native"
 docker_run

@@ -1,5 +1,11 @@
 
-FROM estreaming/nodejs
+FROM estreaming/basenodejs
+
+COPY mongodb.repo /etc/yum.repos.d/mongodb.repo
+RUN yum -y install mongodb-org-shell
+
+# install node packages
+RUN npm install format-json-stream express express-generator forever -g
 
 COPY cors_proxy/ /nodejs/cors_proxy/
 COPY mongo_connect/ /nodejs/mongo_connect/

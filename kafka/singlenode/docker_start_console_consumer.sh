@@ -12,7 +12,7 @@ read -e -p "Run new kafka consumer: " -i "y" new_consumer
 
 if [[ "$new_consumer" == "n" || "$new_consumer" == "N" ]]; then
 
-  docker exec -ti estreaming_kafka_broker bin/kafka-console-consumer.sh \
+  docker exec -ti estreaming-kafka-broker bin/kafka-console-consumer.sh \
   --consumer.config /shared/$consumer_group.properties \
   --zookeeper $zk_host_port \
   --topic $topic \
@@ -22,7 +22,7 @@ else
 
   read -e -p "Enter the bootstrap server: " -i "localhost:9092" bootstrap_server
 
-  docker exec -ti estreaming_kafka_broker bin/kafka-console-consumer.sh \
+  docker exec -ti estreaming-kafka-broker bin/kafka-console-consumer.sh \
   --new-consumer \
   --consumer.config /shared/$consumer_group.properties \
   --bootstrap-server $bootstrap_server \

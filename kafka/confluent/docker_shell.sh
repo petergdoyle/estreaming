@@ -1,4 +1,4 @@
 #!/bin/sh
 
 
-docker exec -ti estreaming_kafka_rest_proxy /bin/bash
+docker exec -ti estreaming-kafka-rest-proxy /bin/bash

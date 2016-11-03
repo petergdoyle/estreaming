@@ -2,6 +2,6 @@
 
 . ../scripts/lib/docker_functions.sh
 
-container_name="estreaming_nodejs_streaming_api_server"
+container_name="estreaming-nodejsstreaming-api-server"
 
 docker_destroy $container_name

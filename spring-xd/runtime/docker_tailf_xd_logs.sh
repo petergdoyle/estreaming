@@ -28,4 +28,4 @@
   done
 
 
-docker exec -ti estreaming_xd_singlenode tail -f /tmp/xd/output/$fn.out
+docker exec -ti estreaming-xd-singlenode tail -f /tmp/xd/output/$fn.out

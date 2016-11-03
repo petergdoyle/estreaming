@@ -1,4 +1,4 @@
 #!/bin/sh
-docker start estreaming_mongodb_server
+docker start estreaming-mongodb-server
 
-docker logs -f estreaming_mongodb_server
+docker logs -f estreaming-mongodb-server

@@ -5,7 +5,7 @@
 
 img_name='estreaming/activemq'
 
-container_name='estreaming_activemq_broker'
+container_name='estreaming-activemq-broker'
 start_cmd="java \
 -cp .:./spring-xd-jms-sender-1.0-SNAPSHOT.jar \
 com.cleverfishsoftware.spring.xd.jms.broker.RunBroker"

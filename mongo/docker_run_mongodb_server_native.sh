@@ -5,7 +5,7 @@
 
 img_name='estreaming/mongodb'
 
-container_name='estreaming_mongodb_server'
+container_name='estreaming-mongodb-server'
 start_cmd="--dbpath /data/db --smallfiles"
 network="$network_native"
 docker_run

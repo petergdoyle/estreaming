@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker attach estreaming_xd_shell 
+docker attach estreaming-xd-shell 

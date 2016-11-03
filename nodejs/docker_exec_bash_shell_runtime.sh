@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker exec -ti estreaming_nodejs_runtime /bin/bash
+docker exec -ti estreaming-nodejs-runtime /bin/bash

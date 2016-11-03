@@ -1,4 +1,4 @@
 #!/bin/sh
-docker start estreaming_xd_shell
+docker start estreaming-xd-shell
 
-docker exec -ti estreaming_xd_shell /bin/bash
+docker exec -ti estreaming-xd-shell /bin/bash

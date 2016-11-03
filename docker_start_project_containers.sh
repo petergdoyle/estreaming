@@ -1,14 +1,14 @@
 #!/bin/sh
 
-docker start estreaming_xd_singlenode
-docker start estreaming_xd_shell
+docker start estreaming-xd-singlenode
+docker start estreaming-xd-shell
 
-docker start estreaming_activemq_broker
+docker start estreaming-activemq-broker
 
-docker start estreaming_mongodb_server
-docker start estreaming_nodejs_streaming_api_server
-docker start estreaming_nodejs_runtime
+docker start estreaming-mongodb-server
+docker start estreaming-nodejsstreaming-api-server
+docker start estreaming-nodejs-runtime
 
-docker start estreaming_springboot_runtime
+docker start estreaming-springboot-runtime
 
-docker start estreaming_activemq_message_sender
+docker start estreaming-activemq-message-sender

@@ -17,7 +17,7 @@ start_cmd_max="java -Xms1G -Xmx1G \
 -jar /activemq/default/bin/activemq.jar start"
 
 img_name='estreaming/activemq_server'
-container_name='estreaming_activemq_server'
+container_name='estreaming-activemq-server'
 
 start_cmd=$start_cmd_min
 

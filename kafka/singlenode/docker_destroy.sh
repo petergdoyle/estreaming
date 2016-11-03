@@ -6,4 +6,4 @@ for broker in ${brokers[@]}
 do
   docker_destroy "${broker}"
 done
-docker_destroy estreaming_kafka_zk
+docker_destroy estreaming-kafka-zk

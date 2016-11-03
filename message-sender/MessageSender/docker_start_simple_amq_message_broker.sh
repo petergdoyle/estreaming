@@ -1,4 +1,4 @@
 #!/bin/sh
-docker start estreaming_activemq_broker
+docker start estreaming-activemq-broker
 
-docker logs -f estreaming_activemq_broker
+docker logs -f estreaming-activemq-broker

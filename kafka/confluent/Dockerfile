@@ -10,8 +10,6 @@ ENV CONFLUENT_HOME=/confluent/default
 
 WORKDIR /confluent/default
 
-#COPY zookeeper.properties /confluent/default/etc/kafka/zookeeper.properties
-#COPY server.properties /confluent/default/etc/kafka/server.properties 
 COPY schema-registry.properties /confluent/default/etc/schema-registry/schema-registry.properties
 COPY kafka-rest.properties /confluent/default/etc/kafka-rest/kafka-rest.properties
 

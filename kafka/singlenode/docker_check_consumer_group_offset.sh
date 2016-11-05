@@ -8,7 +8,7 @@ else
   bootstrap_server=$2
 fi
 
-brokers=$(docker ps -a |grep kafka_broker|  awk '{print $10;}')
+brokers=$(docker ps -a |grep kafka-broker|  awk '{print $10;}')
 echo -e "The following Kafka brokers were found: \n$brokers"
 brokers_arr=($brokers)
 read -e -p "Pick a broker instance (any one):" -i ${brokers_arr[0]} selected_broker

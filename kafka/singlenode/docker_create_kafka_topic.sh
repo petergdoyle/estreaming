@@ -5,7 +5,7 @@ read -e -p "Enter the zk host/port: " -i "localhost:2181" zk_host_port
 read -e -p "Enter replcation factor: " -i "1" replication_factor
 read -e -p "Enter number of partitions: " -i "1" partitions
 
-brokers=$(docker ps -a |grep kafka_broker|  awk '{print $10;}')
+brokers=$(docker ps -a |grep kafka-broker|  awk '{print $10;}')
 echo -e "The following Kafka brokers were found: \n$brokers"
 brokers_arr=($brokers)
 read -e -p "Pick a broker instance (any one):" -i ${brokers_arr[0]} selected_broker

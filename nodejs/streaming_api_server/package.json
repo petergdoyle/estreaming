@@ -15,7 +15,7 @@
     "serve-favicon": "~2.2.1",
     "mongodb": "*",
     "mongoose": "*",
-    "mongojs": "0.18.2",
+    "mongojs": "*",
     "JSONStream": "*"
   }
 }

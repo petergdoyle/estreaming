@@ -66,6 +66,8 @@ docker_run() {
     echo "variable img_name is not set. cannot continue"
     return 1
   fi
+  msg="creating container $container_name..."
+  echo -e "\e[7;40;92m$msg\e[0m"
   docker_clean
   docker_cmd="docker run $mode -ti \
   --name $container_name \

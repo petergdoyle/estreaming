@@ -1,8 +1,8 @@
 
 Vagrant.configure(2) do |config|
 
-  config.vm.box = "CentOS-7-x86_64-Minimal-1511"
-  config.ssh.insert_key = false
+    config.vm.box = "petergdoyle/CentOS-7-x86_64-Minimal-1511"
+    config.ssh.insert_key = false
 
   config.vm.network "forwarded_port", guest: 22, host: 5222, host_ip: "0.0.0.0", id: "ssh", auto_correct: true
   config.vm.network "forwarded_port", guest: 3000, host: 3000, host_ip: "0.0.0.0", id: "streaming api port", auto_correct: true

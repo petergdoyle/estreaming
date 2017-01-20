@@ -29,11 +29,12 @@ docker_clean() {
     echo "variable container_name is not set. cannot continue"
     return 1
   fi
+
   container_status=$(docker ps -a --filter=name=$container_name| grep $container_name)
   #stop if exists and running
-  test "$(echo $container_status| grep Up)" != '' && (docker stop $container_name)
+  test "$(echo $container_status| grep Up)" != '' && (echo -e "\e[7;40;92mstopping container $container_name...\e[0m") && (docker stop $container_name)
   #remove if exists
-  test "$(echo $container_status)" != '' && (docker rm $container_name)
+  test "$(echo $container_status)" != '' && (echo -e "\e[7;40;92mremoving container $container_name...\e[0m") && (docker rm $container_name)
 }
 
 

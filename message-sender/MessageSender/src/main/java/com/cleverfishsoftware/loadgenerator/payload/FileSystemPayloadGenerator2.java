@@ -47,10 +47,14 @@ public class FileSystemPayloadGenerator2 implements PayloadGenerator {
 
     @Override
     public String[] getPayload(int size) {
+        int i = currentIndex.getAndIncrement();
+        if (currentIndex.get() > buffer.length) {
+            i = 0;
+        }
         ByteBuffer b = buffer[currentIndex.getAndIncrement()];
         StringBuilder sb = new StringBuilder(b.capacity());
         if (sb.length() == 0) {
-            for (int i = 0; i < b.limit(); i++) {
+            for (int c = 0; i < b.limit(); c++) {
                 sb.append((char) b.get());
             }
         }

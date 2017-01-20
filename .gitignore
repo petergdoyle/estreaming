@@ -15,6 +15,7 @@ mq-docker
 Input*json
 .DS_Store
 dist
+data
 consumer-group*properties
 /Netty/nbproject/private/
 kafka/singlenode/config/server*.properties

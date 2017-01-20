@@ -3,65 +3,60 @@
 package com.cleverfishsoftware.loadgenerator.payload;
 
 import com.cleverfishsoftware.loadgenerator.PayloadGenerator;
+import static com.google.common.io.Closeables.closeQuietly;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
  * @author peter
  */
-public class FileSystemPayloadGenerator2 implements PayloadGenerator {
+public class FileSystemPayloadGenerator3 implements PayloadGenerator {
 
-    private final MappedByteBuffer[] buffer;
-    private final AtomicInteger currentIndex = new AtomicInteger(0);
+    private static FileSystemPayloadGenerator3 instance;
+    private static File[] files;
+    private static AtomicInteger pointer;
+    public static final String NEWLINE = System.getProperty("line.separator");
 
-    private static FileSystemPayloadGenerator2 instance;
-
-    public FileSystemPayloadGenerator2(String fn) throws FileNotFoundException, IOException {
+    public FileSystemPayloadGenerator3(String fn) throws FileNotFoundException, IOException {
         File file = new File(fn);
         if (file.isFile()) {
-            buffer = new MappedByteBuffer[1];
-            loadFileIntoMemory(file, 0);
+            files = new File[]{file};
         } else {
-            File[] files = file.listFiles();
-            buffer = new MappedByteBuffer[files.length];
-            for (int i = 0; i < files.length; i++) {
-                loadFileIntoMemory(files[i], i);
-            }
+            files = file.listFiles();
         }
-    }
-
-    private void loadFileIntoMemory(File file, int index) throws IOException {
-        try (RandomAccessFile aFile = new RandomAccessFile(file, "r"); FileChannel inChannel = aFile.getChannel()) {
-            MappedByteBuffer b = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
-            b.load();
-            buffer[index] = b;
-        }
+        pointer = new AtomicInteger(-1);
     }
 
     @Override
     public String[] getPayload(int size) {
-        ByteBuffer b = buffer[currentIndex.getAndIncrement()];
-        StringBuilder sb = new StringBuilder(b.capacity());
-        if (sb.length() == 0) {
-            for (int i = 0; i < b.limit(); i++) {
-                sb.append((char) b.get());
-            }
+        StringBuilder builder = new StringBuilder(1024);
+        BufferedReader br = null;
+        if (pointer.get() >= files.length-1) {
+            pointer.getAndSet(-1);
         }
-        return new String[]{sb.toString()};
+        try {
+            br = new BufferedReader(new FileReader(files[pointer.incrementAndGet()]));
+            String line;
+            while ((line = br.readLine()) != null) {
+                builder.append(line).append(NEWLINE);
+            }
+        } catch (FileNotFoundException ex) {
+            System.out.println(ex);
+        } catch (IOException ex) {
+            System.out.println(ex);
+        } finally {
+            closeQuietly(br);
+        }
+
+        return new String[]{builder.toString()};
     }
 
     public static void main(String... args) throws IOException {
-        String fn = "/Users/peter/vagrant/server-perf/compression/estreaming-data/Input-1V_J0B_ATLPAR-3412-0008-0924-172400-266.json";
-        FileSystemPayloadGenerator2 fspg = new FileSystemPayloadGenerator2(fn);
-        for (int i = 0; i < 5; i++) {
-            System.out.println(fspg.getPayload(0)[0]);
-        }
+
     }
 }

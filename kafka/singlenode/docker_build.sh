@@ -5,12 +5,15 @@
 
 no_cache=$1
 
+zookeeper_port='2181'
+read -e -p "Enter zookeeper port: " -i "y" zookeeper_port
 read -e -p "Run native networking mode(y/n): " -i "y" native
 if [[ "$native" == "n" || "$native" == "N" ]]; then
-  read -e -p "Enter the zk host/port: " -i "estreaming-kafka-zk:2181" zk_host_port
+  read -e -p "Enter the zk host/port: " -i "estreaming-kafka-zk:$zookeeper_port" zk_host_port
 else
-  zk_host_port="localhost:2181"
+  zk_host_port="localhost:$zookeeper_port"
 fi
+sed -i "s/clientPort=.*/clientPort=$zookeeper_port/g" config/zookeeper.properties
 
 read -e -p "Enter Kafka Log Retention Hours: " -i "1" kafka_log_retention_hrs
 read -e -p "Enter Kafka Log Retention Size (Mb): " -i "25" kafka_log_retention_size_mb

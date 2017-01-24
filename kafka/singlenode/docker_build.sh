@@ -6,7 +6,7 @@
 no_cache=$1
 
 zookeeper_port='2181'
-read -e -p "Enter zookeeper port: " -i "y" zookeeper_port
+read -e -p "Enter zookeeper port: " -i "$zookeeper_port" zookeeper_port
 read -e -p "Run native networking mode(y/n): " -i "y" native
 if [[ "$native" == "n" || "$native" == "N" ]]; then
   read -e -p "Enter the zk host/port: " -i "estreaming-kafka-zk:$zookeeper_port" zk_host_port

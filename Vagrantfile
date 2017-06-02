@@ -58,23 +58,38 @@ EOF
 
   eval 'java -version' > /dev/null 2>&1
   if [ $? -eq 127 ]; then
-    mkdir -p /usr/java
-    #install java jdk 8 from oracle
-    curl -O -L --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
-    "http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jdk-8u60-linux-x64.tar.gz" \
-      && tar -xvf jdk-8u60-linux-x64.tar.gz -C /usr/java \
-      && ln -s /usr/java/jdk1.8.0_60/ /usr/java/default \
-      && rm -f jdk-8u60-linux-x64.tar.gz
+    # mkdir -p /usr/java
+    # #install java jdk 8 from oracle
+    # curl -O -L --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
+    # "http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jdk-8u60-linux-x64.tar.gz" \
+    #   && tar -xvf jdk-8u60-linux-x64.tar.gz -C /usr/java \
+    #   && ln -s /usr/java/jdk1.8.0_60/ /usr/java/default \
+    #   && rm -f jdk-8u60-linux-x64.tar.gz
+    #
+    # alternatives --install "/usr/bin/java" "java" "/usr/java/default/bin/java" 99999; \
+    # alternatives --install "/usr/bin/javac" "javac" "/usr/java/default/bin/javac" 99999; \
+    # alternatives --install "/usr/bin/javaws" "javaws" "/usr/java/default/bin/javaws" 99999; \
+    # alternatives --install "/usr/bin/jvisualvm" "jvisualvm" "/usr/java/default/bin/jvisualvm" 99999
 
-    alternatives --install "/usr/bin/java" "java" "/usr/java/default/bin/java" 99999; \
-    alternatives --install "/usr/bin/javac" "javac" "/usr/java/default/bin/javac" 99999; \
-    alternatives --install "/usr/bin/javaws" "javaws" "/usr/java/default/bin/javaws" 99999; \
-    alternatives --install "/usr/bin/jvisualvm" "jvisualvm" "/usr/java/default/bin/jvisualvm" 99999
+    mkdir -p /usr/java \
+    && echo "installing openjdk..."
+
+    yum install -y java-1.8.0-openjdk*
+
+    java_home=`alternatives --list |grep jre_1.8.0_openjdk| awk '{print $3}'`
+    ln -s "$java_home" /usr/java/default
 
     export JAVA_HOME=/usr/java/default
     cat >/etc/profile.d/java.sh <<-EOF
 export JAVA_HOME=$JAVA_HOME
 EOF
+
+    # register all the java tools and executables to the OS as executables
+    install_dir="$JAVA_HOME/bin"
+    for each in $(find $install_dir -executable -type f) ; do
+      name=$(basename $each)
+      alternatives --install "/usr/bin/$name" "$name" "$each" 99999
+    done
 
   else
     echo -e "\e[7;44;96mjava already appears to be installed. skipping."

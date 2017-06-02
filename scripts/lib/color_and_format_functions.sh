@@ -22,21 +22,22 @@ white_text_black_background='\e[7;107;30m'
 white_text_bright_red_background='\e[7;107;91m'
 black_text_bright_yellow_background='\e[7;49;93m'
 blue_text_cyan_background='\e[7;44;96m'
+end='\e[0m'
 
 display_success() {
-  echo -e "$black_text_bright_green_background$1\e[0m"
+  echo -e "$black_text_bright_green_background$1$end"
 }
 
 display_error() {
-  echo -e "$white_text_bright_red_background$1\e[0m"
+  echo -e "$white_text_bright_red_background$1$end"
 }
 
 display_warning() {
-  echo -e "$black_text_bright_yellow_background$1\e[0m"
+  echo -e "$black_text_bright_yellow_background$1$end"
 }
 
 display_info() {
-  echo -e "$blue_text_cyan_background$1\e[0m"
+  echo -e "$blue_text_cyan_background$1$end"
 }
 
 run_display_test() {

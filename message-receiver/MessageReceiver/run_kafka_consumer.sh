@@ -39,4 +39,4 @@ $topic \
 $sleep \
 $console_output"
 echo "$cmd"
-# eval "$cmd"
+eval "$cmd"

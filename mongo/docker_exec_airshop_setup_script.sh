@@ -1,2 +1,2 @@
 #!/bin/sh
-docker exec -ti estreaming-mongodb-server 'mongo < /mongodb/setup.js'
+docker exec -ti estreaming-mongodb-server bash -c 'mongo < /mongodb/setup.js'

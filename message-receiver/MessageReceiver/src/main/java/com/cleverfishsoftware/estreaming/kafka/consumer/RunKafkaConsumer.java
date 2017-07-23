@@ -2,6 +2,7 @@
  */
 package com.cleverfishsoftware.estreaming.kafka.consumer;
 
+import static com.cleverfishsoftware.loadgenerator.Common.isTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,11 @@ public class RunKafkaConsumer {
         String consumerId = args[2];
         List<String> topics = Arrays.asList(args[3].split(","));
         long sleep = Long.parseLong(args[4]);
+        String argValue = args[5];
+        boolean noisy = false;
+        if (isTrue(argValue)) {
+            noisy = true;
+        }
 
         Properties kafkaProperties = new Properties();
         kafkaProperties.put("bootstrap.servers", bootstrapServers);
@@ -40,7 +46,7 @@ public class RunKafkaConsumer {
 
         final List<RunnableKafkaConsumer> consumers = new ArrayList<>();
         for (int i = 0; i < numConsumers; i++) {
-            RunnableKafkaConsumer consumer = new RunnableKafkaConsumer(consumerGroup, consumerId, kafkaProperties, topics, sleep);
+            RunnableKafkaConsumer consumer = new RunnableKafkaConsumer(consumerGroup, consumerId, kafkaProperties, topics, sleep, noisy);
             consumers.add(consumer);
             executor.submit(consumer);
         }

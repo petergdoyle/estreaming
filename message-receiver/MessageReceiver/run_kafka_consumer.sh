@@ -1,11 +1,19 @@
 #!/bin/sh
 
-read -e -p "Enter the topic: " -i "use-case-1" topic
-read -e -p "Enter the broker host/port: " -i "localhost:9092" broker_host_port
-read -e -p "Enter the offset: " -i "--from-beginning" offset
-read -e -p "Enter the consumer group id: " -i "consumer-group-1" consumer_group_id
-read -e -p "Enter the consumer id: " -i "consumer-1" consumer_id
-read -e -p "Enter consumer process latency (in millis): " -i "0" sleep
+topic='use-case-1'
+read -e -p "Enter the topic: " -i "$topic" topic
+broker_host_port='localhost:9092'
+read -e -p "Enter the broker host/port: " -i "$broker_host_port" broker_host_port
+offset='--from-beginning'
+read -e -p "Enter the offset: " -i "$offset" offset
+consumer_group_id='consumer-group-1'
+read -e -p "Enter the consumer group id: " -i "$consumer_group_id" consumer_group_id
+consumer_id='consumer-1'
+read -e -p "Enter the consumer id: " -i "$consumer_id" consumer_id
+sleep='0'
+read -e -p "Enter consumer process latency (in millis): " -i "$sleep" sleep
+console_output='n'
+read -e -p "Display output to console (y/n) " -i "$console_output" console_output
 
 fout=$topic'_'$consumer_group_id'.out'
 if [ -f "$fout" ]; then
@@ -28,6 +36,7 @@ $broker_host_port \
 $consumer_group_id \
 $consumer_id \
 $topic \
-$sleep"
+$sleep \
+$console_output"
 echo "$cmd"
-eval "$cmd"
+# eval "$cmd"

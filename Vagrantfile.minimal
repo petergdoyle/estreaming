@@ -1,0 +1,93 @@
+
+Vagrant.configure(2) do |config|
+
+    config.vm.box = "petergdoyle/CentOS-7-x86_64-Minimal-1511"
+    config.ssh.insert_key = false
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--cpuexecutioncap", "80"]
+    vb.cpus=4 #recommended=4 if available
+    vb.memory = "4096" #recommended=3072 or 4096 if available
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+
+  yum -y install vim htop curl wget tree unzip bash-completion telnet net-tools jq
+
+  java -version > /dev/null 2>&1
+  if [ $? -eq 127 ]; then
+    mkdir -p /usr/java \
+    && echo "installing openjdk..."
+
+    yum install -y java-1.8.0-openjdk*
+
+    java_home=`alternatives --list |grep jre_1.8.0_openjdk| awk '{print $3}'`
+    mkdir -p /usr/java
+    ln -s "$java_home" /usr/java/default
+    export JAVA_HOME=/usr/java/default
+    cat >/etc/profile.d/java.sh <<-EOF
+export JAVA_HOME=$JAVA_HOME
+EOF
+
+    # register all the java tools and executables to the OS as executables
+    install_dir="$JAVA_HOME/bin"
+    for each in $(find $install_dir -executable -type f) ; do
+      name=$(basename $each)
+      alternatives --install "/usr/bin/$name" "$name" "$each" 99999
+    done
+
+  else
+    echo -e "\e[7;44;96m*java already appears to be installed. skipping.\e[0m"
+  fi
+
+  eval 'docker --version' > /dev/null 2>&1
+  if [ $? -eq 127 ]; then
+    display_info "installing docker and docker-compose..."
+
+    yum -y remove docker docker-common  docker-selinux docker-engine
+    yum -y install yum-utils device-mapper-persistent-data lvm2
+    yum-config-manager     --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
+    rm -fr /etc/yum.repos.d/docker.repo
+    yum-config-manager --enable docker-ce-edge
+    yum-config-manager --enable docker-ce-test
+    yum -y makecache fast
+    yum -y install docker-ce
+
+    systemctl start docker
+    systemctl enable docker
+    groupadd docker
+
+    yum -y install python-pip
+    pip install --upgrade pip
+    pip install -U docker-compose
+
+    usermod -aG docker vagrant
+
+  else
+    display_error "docker and docker-compose already installed"
+  fi
+
+  eval 'mvn -version' > /dev/null 2>&1
+  if [ $? -eq 127 ]; then
+    mkdir /usr/maven \
+    && echo "downloading maven..."
+    #install maven
+    curl -O http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz \
+      && tar -xvf apache-maven-3.3.9-bin.tar.gz -C /usr/maven \
+      && ln -s /usr/maven/apache-maven-3.3.9 /usr/maven/default \
+      && rm -f apache-maven-3.3.9-bin.tar.gz
+    alternatives --install "/usr/bin/mvn" "mvn" "/usr/maven/default/bin/mvn" 99999
+    export MAVEN_HOME=/usr/maven/default
+    cat >/etc/profile.d/maven.sh <<-EOF
+export MAVEN_HOME=$MAVEN_HOME
+EOF
+  else
+    echo -e "\e[7;44;96mmaven already appears to be installed. skipping."
+  fi
+
+  yum -y update && yum -y clean all
+
+  hostnamectl set-hostname estreaming.vbx
+
+  SHELL
+end
